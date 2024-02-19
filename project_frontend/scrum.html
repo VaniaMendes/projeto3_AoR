@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Scrum Board</title>
+      <link rel="icon" href="scrum_image.png" />
+      <link rel="stylesheet" href="main.css" />
+   </head>
+   <body>
+      <div id="background"></div>
+      <div id="body_color"></div>
+      <div id="aside_color"></div>
+      <!--<header><h1>Scrum Board</h1></header> -->
+      <main id="scrum_main">
+         <header>
+            <h1><img src="scrum_image.png" id="scrum_img" alt="App logo" />&nbsp;AgileUp</h1>
+         </header>
+         <section id="scrum_section">
+            <aside>
+               <div id="menu">
+                  <p class="menu_item" id="user_name">
+                     <img id="user_img" src="user.png" alt="User logo" /><span id="user">Username</span>
+                  </p>
+
+                  <div class="menu_item" id="date"></div>
+                  <button class="menu_item" id="btn_edit">&#9998; &nbsp; Edit Profile</button>
+                  <button class="menu_item" id="btn_settings">&#9881; &nbsp; Color Themes</button>
+                  <!--<button class="menu_item" id="btn_sprint">Your Retrospectives</button>-->
+                  <button class="menu_item" id="logout">&#x2B24; &nbsp; Logout</button>
+               </div>
+            </aside>
+            <div class="column" id="column1">
+               <div class="title">To Do</div>
+               <section class="task_list" id="toDo"></section>
+               <button id="btn_task">&nbsp;+ New Task</button>
+            </div>
+            <div class="column" id="column2">
+               <div class="title">Doing</div>
+               <section class="task_list" id="doing"></section>
+            </div>
+            <div class="column" id="column3">
+               <div class="title">Done</div>
+               <section class="task_list" id="done"></section>
+            </div>
+         </section>
+      </main>
+
+      <section class="modal" id="modal">
+         <div>
+            <div class="modal_exit" id="modal_cancel">&times;</div>
+            <div class="label_modal">Title</div>
+            <div id="modal_title"></div>
+         </div>
+         <div>
+            <div class="label_modal" id="label_description">Description</div>
+            <div id="modal_description"></div>
+         </div>
+         <div id="modal_dates">
+            <span class="label_modal">Initial Date</span>
+            <span class="span_date" id="modal_startDate"></span>
+            <span class="label_modal" id="endDate_label">End Date</span>
+            <span class="span_date" id="modal_endDate"></span>
+         </div>
+      </section>
+
+      <section class="modal" id="modal_settings">
+         <section id="settings_header">
+            <h2 id="title_settings">Colors</h2>
+            <button class="modal_exit" id="modal_cancel2">&times;</button>
+         </section>
+
+         <section id="main_settings">
+            <section id="settings_section">
+               <div class="colors">
+                  <span>Background</span><input type="color" id="background_color" class="input_colors" />
+               </div>
+               <div class="colors"><span>To Do</span><input type="color" id="toDo_color" class="input_colors" /></div>
+               <div class="colors"><span>Doing</span><input type="color" id="doing_color" class="input_colors" /></div>
+               <div class="colors"><span>Done</span><input type="color" id="done_color" class="input_colors" /></div>
+            </section>
+            <section id="btns_settings">
+               <button id="apply" class="settings_buttons">Apply</button>
+               <button id="reset_settings" class="settings_buttons">Reset</button>
+               <button id="cancel_settings" class="settings_buttons">Cancel</button>
+            </section>
+         </section>
+      </section>
+
+      <footer>
+         <div>Powered by:</div>
+         <ul>
+            <li>Bernardo Câmara</li>
+            <li>Vânia Mendes</li>
+         </ul>
+         <br />
+         <p>© Acertar o Rumo 2024</p>
+      </footer>
+      <script src="scrum_code.js"></script>
+   </body>
+</html>

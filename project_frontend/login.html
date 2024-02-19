@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>AgileUp</title>
+      <link rel="icon" href="scrum_image.png" />
+      <link rel="stylesheet" href="main.css" />
+   </head>
+   <body id="login_body">
+      <div id="body_color"></div>
+      <div id="aside_color"></div>
+      <header>
+         <h1><img src="scrum_image.png" id="scrum_img" alt="App logo" />&nbsp;AgileUp</h1>
+      </header>
+      <main class="main" id="login_main">
+         <form id="login_form">
+            <h2>Login</h2>
+            <div id="login_inputs">
+               <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  placeholder="Username"
+                  autocomplete="off"
+                  class="login_inputs"
+                  required
+               />
+
+               <div class="form_group">
+                  <input
+                     type="password"
+                     id="password"
+                     name="password"
+                     placeholder="Password"
+                     class="login_inputs"
+                     required
+                  />
+               </div>
+            </div>
+
+            <div class="form_group">
+               <button type="submit" id="btn_login">Login</button>
+            </div>
+         </form>
+         <div id="signup">Don't have an account? <a href="register.html">Sign up</a></div>
+      </main>
+
+      <footer>
+         <div>Powered by:</div>
+         <ul>
+            <li>Bernardo Câmara</li>
+            <li>Vânia Mendes</li>
+         </ul>
+         <br />
+         <p>© Acertar o Rumo 2024</p>
+      </footer>
+      <script src="login.js"></script>
+   </body>
+</html>
