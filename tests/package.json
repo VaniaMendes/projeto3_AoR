@@ -1,0 +1,12 @@
+{
+   "scripts": {
+      "test": "jest"
+   },
+   "devDependencies": {
+      "jest": "^29.7.0"
+   },
+   "dependencies": {
+      "jest-fetch-mock": "^3.0.3",
+      "node-fetch": "^3.3.2"
+   }
+}
