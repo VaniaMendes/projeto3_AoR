@@ -25,7 +25,6 @@ public class TaskEntity implements Serializable{
 	@Column (name="description", nullable = true, unique = false, length = 65535, columnDefinition = "TEXT")
 	private String description;
 
-	@CreationTimestamp
 	@Column(name="creation_date", nullable = false, unique = false, updatable = false)
 	private Timestamp creationDate;
 
@@ -85,7 +84,6 @@ public class TaskEntity implements Serializable{
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
 
 }
 	
