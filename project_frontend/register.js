@@ -119,7 +119,7 @@ async function validateUser(username_txt, password_txt, email_txt, firstName_txt
          alert(data.message);
       } 
       else {alert("Something went wrong");
-      alert("Something went wrong");
+      
       }
    } catch (error) {
    alert("Something went wrong");

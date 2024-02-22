@@ -8,7 +8,9 @@ document.querySelector("#login_form").addEventListener("submit", function (e) {
    validateUser(username_txt, pass_txt);
 });
 async function validateUser(username, password) {
-   await fetch(
+   const user = {username: username, password: password};
+   try{
+      const response = await fetch(
       "http://localhost:8080/project_backend/rest/users/login",
 
       {
@@ -16,19 +18,21 @@ async function validateUser(username, password) {
          headers: {
             Accept: "*/*",
             "Content-Type": "application/json",
-            username: username,
-            password: password,
          },
+         body: JSON.stringify(user),
       }
-   ).then(function (response) {
-      if (response.status == 200) {
-         sessionStorage.setItem("username", username);
-         sessionStorage.setItem("pass", password);
+   )
+      if (response.ok) {
+         const token = await response.json();
+         sessionStorage.setItem("token", token);
          window.location.href = "scrum.html";
+         console.log(token);
       } else if (response.status == 404) {
-         alert("Wrong data");
+         alert("Wrong username or password");
       } else {
          alert("something went wrong :(");
       }
-   });
+   } catch (error) {
+      console.log(error);
+   }
 }

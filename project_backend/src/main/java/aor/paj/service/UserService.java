@@ -116,7 +116,7 @@ public class UserService {
             return Response.status(405).entity("Something went wrong").build();
 
     }
-
+/*
     @POST
     @Path("/addUserDB")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -133,9 +133,9 @@ public class UserService {
 
         return response;
     }
-
+*/
     @POST
-    @Path("/loginDB")
+    @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(LoginDto user){
