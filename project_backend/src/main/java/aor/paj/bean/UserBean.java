@@ -17,8 +17,10 @@ import jakarta.mail.internet.InternetAddress;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @Stateless
@@ -53,7 +55,29 @@ public class UserBean implements Serializable {
         userEntity.setImgURL(user.getImgURL());
         userEntity.setFirstName(user.getFirstName());
         userEntity.setLastName(user.getLastName());
+        userEntity.setIsActive("true");
+        userEntity.setTypeOfUser("developer");
         return userEntity;
+    }
+
+    public String login(User user){
+        UserEntity userEntity = userDao.findUserByEmail(user.getEmail());
+        if (userEntity != null){
+            if (userEntity.getPassword().equals(user.getPassword())){
+                String token = generateNewToken();
+                userEntity.setToken(token);
+                return token;
+            }
+        }
+        return null;
+    }
+
+    private String generateNewToken() {
+        SecureRandom secureRandom = new SecureRandom(); //threadsafe
+        Base64.Encoder base64Encoder = Base64.getUrlEncoder(); //threadsafe
+        byte[] randomBytes = new byte[24];
+        secureRandom.nextBytes(randomBytes);
+        return base64Encoder.encodeToString(randomBytes);
     }
     public boolean register(User user){
         UserEntity u= userDao.findUserByEmail(user.getEmail());

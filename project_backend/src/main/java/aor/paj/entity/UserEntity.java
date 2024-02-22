@@ -40,6 +40,12 @@ public class UserEntity implements Serializable{
 
 	@Column(name="imgURL", nullable=false, unique = false, updatable = true)
 	private String imgURL;
+	@Column(name="isActive", nullable=false, unique = false, updatable = true)
+	private String isActive;
+
+	@Column(name="typeOfUser", nullable=false, unique = false, updatable = true)
+	private String typeOfUser;
+
 
 	@OneToMany(mappedBy = "owner")
 	private Set<TaskEntity> tasks;
@@ -118,5 +124,21 @@ public class UserEntity implements Serializable{
 
 	public void setImgURL(String imgURL) {
 		this.imgURL = imgURL;
+	}
+
+	public String getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(String isActive) {
+		this.isActive = isActive;
+	}
+
+	public String getTypeOfUser() {
+		return typeOfUser;
+	}
+
+	public void setTypeOfUser(String typeOfUser) {
+		this.typeOfUser = typeOfUser;
 	}
 }
