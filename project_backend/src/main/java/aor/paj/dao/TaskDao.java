@@ -1,69 +1,40 @@
 package aor.paj.dao;
 
-import jakarta.ejb.TransactionAttribute;
-import jakarta.ejb.TransactionAttributeType;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.criteria.CriteriaDelete;
-import jakarta.persistence.criteria.CriteriaQuery;
 
-import java.io.Serializable;
-import java.util.List;
+import aor.paj.entity.TaskEntity;
+import aor.paj.entity.UserEntity;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.NoResultException;
 
-@TransactionAttribute(TransactionAttributeType.REQUIRED)
-public abstract class TaskDao<T extends Serializable> implements Serializable {
-	
+import java.util.ArrayList;
+
+@Stateless
+public class TaskDao extends AbstractDao<TaskEntity> {
+
 	private static final long serialVersionUID = 1L;
-	
-	private final Class<T> clazz;
-	
-	@PersistenceContext(unitName = "PersistenceUnit")
-	protected EntityManager em;
 
-	public TaskDao(Class<T> clazz)
-	{
-		this.clazz = clazz;
-	}
-
-	
-	public T find(Object id) 
-	{
-		return em.find(clazz, id);
-	}
-
-	
-	public void persist(final T entity) 
-	{
-		em.persist(entity);
-	}
-	
-	
-	public void merge(final T entity) 
-	{
-		em.merge(entity);
-	}
-	
-	public void remove(final T entity) 
-	{
-		em.remove(em.contains(entity) ? entity : em.merge(entity));
+	public TaskDao() {
+		super(TaskEntity.class);
 	}
 	
 
-	public List<T> findAll() 
-	{
-		final CriteriaQuery<T> criteriaQuery = em.getCriteriaBuilder().createQuery(clazz);
-		criteriaQuery.select(criteriaQuery.from(clazz));
-		return em.createQuery(criteriaQuery).getResultList();
+	public TaskEntity findActivityById(int id) {
+		try {
+			return (TaskEntity) em.createNamedQuery("Activity.findActivityById").setParameter("id", id)
+					.getSingleResult();
+
+		} catch (NoResultException e) {
+			return null;
+		}
+
 	}
 
-	public void deleteAll() 
-	{
-		final CriteriaDelete<T> criteriaDelete = em.getCriteriaBuilder().createCriteriaDelete(clazz);
-		criteriaDelete.from(clazz);
-		em.createQuery(criteriaDelete).executeUpdate();
-	}
-	
-	public void flush() {
-		em.flush();
+	public ArrayList<TaskEntity> findActivityByUser(UserEntity userEntity) {
+		try {
+			ArrayList<TaskEntity> activityEntityEntities = (ArrayList<TaskEntity>) em.createNamedQuery("Activity.findActivityByUser").setParameter("owner", userEntity).getResultList();
+			return activityEntityEntities;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 }

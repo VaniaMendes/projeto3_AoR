@@ -5,7 +5,10 @@ import aor.paj.bean.UserBean;
 import aor.paj.dto.Task;
 import aor.paj.dto.User;
 import aor.paj.dto.UserDetails;
+
+import aor.paj.entity.UserEntity;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -21,12 +24,12 @@ public class UserService {
     @Inject
     TaskBean taskBean;
 
-    @GET
-    @Path("/all")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<User> getUsers() {
-        return userBean.getUsers();
-    }
+    //@GET
+    //@Path("/all")
+    //@Produces(MediaType.APPLICATION_JSON)
+    //public List<User> getUsers() {
+    //    return userBean.getUsers();
+    //}
 
     @GET
     @Path("/{username}")
@@ -84,8 +87,23 @@ public class UserService {
 
             return Response.status(405).entity("Something went wrong").build();
 
+    }
 
+    @POST
+    @Path("/addUserDB")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Response addUserToDB(User user) {
 
+        Response response;
+
+        if (userBean.register(user)) {
+            response = Response.status(200).entity("Success").build();
+        } else {
+            response = Response.status(400).entity("User not created").build();
+        }
+
+        return response;
     }
 
     @GET

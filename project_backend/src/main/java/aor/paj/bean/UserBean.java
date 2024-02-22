@@ -1,8 +1,12 @@
 package aor.paj.bean;
 
+import aor.paj.dao.UserDao;
 import aor.paj.dto.Task;
 import aor.paj.dto.User;
 import aor.paj.dto.UserDetails;
+import aor.paj.entity.UserEntity;
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
@@ -10,45 +14,60 @@ import jakarta.json.bind.JsonbConfig;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
-@ApplicationScoped
-public class UserBean {
+@Stateless
+public class UserBean implements Serializable {
 
-    final String filename = "users.json";
+    @EJB
+    UserDao userDao;
+
     private ArrayList<User> users;
 
     public UserBean(){
-        File f = new File(filename);
-        if(f.exists()){
-            try {
-                FileReader filereader = new FileReader(f);
-                users = JsonbBuilder.create().fromJson(filereader, new
-                        ArrayList<User>() {}.getClass().getGenericSuperclass());
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        }else
-            users = new ArrayList<User>();
-
     }
     //Método para adicionar um user novo ao json
-    public void addUser(User user) {
-        users.add(user);
-        writeIntoJsonFile();
+    public boolean addUser(User user) {
+
+        UserEntity userFromDb = userDao.findUserByEmail(user.getEmail());
+        if (userFromDb == null) {
+            userDao.persist(convertUserDtotoUserEntity(user));
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private UserEntity convertUserDtotoUserEntity(User user){
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername(user.getUsername());
+        userEntity.setPassword(user.getPassword());
+        userEntity.setToken(user.getToken());
+        userEntity.setEmail(user.getEmail());
+        userEntity.setPhoneNumber(user.getPhoneNumber());
+        userEntity.setImgURL(user.getImgURL());
+        userEntity.setFirstName(user.getFirstName());
+        userEntity.setLastName(user.getLastName());
+        return userEntity;
+    }
+    public boolean register(User user){
+        UserEntity u= userDao.findUserByEmail(user.getEmail());
+        if (u==null){
+            userDao.persist(convertUserDtotoUserEntity(user));
+            return true;
+        }else
+            return false;
     }
 
     //Método para adicionar uma task nova a um user
     public void addTask(User user, Task task){
         user.getTasks().add(task);
-        writeIntoJsonFile();
+
     }
     //Método para eliminar uma task
     public boolean removeTask(User user,long id) {
@@ -60,7 +79,7 @@ public class UserBean {
                 taskRemoved=true;
             }
         }
-        writeIntoJsonFile();
+
         return taskRemoved;
     }
 
@@ -82,7 +101,7 @@ public class UserBean {
     //faz o update do estado da task que recebe como input
     public void updateTaskState(Task task, String state){
         task.changeState(state);
-        writeIntoJsonFile();
+
     }
 
     //faz o update dos atributos da task que recebe como input
@@ -93,7 +112,7 @@ public class UserBean {
         task.setInitialDate(initialDate);
         task.setEndDate(endDate);
         task.setPriority(priority);
-        writeIntoJsonFile();
+
     }
 
     //Método em que o output é o objeto UserDetails que tem todos os atributos iguais ao User menos a pass
@@ -200,7 +219,7 @@ public class UserBean {
         user.changeToDo_color(toDo_color);
         user.changeDoing_color(doing_color);
         user.changeDone_color(done_color);
-        writeIntoJsonFile();
+
     }
 
     public User validateLogin(String username, String password) {
@@ -211,10 +230,6 @@ public class UserBean {
             }
         }
         return user_validate;
-    }
-
-    public ArrayList<User> getUsers() {
-        return users;
     }
 
     public boolean removeUser(String username) {
@@ -231,7 +246,7 @@ public class UserBean {
     public User updatePhoto(String username,String pass,String newPhoto){
         User currentUser = getUser(username,pass);
         currentUser.setImgURL(newPhoto);
-        writeIntoJsonFile();
+
 
         return currentUser;
     }
@@ -240,7 +255,7 @@ public class UserBean {
             User u = getUser(username, password);
             if(u!=null) {
                 u.setPassword(newPassword);
-                writeIntoJsonFile();
+
                 fieldChanged = true;
             }
 
@@ -253,7 +268,7 @@ public class UserBean {
             boolean emailAlreadyExists = emailExists(email);
             if (u !=null && validEmail && !emailAlreadyExists) {
                     u.setEmail(email);
-                    writeIntoJsonFile();
+
                     fieldChanged = true;
         }
         return fieldChanged;
@@ -276,7 +291,7 @@ public class UserBean {
             User u = getUser(username, password);
             if(u!=null){
                 u.setFirstName(firstName);
-                writeIntoJsonFile();
+
                 fieldChanged=true;
         }
         return fieldChanged;
@@ -286,7 +301,7 @@ public class UserBean {
             User u = getUser(username, password);
             if(u!= null){
                 u.setLastName(lastName);
-                writeIntoJsonFile();
+
                 fieldChanged=true;
         }
         return fieldChanged;
@@ -299,7 +314,7 @@ public class UserBean {
             boolean phoneValid=isValidPhoneNumber(phoneNumber);
             if (u!=null && phoneValid) {
                 u.setPhoneNumber(phoneNumber);
-                writeIntoJsonFile();
+
                 fieldChanged = true;
         }
         return fieldChanged;
@@ -313,24 +328,5 @@ public class UserBean {
             }
         }
         return phoneExists;
-    }
-
-
-    private void writeIntoJsonFile(){
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream(filename);
-            JsonbConfig config = new JsonbConfig().withFormatting(true);
-            Jsonb jsonb = JsonbBuilder.create(config);
-            jsonb.toJson(users, fileOutputStream);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-       /* Jsonb jsonb = JsonbBuilder.create(new
-                JsonbConfig().withFormatting(true));
-        try {
-            jsonb.toJson(users, new FileOutputStream(filename));
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }*/
     }
 }
