@@ -14,27 +14,35 @@ public class UserEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
-	//user unique email has ID - not updatable, unique, not null, min size = 3
 	@Id
+	@Column(name="username", nullable=false, unique = false, updatable = true)
+	private String username;
+
 	@Column(name="email", nullable=false, unique = true, updatable = false)
 	private String email;
 
 	//user's name
-	@Column(name="name", nullable=false, unique = false, updatable = true)
-	private String name;
+	@Column(name="firstName", nullable=false, unique = false, updatable = true)
+	private String firstName;
 
+	@Column(name="lastName", nullable=false, unique = false, updatable = true)
+	private String lastName;
+
+	@Column(name="phoneNumber", nullable=false, unique = false, updatable = true)
+	private String phoneNumber;
 
 	@Column(name="token", nullable=true, unique = true, updatable = true)
 	private String token;
 
 	@Column(name="password", nullable=false, unique = false, updatable = true)
 	private String password;
-	
-	@Column(name="username", nullable=false, unique = false, updatable = true)
-	private String username;
+
+
+	@Column(name="imgURL", nullable=false, unique = false, updatable = true)
+	private String imgURL;
 
 	@OneToMany(mappedBy = "owner")
-	private Set<TaskEntity> activities;
+	private Set<TaskEntity> tasks;
 
 
 	//default empty constructor
@@ -48,12 +56,12 @@ public class UserEntity implements Serializable{
 		this.email = email;
 	}
 
-	public String getName() {
-		return name;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
 	public String getToken() {
@@ -72,12 +80,12 @@ public class UserEntity implements Serializable{
 		this.password = password;
 	}
 
-	public Set<TaskEntity> getActivities() {
-		return activities;
+	public Set<TaskEntity> getTasks() {
+		return tasks;
 	}
 
-	public void setActivities(Set<TaskEntity> activities) {
-		this.activities = activities;
+	public void setTasks(Set<TaskEntity> tasks) {
+		this.tasks = tasks;
 	}
 
 	public String getUsername() {
@@ -87,6 +95,28 @@ public class UserEntity implements Serializable{
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	
 
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getImgURL() {
+		return imgURL;
+	}
+
+	public void setImgURL(String imgURL) {
+		this.imgURL = imgURL;
+	}
 }

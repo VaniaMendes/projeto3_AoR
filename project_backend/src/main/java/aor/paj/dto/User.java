@@ -23,6 +23,8 @@ public class User{
     @XmlElement
     private String imgURL;
     @XmlElement
+    private String token;
+    @XmlElement
     private ArrayList<Task> tasks;
     @XmlElement
     private String toDo_color;
@@ -145,6 +147,14 @@ public class User{
 
     public void setImgURL(String imgURL) {
         this.imgURL = imgURL;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public void addTask(Task task){

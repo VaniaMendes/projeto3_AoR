@@ -5,7 +5,7 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.NoResultException;
 
 @Stateless
-public class UserDao extends TaskDao<UserEntity> {
+public class UserDao extends AbstractDao<UserEntity> {
 
 	private static final long serialVersionUID = 1L;
 
