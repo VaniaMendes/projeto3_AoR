@@ -86,7 +86,18 @@ function isValidURL(url) {
 }
 
 async function validateUser(username_txt, password_txt, email_txt, firstName_txt, lastName_txt, phoneNumber_txt) {
-   await fetch(
+   const userData = {
+      username: username_txt,
+      password: password_txt,
+      email: email_txt,
+      firstName: firstName_txt,
+      lastName: lastName_txt,
+      phoneNumber: phoneNumber_txt,
+
+   };
+   try{
+   
+   const response = await fetch(
       "http://localhost:8080/project_backend/rest/users/register",
 
       {
@@ -94,21 +105,25 @@ async function validateUser(username_txt, password_txt, email_txt, firstName_txt
          headers: {
             Accept: "*/*",
             "Content-Type": "application/json",
-            username: username_txt,
-            password: password_txt,
-            email: email_txt,
-            firstName: firstName_txt,
-            lastName: lastName_txt,
-            phoneNumber: phoneNumber_txt,
+            
          },
+         body: JSON.stringify(userData),
       }
-   ).then(function (response) {
-      if (response.status == 200) {
+   );
+   
+      if (response.ok) {
          modal.style.visibility = "visible";
          background.style.visibility = "visible";
-      } else if (response.status == 409) alert("Username or Email already exists");
-      else alert("Something went wrong");
-   });
+      } else if (response.status == 409){
+         const data = await response.json();
+         alert(data.message);
+      } 
+      else {alert("Something went wrong");
+      alert("Something went wrong");
+      }
+   } catch (error) {
+   alert("Something went wrong");
+}
 }
 
 async function addUser(username, password, email, firstName, lastName, phoneNumber, imgURL) {
@@ -129,4 +144,9 @@ async function addUser(username, password, email, firstName, lastName, phoneNumb
       },
       body: JSON.stringify(user),
    });
+
+   if(response.status == 200) {
+      alert("User added successfully");
+
+   }
 }

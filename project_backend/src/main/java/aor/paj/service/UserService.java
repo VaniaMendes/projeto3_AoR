@@ -56,11 +56,17 @@ public class UserService {
     @POST
     @Path("/register")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response validateUserRegister(@HeaderParam("username")String user_username, @HeaderParam("password")String user_password,
-                                         @HeaderParam("email")String user_email, @HeaderParam("firstName")String user_firstName,
-                                         @HeaderParam("lastName")String user_lastName,@HeaderParam("phoneNumber")String user_phoneNumber) {
+    @Transactional
+    public Response validateUserRegister(User user) {
 
-        int validate = userBean.validateUserRegister(user_username,user_password,user_email,user_firstName,user_lastName,user_phoneNumber);
+        int validate = userBean.validateUserRegister(
+                user.getUsername(),
+                user.getPassword(),
+                user.getEmail(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getPhoneNumber()
+        );
 
         if (validate==10) return Response.status(200).entity("New user was validated").build();
 
@@ -81,8 +87,17 @@ public class UserService {
     @POST
     @Path("/add")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional
     public Response addUser(User user) {
-            int validateUser = userBean.validateUserRegister(user.getUsername(), user.getPassword(), user.getEmail(), user.getFirstName(), user.getLastName(),user.getPhoneNumber());
+        int validateUser = userBean.validateUserRegister(
+                user.getUsername(),
+                user.getPassword(),
+                user.getEmail(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getPhoneNumber()
+
+        );
             if (validateUser == 10) {
                 if (userBean.isValidUrl(user.getImgURL())) {
                     userBean.addUser(user);

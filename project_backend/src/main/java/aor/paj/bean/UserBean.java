@@ -30,7 +30,8 @@ public class UserBean implements Serializable {
     @EJB
     UserDao userDao;
 
-    private ArrayList<User> users;
+    ArrayList<User>users;
+
 
     public UserBean(){
     }
@@ -92,13 +93,7 @@ public class UserBean implements Serializable {
         return null;
     }
 
-    private String generateNewToken() {
-        SecureRandom secureRandom = new SecureRandom(); //threadsafe
-        Base64.Encoder base64Encoder = Base64.getUrlEncoder(); //threadsafe
-        byte[] randomBytes = new byte[24];
-        secureRandom.nextBytes(randomBytes);
-        return base64Encoder.encodeToString(randomBytes);
-    }
+
     */
 
     public boolean register(User user){
@@ -162,21 +157,19 @@ public class UserBean implements Serializable {
     }
 
     //Método em que o output é o objeto UserDetails que tem todos os atributos iguais ao User menos a pass
-    public UserDetails getUserDetails(String username){
-        User userRequested=null;
-        UserDetails userDetails=null;
-        for(int i=0;i<users.size() && userRequested==null;i++){
-            if(users.get(i).getUsername().equals(username)){
-                userRequested=users.get(i);
-            }
-        }
-
-        if(userRequested!=null) {
-
-            userDetails = new UserDetails(userRequested.getUsername(), userRequested.getEmail(), userRequested.getFirstName(),
-                    userRequested.getLastName(), userRequested.getImgURL(), userRequested.getPhoneNumber());
-        }
-        return userDetails;
+    public UserDetails getUserDetails(String username) {
+        UserEntity userEntity = userDao.findUserByUsername(username);
+        if(userEntity != null){
+        return new UserDetails(
+                userEntity.getUsername(),
+                userEntity.getEmail(),
+                userEntity.getFirstName(),
+                userEntity.getLastName(),
+                userEntity.getImgURL(),
+                userEntity.getPhoneNumber()
+        );
+    }
+    return null;
     }
     //getter do user a partir do seu username e da sua password
     public User getUser(String username, String password){
@@ -205,14 +198,13 @@ public class UserBean implements Serializable {
             VALIDATION_STATE=INVALID_PHONE;
         }
         else{
-            for (int i=0;i<users.size() && VALIDATION_STATE==USER_VALIDATE;i++) {
+            UserEntity userByUsername = userDao.findUserByUsername(username);
+            UserEntity userByEmail = userDao.findUserByEmail(email);
 
-                if (users.get(i).getUsername().equals(username)){
-                    VALIDATION_STATE= USERNAME_EXISTS;
-                }
-                else if (users.get(i).getEmail().equals(email)){
-                    VALIDATION_STATE= EMAIL_EXISTS;
-                }
+            if(userByUsername != null){
+                VALIDATION_STATE = USERNAME_EXISTS;
+            }else if(userByEmail != null){
+                VALIDATION_STATE = EMAIL_EXISTS;
             }
         }
         return VALIDATION_STATE;
