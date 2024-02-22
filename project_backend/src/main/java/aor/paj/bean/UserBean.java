@@ -1,6 +1,7 @@
 package aor.paj.bean;
 
 import aor.paj.dao.UserDao;
+import aor.paj.dto.LoginDto;
 import aor.paj.dto.Task;
 import aor.paj.dto.User;
 import aor.paj.dto.UserDetails;
@@ -36,13 +37,32 @@ public class UserBean implements Serializable {
     //Método para adicionar um user novo ao json
     public boolean addUser(User user) {
 
-        UserEntity userFromDb = userDao.findUserByEmail(user.getEmail());
+        UserEntity userFromDb = userDao.findUserByUsername(user.getUsername());
         if (userFromDb == null) {
             userDao.persist(convertUserDtotoUserEntity(user));
             return true;
         } else {
             return false;
         }
+    }
+
+    public String loginDB(LoginDto user){
+        UserEntity userEntity = userDao.findUserByUsername(user.getUsername());
+        if (userEntity != null){
+            if (userEntity.getPassword().equals(user.getPassword())){
+                String token = generateNewToken();
+                userEntity.setToken(token);
+                return token;
+            }
+        }
+        return null;
+    }
+    private String generateNewToken() {
+        SecureRandom secureRandom = new SecureRandom();
+        Base64.Encoder base64Encoder = Base64.getUrlEncoder();
+        byte[] randomBytes = new byte[24];
+        secureRandom.nextBytes(randomBytes);
+        return base64Encoder.encodeToString(randomBytes);
     }
 
     private UserEntity convertUserDtotoUserEntity(User user){
@@ -55,13 +75,13 @@ public class UserBean implements Serializable {
         userEntity.setImgURL(user.getImgURL());
         userEntity.setFirstName(user.getFirstName());
         userEntity.setLastName(user.getLastName());
-        userEntity.setIsActive("true");
+        userEntity.setIsActive(false);
         userEntity.setTypeOfUser("developer");
         return userEntity;
     }
-
+/*
     public String login(User user){
-        UserEntity userEntity = userDao.findUserByEmail(user.getEmail());
+        UserEntity userEntity = userDao.fin(user.getEmail());
         if (userEntity != null){
             if (userEntity.getPassword().equals(user.getPassword())){
                 String token = generateNewToken();
@@ -79,8 +99,10 @@ public class UserBean implements Serializable {
         secureRandom.nextBytes(randomBytes);
         return base64Encoder.encodeToString(randomBytes);
     }
+    */
+
     public boolean register(User user){
-        UserEntity u= userDao.findUserByEmail(user.getEmail());
+        UserEntity u= userDao.findUserByUsername(user.getUsername());
         if (u==null){
             userDao.persist(convertUserDtotoUserEntity(user));
             return true;

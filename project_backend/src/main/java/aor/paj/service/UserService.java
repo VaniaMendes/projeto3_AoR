@@ -2,6 +2,7 @@ package aor.paj.service;
 
 import aor.paj.bean.TaskBean;
 import aor.paj.bean.UserBean;
+import aor.paj.dto.LoginDto;
 import aor.paj.dto.Task;
 import aor.paj.dto.User;
 import aor.paj.dto.UserDetails;
@@ -39,19 +40,19 @@ public class UserService {
         if (userRequested==null) return Response.status(400).entity("Failed").build();
         return Response.status(200).entity(userRequested).build();
     }
-
+/*
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(User user){
+    public Response login(LoginDto user){
         String token = userBean.login(user);
         if(token != null){
             return Response.status(200).entity(token).build();
         }
         return Response.status(403).entity("Wrong Username or Password!").build();
     }
-
+*/
     @POST
     @Path("/register")
     @Produces(MediaType.APPLICATION_JSON)
@@ -116,6 +117,18 @@ public class UserService {
         }
 
         return response;
+    }
+
+    @POST
+    @Path("/loginDB")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response login(LoginDto user){
+        String token = userBean.loginDB(user);
+        if(token != null){
+            return Response.status(200).entity(token).build();
+        }
+        return Response.status(403).entity("Wrong Username or Password!").build();
     }
 
     @GET
