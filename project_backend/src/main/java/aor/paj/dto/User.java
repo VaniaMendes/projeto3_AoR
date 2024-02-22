@@ -26,17 +26,7 @@ public class User{
     private String token;
     @XmlElement
     private ArrayList<Task> tasks;
-    @XmlElement
-    private String toDo_color;
 
-    @XmlElement
-    private String doing_color;
-
-    @XmlElement
-    private String done_color;
-
-    @XmlElement
-    private String background_color;
 
 
     public User(){
@@ -48,10 +38,7 @@ public class User{
         this.phoneNumber=null;
         this.imgURL=null;
         this.tasks=new ArrayList<>();
-        this.toDo_color="#f1f2f4";
-        this.doing_color="#f1f2f4";
-        this.done_color="#f1f2f4";
-        this.background_color="#172b4c";
+
     }
 
 
@@ -63,35 +50,7 @@ public class User{
         this.tasks = tasks;
     }
 
-    public String getToDo_color() {
-        return toDo_color;
-    }
 
-    public void setToDo_color(String toDo_color) {this.toDo_color = toDo_color;}
-
-    public String getDoing_color() {
-        return doing_color;
-    }
-
-    public void setDoing_color(String doing_color) {
-        this.doing_color = doing_color;
-    }
-
-    public String getDone_color() {
-        return done_color;
-    }
-
-    public void setDone_color(String done_color) {
-        this.done_color = done_color;
-    }
-
-    public String getBackground_color() {
-        return background_color;
-    }
-
-    public void setBackground_color() {
-        this.background_color = "#172b4c";
-    }
 
     public String getUsername() {
         return username;
@@ -161,18 +120,6 @@ public class User{
         tasks.add(task);
     }
 
-    public void changeBackground_color(String background_color) {
-        this.background_color =background_color;
-    }
 
-    public void changeToDo_color(String toDo_color) {this.toDo_color = toDo_color;}
-
-    public void changeDoing_color(String doing_color) {
-        this.doing_color = doing_color;
-    }
-
-    public void changeDone_color(String done_color) {
-        this.done_color = done_color;
-    }
 }
 

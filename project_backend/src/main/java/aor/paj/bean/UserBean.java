@@ -214,13 +214,7 @@ public class UserBean implements Serializable {
         return isValid;
     }
 
-    public void saveColors(User user,String background_color,String toDo_color, String doing_color, String done_color){
-        user.changeBackground_color(background_color);
-        user.changeToDo_color(toDo_color);
-        user.changeDoing_color(doing_color);
-        user.changeDone_color(done_color);
 
-    }
 
     public User validateLogin(String username, String password) {
         User user_validate=null;
