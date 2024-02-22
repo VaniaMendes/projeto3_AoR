@@ -207,20 +207,6 @@ public class UserService {
     }
 
 
-
-    @PUT
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response saveColors(@HeaderParam("username")String username,@HeaderParam("pass")String password,@HeaderParam("background_color")String background_color,@HeaderParam("toDo_color")String toDo_color,
-                                @HeaderParam("doing_color")String doing_color,@HeaderParam("done_color")String done_color){
-
-        User userRequest=userBean.getUser(username,password);
-
-        if (userRequest==null) return Response.status(404).entity("You don't have authorization to make changes").build();
-
-        userBean.saveColors(userRequest, background_color,toDo_color,doing_color,done_color);
-        return Response.status(200).entity("Colors were updated").build();
-    }
-
     @POST
     @Path("/logout")
     @Produces(MediaType.APPLICATION_JSON)
