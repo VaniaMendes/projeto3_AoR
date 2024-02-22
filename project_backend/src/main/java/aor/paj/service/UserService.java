@@ -41,6 +41,18 @@ public class UserService {
     }
 
     @POST
+    @Path("/login")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response login(User user){
+        String token = userBean.login(user);
+        if(token != null){
+            return Response.status(200).entity(token).build();
+        }
+        return Response.status(403).entity("Wrong Username or Password!").build();
+    }
+
+    @POST
     @Path("/register")
     @Produces(MediaType.APPLICATION_JSON)
     public Response validateUserRegister(@HeaderParam("username")String user_username, @HeaderParam("password")String user_password,
@@ -112,17 +124,7 @@ public class UserService {
         return userBean.getUser(username,pass);
     }
 
-    @POST
-    @Path("/login")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response validateLogin(@HeaderParam("username")String username, @HeaderParam("password")String password) {
-        User user = userBean.validateLogin(username, password);
-        if (user==null)
-            return Response.status(404).entity("Failed").build();
 
-        return Response.status(200).entity("Success").build();
-
-    }
 
     @DELETE
     @Path("/delete")

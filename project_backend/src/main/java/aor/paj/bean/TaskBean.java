@@ -49,18 +49,7 @@ public class TaskBean {
         return tasks;
     }
 
-    public boolean removeTask(User user,long id) {
-        boolean taskRemoved=false;
-        ArrayList<Task> tasksRequested=user.getTasks();
-        for (int i=0;i<tasksRequested.size() && !taskRemoved;i++) {
-            if (tasksRequested.get(i).getId() == id) {
-                tasks.remove(i);
-                taskRemoved=true;
-            }
-        }
-        writeIntoJsonFile();
-        return taskRemoved;
-    }
+
 
     public boolean updateTask(int id, Task task) {
         for (Task a : tasks) {
