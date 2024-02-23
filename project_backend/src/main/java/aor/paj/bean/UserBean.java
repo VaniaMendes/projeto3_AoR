@@ -15,6 +15,8 @@ import jakarta.json.bind.JsonbConfig;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -105,6 +107,85 @@ public class UserBean implements Serializable {
         }else
             return false;
     }
+
+    public boolean isAnyFieldEmpty(User user) {
+        boolean status = false;
+
+        if (user.getUsername().isEmpty() ||
+                user.getPassword().isEmpty() ||
+                user.getEmail().isEmpty() ||
+                user.getFirstName().isEmpty() ||
+                user.getLastName().isEmpty() ||
+                user.getPhoneNumber().isEmpty() ||
+                user.getImgURL().isEmpty()) {
+            status = true;
+        }
+        return status;
+    }
+
+    private boolean isEmailFormatValid(String email) {
+
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email.matches(emailRegex);
+    }
+
+    public boolean isEmailValid(String email) {
+        if (!isEmailFormatValid(email)) {
+            return false;
+        }
+
+        UserEntity userEntity = userDao.findUserByEmail(email);
+
+        return userEntity == null;
+    }
+
+
+    public boolean isUsernameAvailable(String username) {
+
+        UserEntity userEntity = userDao.findUserByUsername(username);
+
+        return userEntity == null;
+    }
+
+    public boolean isImageUrlValid(String url) {
+        boolean status = true;
+
+        if (url == null) {
+            status = false;
+        }
+
+        try {
+            BufferedImage img = ImageIO.read(new URL(url));
+            if (img == null) {
+                status = false;
+            }
+        } catch (IOException e) {
+            status = false;
+        }
+
+        return status;
+    }
+
+
+    public boolean isPhoneNumberValid(String phone) {
+        boolean status = true;
+        int i = 0;
+
+        while (status && i < phone.length() - 1) {
+            if (phone.length() == 9) {
+                for (; i < phone.length(); i++) {
+                    if (!Character.isDigit(phone.charAt(i))) {
+                        status = false;
+                    }
+                }
+            } else {
+                status = false;
+            }
+        }
+        return status;
+    }
+
+    ///////////////////////METODOS ANTIGOS\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
     //Método para adicionar uma task nova a um user
     public void addTask(User user, Task task){

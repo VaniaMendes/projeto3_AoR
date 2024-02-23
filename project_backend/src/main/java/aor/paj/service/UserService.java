@@ -27,6 +27,51 @@ public class UserService {
     @Inject
     TaskBean taskBean;
 
+
+    @POST
+    @Path("/addUserDB")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Response addUserToDB(User user) {
+
+        Response response;
+
+        boolean isFieldEmpty = userBean.isAnyFieldEmpty(user);
+        boolean isEmailValid = userBean.isEmailValid(user.getEmail());
+        boolean isUsernameAvailable = userBean.isUsernameAvailable(user.getUsername());
+        boolean isImageValid = userBean.isImageUrlValid(user.getImgURL());
+        boolean isPhoneValid = userBean.isPhoneNumberValid(user.getPhoneNumber());
+
+
+        if (isFieldEmpty) {
+            response = Response.status(422).entity("There's an empty field. ALl fields must be filled in").build();
+
+        } else if (!isEmailValid) {
+            response = Response.status(422).entity("Invalid email").build();
+
+        } else if (!isUsernameAvailable) {
+            response = Response.status(Response.Status.CONFLICT).entity("Username already in use").build(); //status code 409
+
+        } else if (!isImageValid) {
+            response = Response.status(422).entity("Image URL invalid").build(); //400
+
+        } else if (!isPhoneValid) {
+            response = Response.status(422).entity("Invalid phone number").build();
+
+        } else if (userBean.register(user)) {
+            response = Response.status(Response.Status.CREATED).entity("User registered successfully").build(); //status code 201
+
+        } else {
+            response = Response.status(Response.Status.BAD_REQUEST).entity("Something went wrong").build(); //status code 400
+
+        }
+
+        return response;
+    }
+
+
+    /////////////////////REQUESTS ANTIGOS\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
     //@GET
     //@Path("/all")
     //@Produces(MediaType.APPLICATION_JSON)
@@ -118,24 +163,9 @@ public class UserService {
             return Response.status(405).entity("Something went wrong").build();
 
     }
-/*
-    @POST
-    @Path("/addUserDB")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Transactional
-    public Response addUserToDB(User user) {
 
-        Response response;
 
-        if (userBean.register(user)) {
-            response = Response.status(200).entity("Success").build();
-        } else {
-            response = Response.status(400).entity("User not created").build();
-        }
 
-        return response;
-    }
-*/
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)

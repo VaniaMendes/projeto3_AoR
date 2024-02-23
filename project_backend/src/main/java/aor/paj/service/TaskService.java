@@ -110,9 +110,9 @@ public class TaskService {
     }
 
     @POST
-    @Path("/create")
+    @Path("/oldCreate")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addTask(@HeaderParam("username")String username,@HeaderParam("pass")String password ,Task task){
+    public Response oldAddTask(@HeaderParam("username")String username,@HeaderParam("pass")String password ,Task task){
         User userRequested=userBean.getUser(username, password);
         if (userRequested==null){
             return Response.status(404).entity("This user doesn't exist").build();
@@ -128,6 +128,15 @@ public class TaskService {
                 return Response.status(404).entity("Entered wrong data").build();
             }
         }
+    }
+    @POST
+    @Path("/createTask")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addTask(@HeaderParam("token") String token, Task task) {
+        if (taskBean.addTask(token,task))
+            return Response.status(200).entity("A new task is created").build();
+
+        return Response.status(403).entity("Invalid Token").build();
     }
 
     @DELETE

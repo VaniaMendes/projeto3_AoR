@@ -1,152 +1,100 @@
-const modal = document.querySelector("#register_modal");
-const background = document.querySelector("#background");
-const photo_label = document.querySelector("#register_photoLabel");
-const photo = document.querySelector("#register_photo");
-const username_txt = document.querySelector("#register_username");
-const password = document.querySelector("#register_password");
-const email = document.querySelector("#register_email");
-const firstName = document.querySelector("#register_firstName");
-const lastName = document.querySelector("#register_lastName");
-const phone = document.querySelector("#register_phone");
-const form1 = document.querySelector("#form_register");
 
-form1.addEventListener("submit", function (e) {
-   e.preventDefault();
-   if (
-      username_txt.value != "" &&
-      password.value != "" &&
-      email.value != "" &&
-      firstName.value != "" &&
-      lastName.value != "" &&
-      phone.value != ""
-   ) {
-      if (firstName.value.length < 13) {
-         if (isValidPhoneNumber(phone.value)) {
-            if (isValidEmail(email.value)) {
-               validateUser(
-                  username_txt.value,
-                  password.value,
-                  email.value,
-                  firstName.value,
-                  lastName.value,
-                  phone.value
-               );
-            } else alert("Invalid email");
-         } else alert("Invalid phone number");
-      } else alert("First Name is too long");
-   } else alert("All fields are required");
-});
-
-document.querySelector("#register_confirmPhoto").addEventListener("click", function () {
-   addUser(username_txt.value, password.value, email.value, firstName.value, lastName.value, phone.value, photo.src);
-   alert("Welcome to AgileUp! :)");
-   window.location.href = "login.html";
-});
-
-background.addEventListener("click", function () {
-   modal.style.visibility = "hidden";
-   background.style.visibility = "hidden";
-});
-
-photo_label.addEventListener("change", function () {
-   if (isValidURL(photo_label.value)) {
-      photo.src = photo_label.value;
-   } else photo.src = "user.png";
-});
-
+//Carregar no logo para voltar à página inicial 
 document.querySelector("header h1").addEventListener("click", function () {
    window.location.href = "login.html";
 });
 
-function isValidPhoneNumber(phoneNumber) {
-   valideNumber = true;
 
-   if (phoneNumber.length != 9 && phoneNumber.length != 10) valideNumber = false;
-   // Check if the phone number has the expected format
-   if (!phoneNumber.match(/^\d+$/)) {
-      valideNumber = false;
-   }
-   return valideNumber;
-}
+//Request para criar nova conta 
+document.getElementById("register_submit").addEventListener('click', async function (event) {
+   event.preventDefault();
 
-function isValidEmail(email) {
-   return email.includes("@") && email.includes(".");
-}
+   let newUser = createUserData();
 
-function isValidURL(url) {
-   const imageExtensions = /\.(jpeg|jpg|gif|png|bmp)$/i;
-   if (imageExtensions.test(url) == true) {
-      try {
-         new URL(url);
-         return true;
-      } catch {
-         return false;
-      }
-   } else return false;
-}
+   let registerRequest = "http://localhost:8080/project_backend/rest/users/addUserDB";
+   const inputFieldIds = [
+       'register_username', 
+       'register_password', 
+       'register_email', 
+       'register_firstName',
+       'register_lastName',
+       'register_phone',
+       'register_photo_main'
+   ];
 
-async function validateUser(username_txt, password_txt, email_txt, firstName_txt, lastName_txt, phoneNumber_txt) {
-   const userData = {
-      username: username_txt,
-      password: password_txt,
-      email: email_txt,
-      firstName: firstName_txt,
-      lastName: lastName_txt,
-      phoneNumber: phoneNumber_txt,
+   try {
+       const response = await fetch(registerRequest, {
+           method: 'POST',
+           headers: {
+               'Content-Type': 'application/json',
+               'Accept': '*/*'
+           },
+           body: JSON.stringify(newUser)
+       });
 
-   };
-   try{
+       if (response.ok) {
+           alert("Account registered successfully!")
+
+           //depois da conta criada com sucesso, apaga os campos escritos pelo user
    
-   const response = await fetch(
-      "http://localhost:8080/project_backend/rest/users/register",
-
-      {
-         method: "POST",
-         headers: {
-            Accept: "*/*",
-            "Content-Type": "application/json",
-            
-         },
-         body: JSON.stringify(userData),
-      }
-   );
-   
-      if (response.ok) {
-         modal.style.visibility = "visible";
-         background.style.visibility = "visible";
-      } else if (response.status == 409){
-         const data = await response.json();
-         alert(data.message);
-      } 
-      else {alert("Something went wrong");
-      
-      }
+           inputFieldIds.forEach(fieldId => {
+               document.getElementById(fieldId).value = '';
+           });
+           window.location.href = 'login.html';
+       } else {
+           switch (response.status) {
+               case 422:
+                   const errorData = await response.text();
+                   switch (errorData) {
+                       case "There's an empty field, fill all values":
+                           alert("Please fill all fields");
+                           break;
+                       case "Invalid email":
+                           alert("The email you used is not valid");
+                           break;
+                       case "Image URL invalid":
+                           alert("Image url provided not valid");
+                           break;
+                       case "Invalid phone number":
+                           alert("The phone number is not valid");
+                           break;
+                       default:
+                           console.error('Unknown error message:', errorData);
+                           alert("Something went wrong");
+                   }
+                   break;
+               case 409: 
+                   alert("Username already in use");
+                   break;
+               default:
+                   alert("Something went wrong");
+           }
+       }
    } catch (error) {
-   alert("Something went wrong");
-}
-}
-
-async function addUser(username, password, email, firstName, lastName, phoneNumber, imgURL) {
-   let user = {
-      username: username,
-      password: password,
-      email: email,
-      firstName: firstName,
-      lastName: lastName,
-      phoneNumber: phoneNumber,
-      imgURL: imgURL,
-   };
-   await fetch("http://localhost:8080/project_backend/rest/users/add", {
-      method: "POST",
-      headers: {
-         Accept: "*/*",
-         "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-   });
-
-   if(response.status == 200) {
-      alert("User added successfully");
-
+       console.error('Error:', error);
+       alert("Something went wrong");
    }
+});
+
+
+function createUserData() {
+   
+       let username = document.getElementById('register_username').value.trim();
+       let password = document.getElementById('register_password').value.trim();
+       let email = document.getElementById('register_email').value.trim();
+       let firstName = document.getElementById('register_firstName').value.trim();
+       let lastName = document.getElementById('register_lastName').value.trim();
+       let phone = document.getElementById('register_phone').value.trim();
+       let photoURL = document.getElementById('register_photo_main').value.trim();
+
+       return {
+           username: username,
+           password: password,
+           email: email,
+           firstName: firstName,
+           lastName: lastName,
+           phoneNumber: phone,
+           imgURL: photoURL
+       };
+   
 }
