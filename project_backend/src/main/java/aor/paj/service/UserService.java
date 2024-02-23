@@ -3,7 +3,6 @@ package aor.paj.service;
 import aor.paj.bean.TaskBean;
 import aor.paj.bean.UserBean;
 import aor.paj.dto.LoginDto;
-import aor.paj.dto.Task;
 import aor.paj.dto.User;
 import aor.paj.dto.UserDetails;
 
@@ -15,8 +14,6 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
-import java.util.List;
 
 @Path("/users")
 public class UserService {
@@ -184,15 +181,16 @@ public class UserService {
             return Response.status(403).entity("{\"error\": \"Wrong Username or Password!\"}").build();
         }
     }
-/*
+
     @GET
+    @Path("/user")
     @Produces(MediaType.APPLICATION_JSON)
-    public User getUser(@HeaderParam("username")String username,@HeaderParam("pass")String pass){
-        return userBean.getUser(username,pass);
+    public UserEntity getUser(@HeaderParam("token")String token){
+        return userBean.getUser(token);
     }
 
 
-
+/*
     @DELETE
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)

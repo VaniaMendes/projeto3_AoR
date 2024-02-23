@@ -17,9 +17,7 @@ const token = sessionStorage.getItem("token");
 
 getUser(username, pass).then((result) => {
    user = result;
-   if (user == null) {
-      window.location.href = "login.html";
-   } else {
+   
       firstName_txt.textContent = user.firstName;
       user_img.src = user.imgURL;
 
@@ -42,7 +40,7 @@ getUser(username, pass).then((result) => {
             });
          }
       });
-   }
+   
 });
 
 writeDate();
@@ -82,9 +80,7 @@ na coluna em que estavam anteriormente*/
 
 /*Sempre que a página é fechada ou quando o utilizador muda de página a array das tarefas é guardada em localStorage */
 
-window.addEventListener("beforeunload", function () {
-   localStorage.setItem("tasks", JSON.stringify(tasks));
-});
+
 
 document.querySelector("#modal_cancel").addEventListener("click", function () {
    document.querySelector("#modal").style.visibility = "hidden";
@@ -314,7 +310,7 @@ async function getTasks(username, pass) {
    return tasks;
 }
 
-async function getUser(username, pass) {
+async function getUser(token) {
    let response = await fetch(
       "http://localhost:8080/project_backend/rest/users",
 
@@ -324,7 +320,7 @@ async function getUser(username, pass) {
             Accept: "*/*",
             "Content-Type": "application/json",
             username: username,
-            pass: pass,
+            pass: pass
          },
       }
    );

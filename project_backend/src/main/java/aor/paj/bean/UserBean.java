@@ -99,6 +99,15 @@ public class UserBean implements Serializable {
 
     */
 
+    public UserEntity getUser(String token){
+        UserEntity userRequested = userDao.findUserByToken(token);
+
+        if(userRequested != null) {
+            return userRequested;
+        }
+        return null;
+    }
+
     public boolean register(User user){
         UserEntity u= userDao.findUserByUsername(user.getUsername());
         if (u==null){
