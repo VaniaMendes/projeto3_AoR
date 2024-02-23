@@ -41,7 +41,6 @@ document.getElementById("register_submit").addEventListener('click', async funct
                document.getElementById(fieldId).value = '';
            });
            window.location.href = 'login.html';
-
        } else {
            switch (response.status) {
                case 422:
