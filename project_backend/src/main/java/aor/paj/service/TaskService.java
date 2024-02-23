@@ -23,6 +23,8 @@ public class TaskService {
     UserBean userBean;
 
     //getter das tasks
+
+    /*
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
@@ -142,5 +144,7 @@ public class TaskService {
             return Response.status(404).entity("This user doesn't exist").build();
         }
     }
+
+     */
 
 }

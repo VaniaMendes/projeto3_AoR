@@ -23,14 +23,22 @@ async function validateUser(username, password) {
       }
    )
       if (response.ok) {
-         const token = await response.json();
+         try{
+         const data = await response.json();
+         const token = data.token;
          sessionStorage.setItem("token", token);
+         sessionStorage.setItem("username", username);
+         sessionStorage.setItem("password", password);
          window.location.href = "scrum.html";
-         console.log(token);
+        alert(token);
+         alert("Welcome to Scrum!");
+         } catch (error) {
+            console.error("Erro ao analisar a resposta JSON");
+         }
       } else if (response.status == 404) {
          alert("Wrong username or password");
       } else {
-         alert("something went wrong :(");
+         alert("something went wrong:(");
       }
    } catch (error) {
       console.log(error);

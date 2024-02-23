@@ -13,6 +13,8 @@ const LOW = 100;
 const MEDIUM = 200;
 const HIGH = 300;
 
+const token = sessionStorage.getItem("token");
+
 getUser(username, pass).then((result) => {
    user = result;
    if (user == null) {

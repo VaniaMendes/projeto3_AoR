@@ -78,6 +78,7 @@ public class UserBean implements Serializable {
         userEntity.setLastName(user.getLastName());
         userEntity.setIsActive(false);
         userEntity.setTypeOfUser("developer");
+
         return userEntity;
     }
 /*
@@ -172,16 +173,7 @@ public class UserBean implements Serializable {
     return null;
     }
     //getter do user a partir do seu username e da sua password
-    public User getUser(String username, String password){
-        User userRequested=null;
-        for(int i=0;i<users.size() && userRequested==null;i++){
-            if(users.get(i).getUsername().equals(username) && users.get(i).getPassword().equals(password)){
-                userRequested=users.get(i);
-            }
-        }
-        return userRequested;
-    }
-    //método para validar um user novo e dependendo da verificação em que falhar manda uma resposta diferente
+        //método para validar um user novo e dependendo da verificação em que falhar manda uma resposta diferente
     public int validateUserRegister(String username,String password, String email, String firstName, String lastName, String phoneNumber){
 
         final int EMPTY_FIELDS=0, USERNAME_EXISTS=1, EMAIL_EXISTS=2,INVALID_EMAIL=3,INVALID_PHONE=4,USER_VALIDATE=10;
@@ -274,7 +266,7 @@ public class UserBean implements Serializable {
         return false;
     }
 
-
+/*
     public User updatePhoto(String username,String pass,String newPhoto){
         User currentUser = getUser(username,pass);
         currentUser.setImgURL(newPhoto);
@@ -361,4 +353,6 @@ public class UserBean implements Serializable {
         }
         return phoneExists;
     }
+
+ */
 }

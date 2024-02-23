@@ -9,6 +9,8 @@ import aor.paj.dto.UserDetails;
 
 import aor.paj.entity.UserEntity;
 import jakarta.inject.Inject;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -138,14 +140,21 @@ public class UserService {
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(LoginDto user){
+    public Response login(LoginDto user) {
         String token = userBean.loginDB(user);
-        if(token != null){
-            return Response.status(200).entity(token).build();
-        }
-        return Response.status(403).entity("Wrong Username or Password!").build();
-    }
+        if (token != null) {
+            // Criar um objeto JSON contendo apenas o token
+            JsonObject jsonResponse = Json.createObjectBuilder()
+                    .add("token", token)
+                    .build();
+            // Retornar a resposta com o token
+            return Response.status(200).entity(jsonResponse).build();
 
+        }else{
+            return Response.status(403).entity("{\"error\": \"Wrong Username or Password!\"}").build();
+        }
+    }
+/*
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public User getUser(@HeaderParam("username")String username,@HeaderParam("pass")String pass){
@@ -247,4 +256,6 @@ public class UserService {
 
         return Response.status(200).entity("Success").build();
     }
+
+ */
 }
