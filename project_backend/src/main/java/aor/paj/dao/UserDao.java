@@ -1,5 +1,6 @@
 package aor.paj.dao;
 
+import aor.paj.dto.LoginDto;
 import aor.paj.entity.UserEntity;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.NoResultException;
@@ -34,14 +35,15 @@ public class UserDao extends AbstractDao<UserEntity> {
 	}
 
 
-	public UserEntity findUserByEmail(String email) {
+	public UserEntity findUserByUsername(String username) {
 		try {
-			return (UserEntity) em.createNamedQuery("User.findUserByEmail").setParameter("email", email)
+			return (UserEntity) em.createNamedQuery("User.findUserByUsername").setParameter("username", username)
 					.getSingleResult();
 
 		} catch (NoResultException e) {
 			return null;
 		}
 	}
+
 
 }
