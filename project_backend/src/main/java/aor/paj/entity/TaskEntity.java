@@ -5,6 +5,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Entity
 @Table(name="task")
@@ -17,7 +18,7 @@ public class TaskEntity implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column (name="id", nullable = false, unique = true, updatable = false)
-	private int id;
+	private long id;
 
 	@Column (name="title", nullable = false, unique = true)
 	private String title;
@@ -25,11 +26,21 @@ public class TaskEntity implements Serializable{
 	@Column (name="description", nullable = true, unique = false, length = 65535, columnDefinition = "TEXT")
 	private String description;
 
-	@Column(name="creation_date", nullable = false, unique = false, updatable = false)
-	private Timestamp creationDate;
+	@Column(name="initialDate", nullable = false, unique = false, updatable = false)
+	private LocalDate initialDate;
+
+	@Column(name="endDate", nullable = false, unique = false, updatable = false)
+	private LocalDate endDate;
+
+	@Column(name="priority", nullable = false, unique = false, updatable = true)
+	private int priority;
+
+	@Column(name="state", nullable = false, unique = false, updatable = true)
+	private String state;
 
 	//Owning Side User - Activity
 	@ManyToOne
+	@JoinColumn(name="author", nullable = false, unique = false, updatable = false)
 	private UserEntity owner;
 
 	
@@ -37,24 +48,22 @@ public class TaskEntity implements Serializable{
 		
 	}
 
-	public int getId() 
+	public long getId()
 	{
 		return id;
 	}
 
-	public void setId(int id) 
+	public void setId(long id)
 	{
 		this.id = id;
 	}
 
-	public Timestamp getCreationDate() 
-	{
-		return creationDate;
+	public LocalDate getInitialDate() {
+		return initialDate;
 	}
 
-	public void setCreationDate(Timestamp creationDate) 
-	{
-		this.creationDate = creationDate;
+	public void setInitialDate(LocalDate initialDate) {
+		this.initialDate = initialDate;
 	}
 
 	public UserEntity getOwner() {
@@ -85,6 +94,29 @@ public class TaskEntity implements Serializable{
 		this.description = description;
 	}
 
+	public LocalDate getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(LocalDate endDate) {
+		this.endDate = endDate;
+	}
+
+	public int getPriority() {
+		return priority;
+	}
+
+	public void setPriority(int priority) {
+		this.priority = priority;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
 }
 	
     

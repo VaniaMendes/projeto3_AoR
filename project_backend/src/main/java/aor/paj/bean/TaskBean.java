@@ -4,9 +4,15 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Date;
 
+import aor.paj.dao.TaskDao;
+import aor.paj.dao.UserDao;
 import aor.paj.dto.Task;
 import aor.paj.dto.User;
+import aor.paj.entity.TaskEntity;
+import aor.paj.entity.UserEntity;
+import jakarta.ejb.EJB;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
@@ -18,22 +24,37 @@ public class TaskBean {
     final String filename = "tasks.json";
     private ArrayList<Task> tasks;
 
-    public TaskBean(){
-        File f = new File(filename);
-        if(f.exists()){
-            try {
-                FileReader filereader = new FileReader(f);
-                tasks = JsonbBuilder.create().fromJson(filereader, new
-                        ArrayList<User>() {}.getClass().getGenericSuperclass());
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        }else
-            tasks = new ArrayList<Task>();
+    @EJB
+    UserDao userDao;
+    @EJB
+    TaskDao taskDao;
 
+    public TaskBean(){
     }
-    public void addTask(Task a) {
-        tasks.add(a);
+    public boolean addTask(String token, Task task) {
+        UserEntity userEntity = userDao.findUserByToken(token);
+        if(userEntity != null){
+            TaskEntity taskEntity = convertTaskToTaskEntity(task);
+            taskEntity.setOwner(userEntity);
+            taskDao.persist(taskEntity);
+            return true;
+        }
+        return false;
+    }
+
+    private TaskEntity convertTaskToTaskEntity(Task task){
+
+        Date idTime=new Date();
+        TaskEntity taskEntity = new TaskEntity();
+        taskEntity.setTitle(task.getTitle());
+        taskEntity.setDescription(task.getDescription());
+        taskEntity.setId(idTime.getTime());
+        taskEntity.setInitialDate(task.getInitialDate());
+        taskEntity.setEndDate(task.getEndDate());
+        taskEntity.setState("toDo");
+        taskEntity.setPriority(0);
+        taskEntity.setId(task.getId());
+        return taskEntity;
     }
 
     public Task getTask(int id){

@@ -41,7 +41,7 @@ public class UserEntity implements Serializable{
 	@Column(name="imgURL", nullable=false, unique = false, updatable = true)
 	private String imgURL;
 	@Column(name="isActive", nullable=false, unique = false, updatable = true)
-	private String isActive;
+	private boolean isActive;
 
 	@Column(name="typeOfUser", nullable=false, unique = false, updatable = true)
 	private String typeOfUser;
@@ -126,11 +126,11 @@ public class UserEntity implements Serializable{
 		this.imgURL = imgURL;
 	}
 
-	public String getIsActive() {
+	public boolean getIsActive() {
 		return isActive;
 	}
 
-	public void setIsActive(String isActive) {
+	public void setIsActive(boolean isActive) {
 		this.isActive = isActive;
 	}
 
