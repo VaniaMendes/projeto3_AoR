@@ -15,15 +15,40 @@ const HIGH = 300;
 
 const token = sessionStorage.getItem("token");
 
-getUser(username, pass).then((result) => {
+
+async function getUserByToken(token) {
+   try {
+       const response = await fetch("http://localhost:8080/project_backend/rest/users", {
+           method: "GET",
+           headers: {
+               Accept: "application/json",
+               "Content-Type": "application/json",
+               token:token,
+           }
+       });
+
+       if (response.ok) {
+           const user = await response.json();
+           return user;
+       } else {
+           console.error("Failed to fetch user data");
+           return null;
+       }
+   } catch (error) {
+       console.error("Error fetching user data:", error);
+       return null;
+   }
+}
+getUserByToken(token).then((result) => {
    user = result;
+   alert(user)
    if (user == null) {
       window.location.href = "login.html";
    } else {
       firstName_txt.textContent = user.firstName;
       user_img.src = user.imgURL;
 
-      colorizeApp(user.background_color, user.toDo_color, user.doing_color, user.done_color);
+      
       getTasks(username, pass).then((result) => {
          let tasks = result;
          printTasks(tasks);

@@ -28,7 +28,7 @@ async function validateUser(username, password) {
          const token = data.token;
          sessionStorage.setItem("token", token);
          sessionStorage.setItem("username", username);
-         sessionStorage.setItem("password", password);
+         sessionStorage.setItem("pass", password);
          window.location.href = "scrum.html";
         alert(token);
          alert("Welcome to Scrum!");

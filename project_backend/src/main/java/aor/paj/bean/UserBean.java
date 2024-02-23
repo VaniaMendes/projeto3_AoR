@@ -48,6 +48,15 @@ public class UserBean implements Serializable {
             return false;
         }
     }
+    public User getUser(String username, String password){
+        User userRequested=null;
+        for(int i=0;i<users.size() && userRequested==null;i++){
+            if(users.get(i).getUsername().equals(username) && users.get(i).getPassword().equals(password)){
+                userRequested=users.get(i);
+            }
+        }
+        return userRequested;
+    }
 
     public String loginDB(LoginDto user){
         UserEntity userEntity = userDao.findUserByUsername(user.getUsername());
@@ -60,6 +69,14 @@ public class UserBean implements Serializable {
         }
         return null;
     }
+
+    public User getUserByToken(String token) {
+        UserEntity userEntity = userDao.findUserByToken(token);
+        User u = null;
+        u = convertUserEntityToDto(userEntity);
+        return u;
+    }
+
     private String generateNewToken() {
         SecureRandom secureRandom = new SecureRandom();
         Base64.Encoder base64Encoder = Base64.getUrlEncoder();
@@ -68,6 +85,21 @@ public class UserBean implements Serializable {
         return base64Encoder.encodeToString(randomBytes);
     }
 
+    private User convertUserEntityToDto(UserEntity userEntity) {
+        if(userEntity != null) {
+            User userDto = new User();
+            userDto.setUsername(userEntity.getUsername());
+            userDto.setPassword(userEntity.getPassword());
+            userDto.setEmail(userEntity.getEmail());
+            userDto.setPhoneNumber(userEntity.getPhoneNumber());
+            userDto.setImgURL(userEntity.getImgURL());
+            userDto.setFirstName(userEntity.getFirstName());
+            userDto.setLastName(userEntity.getLastName());
+            userDto.setTypeOfUSer(userEntity.getTypeOfUser());
+            return userDto;
+        }
+        return null;
+    }
     private UserEntity convertUserDtotoUserEntity(User user){
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(user.getUsername());
@@ -347,7 +379,7 @@ public class UserBean implements Serializable {
         return false;
     }
 
-/*
+
     public User updatePhoto(String username,String pass,String newPhoto){
         User currentUser = getUser(username,pass);
         currentUser.setImgURL(newPhoto);
@@ -435,5 +467,5 @@ public class UserBean implements Serializable {
         return phoneExists;
     }
 
- */
+
 }

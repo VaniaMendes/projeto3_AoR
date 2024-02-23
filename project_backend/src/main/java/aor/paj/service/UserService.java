@@ -184,11 +184,24 @@ public class UserService {
             return Response.status(403).entity("{\"error\": \"Wrong Username or Password!\"}").build();
         }
     }
-/*
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public User getUser(@HeaderParam("username")String username,@HeaderParam("pass")String pass){
-        return userBean.getUser(username,pass);
+    public Response getUserByToken(@HeaderParam("Token") String token) {
+        if (token != null) {
+
+            User user = userBean.getUserByToken(token);
+
+            if (user != null) {
+                return Response.ok(user).build();
+            } else {
+
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+        } else {
+
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
     }
 
 
@@ -287,5 +300,5 @@ public class UserService {
         return Response.status(200).entity("Success").build();
     }
 
- */
+
 }
