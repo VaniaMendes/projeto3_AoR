@@ -1162,7 +1162,7 @@ label {
 /*//////////////register.html////////////////////*/
 
 #form_register {
-   height: 430px;
+   height: 470px;
    width: 350px;
    display: flex;
    flex-direction: column;
@@ -1174,7 +1174,9 @@ label {
    margin-bottom: 30px;
 }
 
-#register_phone {
+
+
+#register_photo_main {
    margin-bottom: 30px;
 }
 
