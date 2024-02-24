@@ -5,6 +5,7 @@ import aor.paj.bean.UserBean;
 import aor.paj.dto.Task;
 import aor.paj.dto.User;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -23,6 +24,33 @@ public class TaskService {
     UserBean userBean;
 
     //getter das tasks
+
+    @POST
+    @Path("/createTask")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Response addTask(@HeaderParam("token") String token, Task task) {
+
+        if (taskBean.addTask(token,task))
+            return Response.status(200).entity("A new task is created").build();
+
+        return Response.status(403).entity("Invalid Token").build();
+    }
+
+    @PUT
+    @Path("/updateTask/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateTask(@HeaderParam("token") String token, @PathParam("id") String id, Task task) {
+
+        Response response;
+
+        if (taskBean.updateTask(token, id, task)) {
+           response = Response.status(200).entity("Task updated sucessfully").build();
+        } else
+            response = Response.status(400).entity("Failed to update task").build();
+
+        return response;
+    }
 
     /*
     @GET
@@ -129,15 +157,7 @@ public class TaskService {
             }
         }
     }
-    @POST
-    @Path("/createTask")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response addTask(@HeaderParam("token") String token, Task task) {
-        if (taskBean.addTask(token,task))
-            return Response.status(200).entity("A new task is created").build();
 
-        return Response.status(403).entity("Invalid Token").build();
-    }
 
     @DELETE
     @Path("/{id}")

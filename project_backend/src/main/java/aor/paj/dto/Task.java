@@ -24,17 +24,29 @@ public class Task  {
     private int priority;
     @XmlElement
     private String state;
+    @XmlElement
+    private User author;
 
     public Task() {
 
         Date idTime=new Date();
-        this.id =  idTime.getTime();;
+        this.id =  idTime.getTime();
         this.title = null;
         this.description = null;
         this.initialDate = null;
         this.endDate = null;
-        this.priority=0;
+        this.priority=100;
         this.state="toDo";
+        this.author=null;
+    }
+
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
     public int getPriority() {

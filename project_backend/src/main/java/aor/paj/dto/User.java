@@ -28,8 +28,6 @@ public class User{
     private boolean isActive;
     @XmlElement
     private String typeOfUSer;
-    @XmlElement
-    private ArrayList<Task> tasks;
 
 
 
@@ -41,21 +39,10 @@ public class User{
         this.lastName=null;
         this.phoneNumber=null;
         this.imgURL=null;
-        this.tasks=new ArrayList<>();
         this.isActive=true;
         this.typeOfUSer = "developer";
 
     }
-
-
-    public ArrayList<Task> getTasks() {
-        return tasks;
-    }
-
-    public void setTasks(ArrayList<Task> tasks) {
-        this.tasks = tasks;
-    }
-
 
 
     public String getUsername() {
@@ -121,10 +108,7 @@ public class User{
     public void setToken(String token) {
         this.token = token;
     }
-
-    public void addTask(Task task){
-        tasks.add(task);
-    }
+    
 
     public boolean isActive() {
         return isActive;

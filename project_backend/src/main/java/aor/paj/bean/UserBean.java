@@ -115,21 +115,6 @@ public class UserBean implements Serializable {
 
         return userEntity;
     }
-/*
-    public String login(User user){
-        UserEntity userEntity = userDao.fin(user.getEmail());
-        if (userEntity != null){
-            if (userEntity.getPassword().equals(user.getPassword())){
-                String token = generateNewToken();
-                userEntity.setToken(token);
-                return token;
-            }
-        }
-        return null;
-    }
-
-
-    */
 
     public boolean register(User user){
         UserEntity u= userDao.findUserByUsername(user.getUsername());
@@ -218,12 +203,13 @@ public class UserBean implements Serializable {
     }
 
     ///////////////////////METODOS ANTIGOS\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
+/*
     //Método para adicionar uma task nova a um user
     public void addTask(User user, Task task){
         user.getTasks().add(task);
 
     }
+
     //Método para eliminar uma task
     public boolean removeTask(User user,long id) {
         boolean taskRemoved=false;
@@ -252,6 +238,8 @@ public class UserBean implements Serializable {
         System.out.println(taskRequested);
         return taskRequested;
     }
+
+     */
 
     //faz o update do estado da task que recebe como input
     public void updateTaskState(Task task, String state){

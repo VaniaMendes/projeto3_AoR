@@ -42,6 +42,35 @@ public class TaskBean {
         return false;
     }
 
+    public boolean updateTask(String token, String id, Task task) {
+
+        boolean status;
+
+        UserEntity confirmUser = userDao.findUserByToken(token);
+        TaskEntity taskToUpdate = taskDao.findTaskById(Long.parseLong(id));
+
+        if (confirmUser != null) {
+            if (taskToUpdate != null) {
+
+                taskToUpdate.setTitle(task.getTitle());
+                taskToUpdate.setDescription(task.getDescription());
+                taskToUpdate.setState(task.getState());
+                taskToUpdate.setPriority(task.getPriority());
+                taskToUpdate.setInitialDate(task.getInitialDate());
+                taskToUpdate.setEndDate(task.getEndDate());
+
+
+                status = true;
+            } else {
+                status = false;
+            }
+        } else {
+            status = false;
+        }
+
+        return status;
+    }
+
     private TaskEntity convertTaskToTaskEntity(Task task){
 
         Date idTime=new Date();
@@ -53,7 +82,6 @@ public class TaskBean {
         taskEntity.setEndDate(task.getEndDate());
         taskEntity.setState("toDo");
         taskEntity.setPriority(0);
-        taskEntity.setId(task.getId());
         return taskEntity;
     }
 
@@ -72,7 +100,7 @@ public class TaskBean {
 
 
 
-    public boolean updateTask(int id, Task task) {
+    public boolean oldUpdateTask(int id, Task task) {
         for (Task a : tasks) {
             if (a.getId() == id) {
                 a.setTitle(task.getTitle());

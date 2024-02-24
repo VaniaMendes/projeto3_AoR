@@ -9,18 +9,17 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name="task")
-@NamedQuery(name="Activity.findActivityById", query="SELECT a FROM TaskEntity a WHERE a.id = :id")
-@NamedQuery(name="Activity.findActivityByUser", query="SELECT a FROM TaskEntity a WHERE a.owner = :owner")
+@NamedQuery(name="Task.findTaskById", query="SELECT a FROM TaskEntity a WHERE a.id = :id")
+@NamedQuery(name="Task.findTaskByUser", query="SELECT a FROM TaskEntity a WHERE a.owner = :owner")
 public class TaskEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column (name="id", nullable = false, unique = true, updatable = false)
 	private long id;
 
-	@Column (name="title", nullable = false, unique = true)
+	@Column (name="title", nullable = false, unique = false, updatable = true)
 	private String title;
 
 	@Column (name="description", nullable = true, unique = false, length = 65535, columnDefinition = "TEXT")
