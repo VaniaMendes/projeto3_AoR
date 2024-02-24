@@ -1,5 +1,6 @@
 package aor.paj.entity;
 
+import aor.paj.dto.Category;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -25,10 +26,10 @@ public class TaskEntity implements Serializable{
 	@Column (name="description", nullable = true, unique = false, length = 65535, columnDefinition = "TEXT")
 	private String description;
 
-	@Column(name="initialDate", nullable = false, unique = false, updatable = false)
+	@Column(name="initialDate", nullable = false, unique = false, updatable = true)
 	private LocalDate initialDate;
 
-	@Column(name="endDate", nullable = false, unique = false, updatable = false)
+	@Column(name="endDate", nullable = false, unique = false, updatable = true)
 	private LocalDate endDate;
 
 	@Column(name="priority", nullable = false, unique = false, updatable = true)

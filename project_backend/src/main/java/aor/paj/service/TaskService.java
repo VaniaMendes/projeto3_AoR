@@ -5,11 +5,14 @@ import aor.paj.bean.UserBean;
 import aor.paj.dto.Task;
 import aor.paj.dto.User;
 import jakarta.inject.Inject;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.io.StringReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -44,10 +47,41 @@ public class TaskService {
 
         Response response;
 
-        if (taskBean.updateTask(token, id, task)) {
-           response = Response.status(200).entity("Task updated sucessfully").build();
+        if (task.getInitialDate().isAfter(task.getEndDate())) {
+            response = Response.status(422).entity("Initial date cannot be after the end date").build();
+
+        } else if (task.getPriority() != 100 && task.getPriority() != 200 && task.getPriority() != 300) {
+           response = Response.status(422).entity("Priority can only be 100, 200 or 300").build();
+
+        } else if (!task.getState().equals("toDo") && !task.getState().equals("doing") && !task.getState().equals("done")) {
+            response = Response.status(422).entity("State can only be toDo, doing or done").build();
+
+        } else if (taskBean.updateTask(token, id, task)) {
+            response = Response.status(200).entity("Task updated sucessfully").build();
+
         } else
             response = Response.status(400).entity("Failed to update task").build();
+
+        return response;
+    }
+
+    @PUT
+    @Path("/{taskId}/status")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateTaskStatus(@HeaderParam("token") String token, @PathParam("taskId") String taskId, String newStatus) {
+        Response response;
+
+        JsonObject jsonObject = Json.createReader(new StringReader(newStatus)).readObject();
+        String newStatusConverted = jsonObject.getString("state");
+
+        if (!newStatusConverted.equalsIgnoreCase("toDo") && !newStatusConverted.equalsIgnoreCase("doing") && !newStatusConverted.equalsIgnoreCase("done")) {
+            response = Response.status(422).entity("State can only be toDo, doing or done").build();
+
+        } else if (taskBean.updateTaskState(token, taskId, newStatusConverted)) {
+            response = Response.status(200).entity("Task state updated sucessfully").build();
+
+        } else
+            response = Response.status(400).entity("Failed to update task state").build();
 
         return response;
     }

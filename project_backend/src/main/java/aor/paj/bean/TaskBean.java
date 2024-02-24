@@ -52,15 +52,23 @@ public class TaskBean {
         if (confirmUser != null) {
             if (taskToUpdate != null) {
 
-                taskToUpdate.setTitle(task.getTitle());
-                taskToUpdate.setDescription(task.getDescription());
-                taskToUpdate.setState(task.getState());
-                taskToUpdate.setPriority(task.getPriority());
-                taskToUpdate.setInitialDate(task.getInitialDate());
-                taskToUpdate.setEndDate(task.getEndDate());
+                //verifica a função do user e se tem permissão para editar a tarefa
+                if (confirmUser.getTypeOfUser().equals("developer") && taskToUpdate.getOwner().equals(confirmUser)
+                        || confirmUser.getTypeOfUser().equals("scrum master")
+                        || confirmUser.getTypeOfUser().equals("product owner")) {
 
+                    taskToUpdate.setTitle(task.getTitle());
+                    taskToUpdate.setDescription(task.getDescription());
+                    taskToUpdate.setState(task.getState());
+                    taskToUpdate.setPriority(task.getPriority());
+                    taskToUpdate.setInitialDate(task.getInitialDate());
+                    taskToUpdate.setEndDate(task.getEndDate());
 
-                status = true;
+                    taskDao.merge(taskToUpdate);
+                    status = true;
+                } else {
+                    status = false;
+                }
             } else {
                 status = false;
             }
@@ -68,6 +76,26 @@ public class TaskBean {
             status = false;
         }
 
+        return status;
+    }
+
+    public boolean updateTaskState(String token, String id, String newState) {
+        boolean status;
+
+        UserEntity confirmUser = userDao.findUserByToken(token);
+        TaskEntity taskToUpdate = taskDao.findTaskById(Long.parseLong(id));
+
+        if (confirmUser != null) {
+            if (taskToUpdate != null) {
+                taskToUpdate.setState(newState);
+                taskDao.merge(taskToUpdate);
+                status = true;
+            } else {
+                status = false;
+            }
+        } else {
+            status = false;
+        }
         return status;
     }
 
@@ -81,7 +109,7 @@ public class TaskBean {
         taskEntity.setInitialDate(task.getInitialDate());
         taskEntity.setEndDate(task.getEndDate());
         taskEntity.setState("toDo");
-        taskEntity.setPriority(0);
+        taskEntity.setPriority(100);
         return taskEntity;
     }
 
