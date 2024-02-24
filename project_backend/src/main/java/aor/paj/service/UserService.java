@@ -119,7 +119,9 @@ public class UserService {
             if (updatedUser.getEmail() != null) {
                 if (!userBean.isEmailValid(updatedUser.getEmail())) {
                     return Response.status(422).entity("Invalid email").build();
-                } else {
+                } else if(!userBean.emailAvailable(updatedUser.getEmail())) {
+                    return Response.status(422).entity("Email allready exists").build();
+                }else {
                     user.setEmail(updatedUser.getEmail());
                 }
             }

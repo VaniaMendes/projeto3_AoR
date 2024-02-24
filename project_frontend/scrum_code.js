@@ -44,7 +44,11 @@ getUserByToken(token).then((result) => {
       window.location.href = "login.html";
    } else {
       firstName_txt.textContent = user.firstName;
-      user_img.src = user.imgURL;
+      if(user.imgURL){
+         user_img.src = user.imgURL;
+      }else{user_img.src = 'user.png';
+   }
+      
    }
 });
 

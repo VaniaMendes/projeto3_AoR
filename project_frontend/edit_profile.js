@@ -21,6 +21,7 @@ async function getUserByToken(token) {
        if (response.ok) {
            const user = await response.json();
            return user;
+           
        } else {
            console.error("Failed to fetch user data");
            return null;
@@ -41,39 +42,44 @@ getUserByToken(token).then((result) => {
       user_photo.src = user.imgURL;
       document.getElementById("username_edit").textContent = user.username;
       document.getElementById("edit_firstName").placeholder = user.firstName;
+      document.getElementById("edit_URL").placeholder = user.imgURL;
       document.getElementById("edit_lastName").placeholder = user.lastName;
       document.getElementById("edit_email").placeholder = user.email;
       document.getElementById("edit_password").placeholder = user.password;
       document.getElementById("edit_phone").placeholder = user.phoneNumber;
       document.getElementById("user_photo").placeholder = user.imgURL
       document.getElementById("user").textContent = user.firstName;    
-      document.getElementById("user_img").src = user.imgURL;
+      
    }
 
 });
 
-async function updateProfile(token, updatedUserData) {
+async function updateProfile(token,updatedUserData) {
 
    try {
        const response = await fetch("http://localhost:8080/project_backend/rest/users/updateProfile", {
            method: 'PUT',
            headers: {
-               'Content-Type': 'application/json',
-               'Accept': '/',
-               token: token
+            'Content-Type': 'application/json',
+            'Accept': '*/*',
+            token:token
            },
            body: JSON.stringify(updatedUserData)
        });
 
        if (response.ok) {
+         console.log(updatedUserData);
            const data = await response.json();
-           document.getElementById("edit_firstName").placeholder = data.firstName || '';
-           document.getElementById("edit_lastName").placeholder = data.lastName || '';
-           document.getElementById("edit_phone").placeholder = data.phone || '';
-           document.getElementById("edit_URL").placeholder = data.photoURL || '';
-           document.getElementById("edit_email").placeholder = data.email || '';
-           document.getElementById("edit_password").placeholder = data.password || '';
+           getUserByToken(token).then((result) => {
+   
+            if (result == null) {
+               window.location.href = "login.html";
+            } else {
+               user=result;
 
+            }
+         
+         });
        } else {
 
        }
@@ -82,10 +88,6 @@ async function updateProfile(token, updatedUserData) {
        alert("Something went wrong");
    }
 }
-
-
-
-
 
 
 
@@ -102,7 +104,7 @@ document.querySelector("#logout").addEventListener("click", function () {
 
 
 //action Listenner para o botao Cancel
-document.querySelector("#btn_cancel").addEventListener("click", function () {
+document.getElementById("btn_cancel").addEventListener("click", function () {
    window.location.href = "scrum.html";
 });
 
@@ -168,26 +170,31 @@ function writeDate() {
       passwordEdited = false;
       photoEdited = false;
 
-
+   const updatedUserData = {};
 async function saveChanges() {
    let editField = false;
-   let wrongField = false;
-   const updatedUserData = {}; //Objeto para armazenar os dados atualizados do user
+    //Objeto para armazenar os dados atualizados do user
 
-   if (photoEdited && document.getElementById("edit_photoLabel").value != "") {
-      updatedUserData.imgURL = document.getElementById("edit_URL").value;
-      editField = true;
-   }
+   if (photoEdited && document.getElementById("edit_URL").value != "") {
+      const newImage = document.getElementById("edit_URL").value;
+      if(isValidURL(newImage)){
+         updatedUserData.imgURL = newImage;
+         editField = true;
+      }else{alert("Invalid URL");editField = false;}}
+   
 
    if (emailEdited && document.getElementById("edit_email").value != "") {
-      updatedUserData.email = document.getElementById("edit_email").value;
+      const email = document.getElementById("edit_email").value;
+      if(isValidEmail(email) == true){
+      updatedUserData.email = email;
       editField = true;
-   }
+      }else{alert("Invalid email");editField = false;}}
+   
    if (firstNameEdited && document.getElementById("edit_firstName").value != "") {
-      if (viewFirstName.value.length < 13) {
+      if (document.getElementById("edit_firstName").value.length < 13) {
          updatedUserData.firstName = document.getElementById("edit_firstName").value;
          editField = true;
-         alert(updatedUserData.firstName);
+         
       }
    }
    if (lastNameEdited && document.getElementById("edit_lastName").value != "") {
@@ -196,22 +203,30 @@ async function saveChanges() {
 
    }
    if (phoneEdited && document.getElementById("edit_phone").value != "") {
+      const newPhone = document.getElementById("edit_phone").value;
       if (isValidPhoneNumber(newPhone)) {
-        updatedUserData.phoneNumber =document.getElementById("edit_phone").value;
+        updatedUserData.phoneNumber = newPhone;
         editField = true;
-      } 
+      } else{
+         alert("Invalid phone number");
+         editField = false;
+      }
    }
    
    if (passwordEdited && document.getElementById("edit_password").value != "") {
       updatedUserData.password = document.getElementById("edit_password").value;
       editField = true;
    }
-   if(photoEdited && document.getElementById("edit_URL").value!= "") {
-      updatedUserData.imgURL = document.getElementById("edit_URL").value;
-   }
+   
 
-   const result = await updateProfile(token, updatedUserData);
-   return result;
+   console.log(updatedUserData);
+
+   try{
+   await updateProfile(token,updatedUserData);
+   return true;
+   }catch(error){
+      return false;
+   }
    
 }
 
@@ -222,12 +237,20 @@ async function saveChanges() {
 const bntSave = document.getElementById("btn-save");
 bntSave.addEventListener("click", async function () {
    const result = await saveChanges();
+   
+   console.log(result);
 
-   if(result == true){
-      alert("Your changes have been saved!");
+   if(result == true && Object.keys(updatedUserData).length !== 0){
+      alert( "Your valid changes have been saved!");
       window.location.href = "scrum.html";
-   }else{
-      alert("Some of the changes you made are not valid.");
+   }
+   else if(result == false){
+      
+
+   }
+   else{
+      alert( "You didn´t do any changes");
+      
    }
 
 });

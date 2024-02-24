@@ -250,6 +250,12 @@ public class UserBean implements Serializable {
         return status;
     }
 
+    public boolean emailAvailable (String email){
+        UserEntity userEntity = userDao.findUserByEmail(email);
+
+        return userEntity == null;
+    }
+
     ///////////////////////METODOS ANTIGOS\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
     //Método para adicionar uma task nova a um user

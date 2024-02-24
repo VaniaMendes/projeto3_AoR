@@ -30,7 +30,7 @@ async function validateUser(username, password) {
          sessionStorage.setItem("username", username);
          sessionStorage.setItem("pass", password);
          window.location.href = "scrum.html";
-         alert(token);
+         
         
          } catch (error) {
             console.error("Erro ao analisar a resposta JSON");
