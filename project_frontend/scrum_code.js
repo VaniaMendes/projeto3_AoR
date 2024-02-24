@@ -1,5 +1,4 @@
-const username = sessionStorage.getItem("username");
-const pass = sessionStorage.getItem("pass");
+
 const firstName_txt = document.querySelector("#user");
 //const retros = JSON.parse(localStorage.getItem("retros")) || [];
 const user_img = document.querySelector("#user_img");
@@ -23,7 +22,7 @@ async function getUserByToken(token) {
            headers: {
                Accept: "application/json",
                "Content-Type": "application/json",
-               token:token,
+               token:token
            }
        });
 
@@ -41,32 +40,11 @@ async function getUserByToken(token) {
 }
 getUserByToken(token).then((result) => {
    user = result;
-   alert(user)
    if (user == null) {
       window.location.href = "login.html";
    } else {
       firstName_txt.textContent = user.firstName;
       user_img.src = user.imgURL;
-
-      
-      getTasks(username, pass).then((result) => {
-         let tasks = result;
-         printTasks(tasks);
-         for (let taskList of taskLists) {
-            taskList.addEventListener("dragover", function (e) {
-               e.preventDefault();
-               const draggable = document.querySelector(".drag");
-               taskList.appendChild(draggable);
-
-               for (let task of tasks) {
-                  if (draggable.id == task.id) {
-                     task.state = this.id;
-                     updateTaskState(username, pass, task.id, this.id);
-                  }
-               }
-            });
-         }
-      });
    }
 });
 

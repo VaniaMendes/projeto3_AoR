@@ -1,44 +1,69 @@
-const username = sessionStorage.getItem("username");
-const password = sessionStorage.getItem("pass");
-const background = document.querySelector("#background");
-const modalPhoto = document.querySelector("#edit_modal");
-const user_img = document.querySelector("#user_img");
-const body_color = document.querySelector("#body_color");
 
-const imageModal = document.getElementById("edit_photo");
-const user_photo = document.getElementById("user_photo");
+const token = sessionStorage.getItem("token");
+
 
 let user = null;
+
+async function getUserByToken(token) {
+   try {
+       const response = await fetch("http://localhost:8080/project_backend/rest/users", {
+           method: "GET",
+           headers: {
+               Accept: "application/json",
+               "Content-Type": "application/json",
+               token:token
+           }
+       });
+
+       if (response.ok) {
+           const user = await response.json();
+           return user;
+       } else {
+           console.error("Failed to fetch user data");
+           return null;
+       }
+   } catch (error) {
+       console.error("Error fetching user data:", error);
+       return null;
+   }
+}
+
+getUserByToken(token).then((result) => {
+   
+   if (result == null) {
+      window.location.href = "login.html";
+   } else {
+      user=result;
+      user_img.src = user.imgURL;
+      user_photo.src = user.imgURL;
+      if(user.username){
+         document.getElementById("username_edit").textContent = user.username;
+      }
+      if (user.firstName) {
+         document.querySelector("#viewFirstName").placeholder = user.firstName;
+      }
+      if (user.lastName) {
+         document.querySelector("#viewLastName").placeholder = user.lastName;
+      }
+      if (user.email) {
+         document.querySelector("#viewEmail").placeholder = user.email;
+      }
+      if (user.phoneNumber) {
+         document.querySelector("#viewPhone").placeholder = user.phoneNumber;
+      }
+      if (user.password) {
+         document.querySelector("#viewpassword").placeholder = user.password;
+      }
+      document.querySelector("#user").textContent = user.firstName; 
+   }
+
+});
 
 writeDate();
 
 //Executa a função em intervalos de 1 segundo para atualizar a data
 setInterval(writeDate, 1000);
 
-getUser(username, password).then((result) => {
-   if (result == null) {
-      window.location.href = "login.html";
-   } else {
-      user = result;
-      user_img.src = user.imgURL;
-      imageModal.src = user.imgURL;
-      user_photo.src = user.imgURL;
-      viewpassword.placeholder = user.password;
-      viewEmail.placeholder = user.email;
-      viewFirstName.placeholder = user.firstName;
-      viewLastName.placeholder = user.lastName;
-      viewPhone.placeholder = user.phoneNumber;
-      body_color.style.backgroundColor = user.background_color;
-      document.querySelector("#user").textContent = result.firstName;
-      document.querySelector("#user_img").src = result.imgURL;
-   }
-});
-
-const viewpassword = document.getElementById("edit_password");
-const viewEmail = document.getElementById("edit_email");
-const viewFirstName = document.getElementById("edit_firstName");
-const viewLastName = document.getElementById("edit_lastName");
-const viewPhone = document.getElementById("edit_phone");
 
 document.querySelector("#btn_scrumBoard").addEventListener("click", function () {
    window.location.href = "scrum.html";
@@ -51,30 +76,12 @@ document.querySelector("#logout").addEventListener("click", function () {
    }
 });
 
-// Verifica se o nome de usuário está armazenado no localStorage
-if (username !== null) {
-   // Exibe o nome de usuário no elemento HTML com id "username"
-   document.getElementById("username_edit").textContent = username;
-} else {
-   // Caso o nome de usuário não esteja armazenado, exibe uma mensagem padrão
-   document.getElementById("username_edit").textContent = "Username not found";
-}
 
 //action Listenner para o botao Cancel
 document.querySelector("#btn_cancel").addEventListener("click", function () {
    window.location.href = "scrum.html";
 });
 
-//action listenner para o botao Change Photo
-document.querySelector("#change_photo").addEventListener("click", function () {
-   background.style.visibility = "visible";
-   modalPhoto.style.visibility = "visible";
-});
-
-background.addEventListener("click", function () {
-   background.style.visibility = "hidden";
-   modalPhoto.style.visibility = "hidden";
-});
 
 edit_photoLabel = document.querySelector("#edit_photoLabel");
 
@@ -90,17 +97,7 @@ document.querySelector("header h1").addEventListener("click", function () {
    window.location.href = "scrum.html";
 });
 
-//action listenner para o botao save da foto
-document.querySelector("#edit_confirmPhoto").addEventListener("click", function () {
-   newPhoto = document.querySelector("#edit_photoLabel").value;
-   const validURL = isValidURL(newPhoto);
 
-   if (validURL == true) {
-      user_photo.src = newPhoto;
-   }
-   background.style.visibility = "hidden";
-   modalPhoto.style.visibility = "hidden";
-});
 
 // Adiciona um evento de alteração para cada campo de entrada
 document.getElementById("edit_photoLabel").addEventListener("change", function () {
@@ -278,110 +275,8 @@ bntSave.addEventListener("click", function () {
    });
 });
 
-async function getUser(username, pass) {
-   let response = await fetch(
-      "http://localhost:8080/project_backend/rest/users",
 
-      {
-         method: "GET",
-         headers: {
-            Accept: "*/*",
-            "Content-Type": "application/json",
-            username: username,
-            pass: pass,
-         },
-      }
-   );
 
-   try {
-      let user1 = await response.json();
-      return user1;
-   } catch (error) {
-      return null;
-   }
-}
-
-async function updatePhoto(username, pass, newPhoto) {
-   let response = await fetch("http://localhost:8080/project_backend/rest/users/updatePhoto", {
-      method: "PUT",
-      headers: {
-         Accept: "*/*",
-         "Content-Type": "application/json",
-         username: username,
-         password: pass,
-         newPhoto: newPhoto,
-      },
-   });
-   return response;
-}
-
-async function updatePassword(username, password, newPassword) {
-   let response = await fetch("http://localhost:8080/project_backend/rest/users/updatePassword", {
-      method: "PUT",
-      headers: {
-         Accept: "*/*",
-         "Content-Type": "application/json",
-         username: username,
-         password: password,
-         newPassword: newPassword,
-      },
-   });
-   return response;
-}
-
-async function updateEmail(username, pass, newEmail) {
-   let response = await fetch("http://localhost:8080/project_backend/rest/users/updateEmail", {
-      method: "PUT",
-      headers: {
-         Accept: "*/*",
-         "Content-Type": "application/json",
-         username: username,
-         password: pass,
-         email: newEmail,
-      },
-   });
-   return response;
-}
-async function updateFirstName(username, password, newFirstName) {
-   let response = await fetch("http://localhost:8080/project_backend/rest/users/updateFirstName", {
-      method: "PUT",
-      headers: {
-         Accept: "*/*",
-         "Content-Type": "application/json",
-         username: username,
-         password: password,
-         firstName: newFirstName,
-      },
-   });
-   return response;
-}
-async function updateLastName(username, password, newLastName) {
-   let response = await fetch("http://localhost:8080/project_backend/rest/users/updateLastName", {
-      method: "PUT",
-      headers: {
-         Accept: "*/*",
-         "Content-Type": "application/json",
-         username: username,
-         password: password,
-         lastName: newLastName,
-      },
-   });
-   return response;
-}
-async function updatePhoneNumber(username, password, newPhoneNumber) {
-   let response = await fetch("http://localhost:8080/project_backend/rest/users/updatePhoneNumber", {
-      method: "PUT",
-      headers: {
-         Accept: "*/*",
-         "Content-Type": "application/json",
-         username: username,
-         password: password,
-         phonenumber: newPhoneNumber,
-      },
-   });
-
-   return response;
-}
 
 function isValidPhoneNumber(phoneNumber) {
    valideNumber = true;

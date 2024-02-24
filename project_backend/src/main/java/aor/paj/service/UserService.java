@@ -68,6 +68,24 @@ public class UserService {
 
         return response;
     }
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserByToken(@HeaderParam("Token") String token) {
+        if (token != null) {
+
+            User user = userBean.getUserByToken(token);
+
+            if (user != null) {
+                return Response.ok(user).build();
+            } else {
+
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+        } else {
+
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+    }
 
 
     /////////////////////REQUESTS ANTIGOS\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -185,24 +203,6 @@ public class UserService {
         }
     }
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserByToken(@HeaderParam("Token") String token) {
-        if (token != null) {
-
-            User user = userBean.getUserByToken(token);
-
-            if (user != null) {
-                return Response.ok(user).build();
-            } else {
-
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-        } else {
-
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-    }
 
 
 
