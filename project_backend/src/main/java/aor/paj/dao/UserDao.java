@@ -43,5 +43,17 @@ public class UserDao extends AbstractDao<UserEntity> {
 		}
 	}
 
-
+	public boolean update(UserEntity userEntity) {
+		try {
+			em.merge(userEntity);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 }
+
+
+
+

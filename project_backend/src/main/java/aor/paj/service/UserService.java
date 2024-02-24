@@ -68,8 +68,10 @@ public class UserService {
 
         return response;
     }
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response getUserByToken(@HeaderParam("Token") String token) {
         if (token != null) {
 
@@ -86,6 +88,79 @@ public class UserService {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }
+
+    @POST
+    @Path("/login")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response login(LoginDto user) {
+        String token = userBean.loginDB(user);
+        if (token != null) {
+            // Criar um objeto JSON contendo apenas o token
+            JsonObject jsonResponse = Json.createObjectBuilder()
+                    .add("token", token)
+                    .build();
+            // Retornar a resposta com o token
+            return Response.status(200).entity(jsonResponse).build();
+
+        } else {
+            return Response.status(403).entity("{\"error\": \"Wrong Username or Password!\"}").build();
+        }
+    }
+
+    @PUT
+    @Path("/updateProfile")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateUser(@HeaderParam("token") String token, User updatedUser) {
+        User user = userBean.getUserByToken(token);
+
+        if (user != null) {
+            if (updatedUser.getEmail() != null) {
+                if (!userBean.isEmailValid(updatedUser.getEmail())) {
+                    return Response.status(422).entity("Invalid email").build();
+                } else {
+                    user.setEmail(updatedUser.getEmail());
+                }
+            }
+            if (updatedUser.getFirstName() != null) {
+                user.setFirstName(updatedUser.getFirstName());
+            }
+            if (updatedUser.getLastName() != null) {
+                user.setLastName(updatedUser.getLastName());
+            }
+            if (updatedUser.getPhoneNumber() != null) {
+                if (!userBean.isPhoneNumberValid(updatedUser.getPhoneNumber())) {
+                    return Response.status(422).entity("Invalid phone number").build();
+                } else {
+                    user.setPhoneNumber(updatedUser.getPhoneNumber());
+                }
+            }
+            if (updatedUser.getImgURL() != null) {
+                if (!userBean.isImageUrlValid(updatedUser.getImgURL())) {
+                    return Response.status(422).entity("Image URL invalid").build();
+                } else {
+                    user.setImgURL(updatedUser.getImgURL());
+                }
+            }
+
+            if(updatedUser.getPassword() != null){
+                user.setPassword(updatedUser.getPassword());
+            }
+
+
+            boolean updatedUSer = userBean.updateUser(token, user);
+            if (updatedUSer) {
+                return Response.status(Response.Status.OK).entity(user).build();
+            } else {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to update user").build();
+            }
+        }else{
+        return Response.status(401).entity("Invalid credentials").build();
+    }
+}
+
+
 
 
     /////////////////////REQUESTS ANTIGOS\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -184,24 +259,7 @@ public class UserService {
 
 
 
-    @POST
-    @Path("/login")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response login(LoginDto user) {
-        String token = userBean.loginDB(user);
-        if (token != null) {
-            // Criar um objeto JSON contendo apenas o token
-            JsonObject jsonResponse = Json.createObjectBuilder()
-                    .add("token", token)
-                    .build();
-            // Retornar a resposta com o token
-            return Response.status(200).entity(jsonResponse).build();
 
-        }else{
-            return Response.status(403).entity("{\"error\": \"Wrong Username or Password!\"}").build();
-        }
-    }
 
 
 

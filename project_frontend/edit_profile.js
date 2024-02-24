@@ -1,7 +1,10 @@
 
+
+//Executa a função em intervalos de 1 segundo para atualizar a data
+writeDate();
+setInterval(writeDate, 1000);
+
 const token = sessionStorage.getItem("token");
-
-
 let user = null;
 
 async function getUserByToken(token) {
@@ -36,33 +39,54 @@ getUserByToken(token).then((result) => {
       user=result;
       user_img.src = user.imgURL;
       user_photo.src = user.imgURL;
-      if(user.username){
-         document.getElementById("username_edit").textContent = user.username;
-      }
-      if (user.firstName) {
-         document.querySelector("#viewFirstName").placeholder = user.firstName;
-      }
-      if (user.lastName) {
-         document.querySelector("#viewLastName").placeholder = user.lastName;
-      }
-      if (user.email) {
-         document.querySelector("#viewEmail").placeholder = user.email;
-      }
-      if (user.phoneNumber) {
-         document.querySelector("#viewPhone").placeholder = user.phoneNumber;
-      }
-      if (user.password) {
-         document.querySelector("#viewpassword").placeholder = user.password;
-      }
-      document.querySelector("#user").textContent = user.firstName; 
+      document.getElementById("username_edit").textContent = user.username;
+      document.getElementById("edit_firstName").placeholder = user.firstName;
+      document.getElementById("edit_lastName").placeholder = user.lastName;
+      document.getElementById("edit_email").placeholder = user.email;
+      document.getElementById("edit_password").placeholder = user.password;
+      document.getElementById("edit_phone").placeholder = user.phoneNumber;
+      document.getElementById("user_photo").placeholder = user.imgURL
+      document.getElementById("user").textContent = user.firstName;    
+      document.getElementById("user_img").src = user.imgURL;
    }
 
 });
 
-writeDate();
+async function updateProfile(token, updatedUserData) {
 
-//Executa a função em intervalos de 1 segundo para atualizar a data
-setInterval(writeDate, 1000);
+   try {
+       const response = await fetch("http://localhost:8080/project_backend/rest/users/updateProfile", {
+           method: 'PUT',
+           headers: {
+               'Content-Type': 'application/json',
+               'Accept': '/',
+               token: token
+           },
+           body: JSON.stringify(updatedUserData)
+       });
+
+       if (response.ok) {
+           const data = await response.json();
+           document.getElementById("edit_firstName").placeholder = data.firstName || '';
+           document.getElementById("edit_lastName").placeholder = data.lastName || '';
+           document.getElementById("edit_phone").placeholder = data.phone || '';
+           document.getElementById("edit_URL").placeholder = data.photoURL || '';
+           document.getElementById("edit_email").placeholder = data.email || '';
+           document.getElementById("edit_password").placeholder = data.password || '';
+
+       } else {
+
+       }
+   } catch (error) {
+       console.error('Error:', error);
+       alert("Something went wrong");
+   }
+}
+
+
+
+
+
 
 
 document.querySelector("#btn_scrumBoard").addEventListener("click", function () {
@@ -83,26 +107,13 @@ document.querySelector("#btn_cancel").addEventListener("click", function () {
 });
 
 
-edit_photoLabel = document.querySelector("#edit_photoLabel");
-
-edit_photoLabel.addEventListener("change", function () {
-   if (isValidURL(edit_photoLabel.value)) {
-      imageModal.src = edit_photoLabel.value;
-   } else {
-      imageModal.src = user_img.src;
-   }
-});
 
 document.querySelector("header h1").addEventListener("click", function () {
    window.location.href = "scrum.html";
 });
 
 
-
 // Adiciona um evento de alteração para cada campo de entrada
-document.getElementById("edit_photoLabel").addEventListener("change", function () {
-   photoEdited = true;
-});
 document.getElementById("edit_password").addEventListener("change", function () {
    passwordEdited = true;
 });
@@ -121,6 +132,10 @@ document.getElementById("edit_lastName").addEventListener("change", function () 
 
 document.getElementById("edit_phone").addEventListener("change", function () {
    phoneEdited = true;
+});
+
+document.getElementById("edit_URL").addEventListener("change", function () {
+   photoEdited = true;
 });
 
 function isValidURL(url) {
@@ -145,134 +160,76 @@ function writeDate() {
    // Insere no HTML
    document.getElementById("date").innerHTML = dateTimeString;
 }
-// Variáveis de controle para cada campo editável
-var passwordEdited = false;
-var emailEdited = false;
-var firstNameEdited = false;
-var lastNameEdited = false;
-var phoneEdited = false;
-var photoEdited = false;
 
-// Funçãoconst editField = false; para salvar as alterações
+      emailEdited = false;
+      firstNameEdited = false;
+      lastNameEdited = false;
+      phoneEdited = false;
+      passwordEdited = false;
+      photoEdited = false;
+
+
 async function saveChanges() {
    let editField = false;
    let wrongField = false;
+   const updatedUserData = {}; //Objeto para armazenar os dados atualizados do user
 
    if (photoEdited && document.getElementById("edit_photoLabel").value != "") {
-      newPhoto = document.querySelector("#edit_photoLabel").value;
-      updatePhoto(username, password, user_photo.src).then((response) => {
-         if (response.status === 200) {
-            user_img.src = user_photo.src;
-         } else if (response.status === 404) {
-            alert("User not found");
-            window.location.href = "login.html";
-         }
-      });
+      updatedUserData.imgURL = document.getElementById("edit_URL").value;
       editField = true;
    }
 
    if (emailEdited && document.getElementById("edit_email").value != "") {
-      const newEmail = document.getElementById("edit_email").value;
-      if (isValidEmail(newEmail)) {
-         updateEmail(username, password, newEmail).then((response) => {
-            if (response.status === 200) {
-               viewEmail.value = newEmail;
-            }
-         });
-         editField = true;
-      } else wrongField = true;
+      updatedUserData.email = document.getElementById("edit_email").value;
+      editField = true;
    }
    if (firstNameEdited && document.getElementById("edit_firstName").value != "") {
       if (viewFirstName.value.length < 13) {
-         const newFirstName = document.getElementById("edit_firstName").value;
-         updateFirstName(username, password, newFirstName).then((response) => {
-            if (response.status === 200) {
-               viewFirstName.value = newFirstName;
-            } else if (response.status == 404) window.location.href = "login.html";
-         });
+         updatedUserData.firstName = document.getElementById("edit_firstName").value;
          editField = true;
-      } else wrongField = true;
+         alert(updatedUserData.firstName);
+      }
    }
    if (lastNameEdited && document.getElementById("edit_lastName").value != "") {
-      const newLastName = document.getElementById("edit_lastName").value;
-      updateLastName(username, password, newLastName).then((response) => {
-         if (response.status === 200) {
-            viewLastName.value = newLastName;
-         } else if (response.status === 404) {
-            alert("user not found");
-            window.location.href = "login.html";
-         }
-      });
+      updatedUserData.lastName = document.getElementById("edit_lastName").value;
       editField = true;
+
    }
    if (phoneEdited && document.getElementById("edit_phone").value != "") {
-      const newPhone = document.getElementById("edit_phone").value;
       if (isValidPhoneNumber(newPhone)) {
-         updatePhoneNumber(username, password, newPhone).then((response) => {
-            if (response.status === 200) {
-               viewPhone.value = newPhone;
-            } else if (response.status === 404) {
-               alert("user not found");
-               window.location.href = "login.html";
-            }
-         });
-         editField = true;
-      } else wrongField = true;
+        updatedUserData.phoneNumber =document.getElementById("edit_phone").value;
+        editField = true;
+      } 
    }
+   
    if (passwordEdited && document.getElementById("edit_password").value != "") {
-      // Salvar a nova senha
-      const newPassword = document.getElementById("edit_password").value;
-      // Chame a função para atualizar a senha no backend
-      updatePassword(username, password, newPassword).then((response) => {
-         if (response.status == 200) {
-            viewpassword.value = newPassword;
-            sessionStorage.setItem("pass", newPassword);
-         } else if (response.status == 404) {
-            alert("user not found");
-            window.location.href = "login.html";
-         }
-      });
+      updatedUserData.password = document.getElementById("edit_password").value;
       editField = true;
    }
+   if(photoEdited && document.getElementById("edit_URL").value!= "") {
+      updatedUserData.imgURL = document.getElementById("edit_URL").value;
+   }
 
-   // Reinicie as variáveis de controle passwordEdited = false;
-   emailEdited = false;
-   firstNameEdited = false;
-   lastNameEdited = false;
-   phoneEdited = false;
-   passwordEdited = false;
-
-   if (editField == true && wrongField == false) {
-      return true;
-   } else return false;
+   const result = await updateProfile(token, updatedUserData);
+   return result;
+   
 }
+
+
 
 //action listenner para o botao save da pagina
 
 const bntSave = document.getElementById("btn-save");
-bntSave.addEventListener("click", function () {
-   saveChanges().then((result) => {
-      console.log(result);
-      if (result == true) {
-         alert("Your changes have been saved");
-         window.location.href = "scrum.html";
-      } else if (
-         document.getElementById("edit_password").value != "" ||
-         document.getElementById("edit_phone").value != "" ||
-         document.getElementById("edit_lastName").value != "" ||
-         document.getElementById("edit_firstName").value != "" ||
-         document.getElementById("edit_email").value != ""
-      ) {
-         document.getElementById("edit_password").value = "";
-         document.getElementById("edit_phone").value = "";
-         document.getElementById("edit_lastName").value = "";
-         document.getElementById("edit_firstName").value = "";
-         document.getElementById("edit_email").value = "";
-         alert("Some of the changes you made are not valid.");
-      } else {
-         alert("You didn't change any field.");
-      }
-   });
+bntSave.addEventListener("click", async function () {
+   const result = await saveChanges();
+
+   if(result == true){
+      alert("Your changes have been saved!");
+      window.location.href = "scrum.html";
+   }else{
+      alert("Some of the changes you made are not valid.");
+   }
+
 });
 
 
