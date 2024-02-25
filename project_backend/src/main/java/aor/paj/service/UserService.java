@@ -8,6 +8,7 @@ import aor.paj.dto.User;
 import aor.paj.dto.UserDetails;
 
 import aor.paj.entity.UserEntity;
+import aor.paj.utils.EncryptHelper;
 import jakarta.inject.Inject;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
@@ -27,6 +28,9 @@ public class UserService {
     @Inject
     TaskBean taskBean;
 
+    @Inject
+    EncryptHelper encryptHelper;
+
 
     @POST
     @Path("/addUserDB")
@@ -41,6 +45,9 @@ public class UserService {
         boolean isUsernameAvailable = userBean.isUsernameAvailable(user.getUsername());
         boolean isImageValid = userBean.isImageUrlValid(user.getImgURL());
         boolean isPhoneValid = userBean.isPhoneNumberValid(user.getPhoneNumber());
+
+        // Encrypt the user password
+       user.setPassword(encryptHelper.encryptPassword(user.getPassword()));
 
 
         if (isFieldEmpty) {
@@ -94,6 +101,7 @@ public class UserService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(LoginDto user) {
+        user.setPassword(encryptHelper.encryptPassword(user.getPassword()));
         String token = userBean.loginDB(user);
         if (token != null) {
             // Criar um objeto JSON contendo apenas o token
@@ -147,7 +155,9 @@ public class UserService {
             }
 
             if(updatedUser.getPassword() != null){
-                user.setPassword(updatedUser.getPassword());
+                String plainPassword = updatedUser.getPassword();
+                String hashedPassword = encryptHelper.encryptPassword(plainPassword);
+                user.setPassword(hashedPassword);
             }
 
 
