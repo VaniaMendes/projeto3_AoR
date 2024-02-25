@@ -11,6 +11,7 @@ import aor.paj.entity.UserEntity;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 @Singleton
@@ -61,6 +62,41 @@ public class CategoryBean {
             status = false;
         }
 
+        return status;
+    }
+
+    public boolean deleteCategory(String token, String id) {
+        boolean status;
+
+        UserEntity confirmUser = userDao.findUserByToken(token);
+        CategoryEntity categoryToDelete = categoryDao.findCategoryById(Long.parseLong(id));
+
+        if (confirmUser != null) {
+            if (categoryToDelete != null) {
+                categoryDao.remove(categoryToDelete);
+                status = true;
+            } else {
+                status = false;
+            }
+        } else {
+            status = false;
+        }
+
+        return status;
+    }
+
+    public boolean isCategoryInUse(String id) {
+
+        CategoryEntity categoryToDelete = categoryDao.findCategoryById(Long.parseLong(id));
+
+        boolean status;
+        ArrayList<TaskEntity> findTasksByCategory = taskDao.findTasksByCategory(categoryToDelete);
+
+        if (findTasksByCategory == null) {
+            status = false;
+        } else {
+            status = true;
+        }
         return status;
     }
 
