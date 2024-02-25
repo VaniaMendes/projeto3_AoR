@@ -3,22 +3,26 @@ package aor.paj.dto;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+import java.util.Date;
+
 @XmlRootElement
 public class Category {
 
     @XmlElement
-    private int idCategory;
+    private long idCategory;
     @XmlElement
     private String title;
     @XmlElement
     private String description;
     @XmlElement
-    private String username;
+    private User author;
 
-    public Category(String title, String description, User user) {
-        this.title = title;
-        this.description = description;
-        this.username = username;
+    public Category() {
+        Date idTime=new Date();
+        this.idCategory =  idTime.getTime();
+        this.title = null;
+        this.description = null;
+        this.author = null;
     }
 
     public String getTitle() {
@@ -37,20 +41,20 @@ public class Category {
         this.description = description;
     }
 
-    public int getIdCategory() {
+    public long getIdCategory() {
         return idCategory;
     }
 
-    public void setIdCategory(int idCategory) {
+    public void setIdCategory(long idCategory) {
         this.idCategory = idCategory;
     }
 
-    public String getUsername() {
-        return username;
+    public User getAuthor() {
+        return author;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setAuthor(User author) {
+        this.author = author;
     }
 }
 

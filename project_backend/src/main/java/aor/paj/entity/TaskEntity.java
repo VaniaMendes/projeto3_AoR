@@ -1,5 +1,6 @@
 package aor.paj.entity;
 
+import aor.paj.dto.Category;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -9,27 +10,30 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name="task")
-@NamedQuery(name="Activity.findActivityById", query="SELECT a FROM TaskEntity a WHERE a.id = :id")
-@NamedQuery(name="Activity.findActivityByUser", query="SELECT a FROM TaskEntity a WHERE a.owner = :owner")
+@NamedQuery(name="Task.findTaskById", query="SELECT a FROM TaskEntity a WHERE a.id = :id")
+@NamedQuery(name="Task.findTaskByTitle", query="SELECT a FROM TaskEntity a WHERE a.title = :title")
+@NamedQuery(name="Task.findTaskByUser", query="SELECT a FROM TaskEntity a WHERE a.owner = :owner")
+@NamedQuery(name = "Task.findActiveTasks", query = "SELECT a FROM TaskEntity a WHERE a.isActive = true")
+
+
 public class TaskEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column (name="id", nullable = false, unique = true, updatable = false)
 	private long id;
 
-	@Column (name="title", nullable = false, unique = true)
+	@Column (name="title", nullable = false, unique = true, updatable = true)
 	private String title;
 
 	@Column (name="description", nullable = true, unique = false, length = 65535, columnDefinition = "TEXT")
 	private String description;
 
-	@Column(name="initialDate", nullable = false, unique = false, updatable = false)
+	@Column(name="initialDate", nullable = false, unique = false, updatable = true)
 	private LocalDate initialDate;
 
-	@Column(name="endDate", nullable = false, unique = false, updatable = false)
+	@Column(name="endDate", nullable = false, unique = false, updatable = true)
 	private LocalDate endDate;
 
 	@Column(name="priority", nullable = false, unique = false, updatable = true)
@@ -37,6 +41,13 @@ public class TaskEntity implements Serializable{
 
 	@Column(name="state", nullable = false, unique = false, updatable = true)
 	private String state;
+
+	@Column(name="is_Active", nullable = false, unique = false, updatable = true)
+	private boolean isActive;
+
+	@ManyToOne
+	@JoinColumn(name="category", nullable = false, unique = false, updatable = true)
+	private CategoryEntity category;
 
 	//Owning Side User - Activity
 	@ManyToOne
@@ -116,6 +127,22 @@ public class TaskEntity implements Serializable{
 
 	public void setState(String state) {
 		this.state = state;
+	}
+
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean active) {
+		isActive = active;
+	}
+
+	public CategoryEntity getCategory() {
+		return category;
+	}
+
+	public void setCategory(CategoryEntity category) {
+		this.category = category;
 	}
 }
 	

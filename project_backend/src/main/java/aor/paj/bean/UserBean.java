@@ -7,11 +7,7 @@ import aor.paj.dto.User;
 import aor.paj.dto.UserDetails;
 import aor.paj.entity.UserEntity;
 import jakarta.ejb.EJB;
-import jakarta.ejb.Stateless;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.json.bind.Jsonb;
-import jakarta.json.bind.JsonbBuilder;
-import jakarta.json.bind.JsonbConfig;
+import jakarta.ejb.Singleton;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 
@@ -24,9 +20,8 @@ import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
 
-@Stateless
+@Singleton
 public class UserBean implements Serializable {
 
     @EJB
@@ -70,6 +65,13 @@ public class UserBean implements Serializable {
         }
         return null;
     }
+
+
+    /**
+     *
+     * @param token
+     * @return return is null if user is not found or token not found
+     */
 
     public boolean updateUser(String token, User updatedUser) {
         if (token == null || token.isEmpty()) {
@@ -128,7 +130,7 @@ public class UserBean implements Serializable {
             userDto.setImgURL(userEntity.getImgURL());
             userDto.setFirstName(userEntity.getFirstName());
             userDto.setLastName(userEntity.getLastName());
-            userDto.setTypeOfUSer(userEntity.getTypeOfUser());
+            userDto.setTypeOfUser(userEntity.getTypeOfUser());
             return userDto;
         }
         return null;
@@ -148,21 +150,6 @@ public class UserBean implements Serializable {
 
         return userEntity;
     }
-/*
-    public String login(User user){
-        UserEntity userEntity = userDao.fin(user.getEmail());
-        if (userEntity != null){
-            if (userEntity.getPassword().equals(user.getPassword())){
-                String token = generateNewToken();
-                userEntity.setToken(token);
-                return token;
-            }
-        }
-        return null;
-    }
-
-
-    */
 
     public boolean register(User user){
         UserEntity u= userDao.findUserByUsername(user.getUsername());
@@ -257,12 +244,13 @@ public class UserBean implements Serializable {
     }
 
     ///////////////////////METODOS ANTIGOS\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
+/*
     //Método para adicionar uma task nova a um user
     public void addTask(User user, Task task){
         user.getTasks().add(task);
 
     }
+
     //Método para eliminar uma task
     public boolean removeTask(User user,long id) {
         boolean taskRemoved=false;
@@ -291,6 +279,8 @@ public class UserBean implements Serializable {
         System.out.println(taskRequested);
         return taskRequested;
     }
+
+     */
 
     //faz o update do estado da task que recebe como input
     public void updateTaskState(Task task, String state){
