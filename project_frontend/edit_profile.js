@@ -54,40 +54,7 @@ getUserByToken(token).then((result) => {
 
 });
 
-async function updateProfile(token,updatedUserData) {
 
-   try {
-       const response = await fetch("http://localhost:8080/project_backend/rest/users/updateProfile", {
-           method: 'PUT',
-           headers: {
-            'Content-Type': 'application/json',
-            'Accept': '*/*',
-            token:token
-           },
-           body: JSON.stringify(updatedUserData)
-       });
-
-       if (response.ok) {
-         console.log(updatedUserData);
-           const data = await response.json();
-           getUserByToken(token).then((result) => {
-   
-            if (result == null) {
-               window.location.href = "login.html";
-            } else {
-               user=result;
-
-            }
-         
-         });
-       } else {
-
-       }
-   } catch (error) {
-       console.error('Error:', error);
-       alert("Something went wrong");
-   }
-}
 
 
 
@@ -163,16 +130,17 @@ function writeDate() {
    document.getElementById("date").innerHTML = dateTimeString;
 }
 
-      emailEdited = false;
-      firstNameEdited = false;
-      lastNameEdited = false;
-      phoneEdited = false;
-      passwordEdited = false;
-      photoEdited = false;
+      let emailEdited = false;
+      let firstNameEdited = false;
+      let lastNameEdited = false;
+      let phoneEdited = false;
+      let passwordEdited = false;
+      let photoEdited = false;
+      let editField = false;
 
    const updatedUserData = {};
 async function saveChanges() {
-   let editField = false;
+  
     //Objeto para armazenar os dados atualizados do user
 
    if (photoEdited && document.getElementById("edit_URL").value != "") {
@@ -180,7 +148,10 @@ async function saveChanges() {
       if(isValidURL(newImage)){
          updatedUserData.imgURL = newImage;
          editField = true;
-      }else{alert("Invalid URL");editField = false;}}
+      }else{alert("Invalid URL");editField = false;
+       document.getElementById("edit_URL").value = "";
+       document.getElementById("edit_URL").placeholder = user.imgURL;
+      }}
    
 
    if (emailEdited && document.getElementById("edit_email").value != "") {
@@ -188,7 +159,10 @@ async function saveChanges() {
       if(isValidEmail(email) == true){
       updatedUserData.email = email;
       editField = true;
-      }else{alert("Invalid email");editField = false;}}
+      }else{alert("Invalid email");editField = false; 
+      document.getElementById("edit_email").value = "";
+      document.getElementById("edit_email").placeholder = user.email;
+   }}
    
    if (firstNameEdited && document.getElementById("edit_firstName").value != "") {
       if (document.getElementById("edit_firstName").value.length < 13) {
@@ -210,6 +184,8 @@ async function saveChanges() {
       } else{
          alert("Invalid phone number");
          editField = false;
+         document.getElementById("edit_phone").value = "";
+         document.getElementById("edit_phone").placeholder = user.phoneNumber;
       }
    }
    
@@ -217,15 +193,13 @@ async function saveChanges() {
       updatedUserData.password = document.getElementById("edit_password").value;
       editField = true;
    }
-   
 
-   console.log(updatedUserData);
 
-   try{
-   await updateProfile(token,updatedUserData);
-   return true;
-   }catch(error){
-      return false;
+   try {
+      const responseStatus = await updateProfile(token, updatedUserData);
+      return responseStatus; 
+   } catch (error) {
+      
    }
    
 }
@@ -237,26 +211,50 @@ async function saveChanges() {
 const bntSave = document.getElementById("btn-save");
 bntSave.addEventListener("click", async function () {
    const result = await saveChanges();
-   
    console.log(result);
 
-   if(result == true && Object.keys(updatedUserData).length !== 0){
-      alert( "Your valid changes have been saved!");
+   if(result == 200 && Object.keys(updatedUserData).length !== 0){
+      alert("Your valid changes have been saved");
       window.location.href = "scrum.html";
    }
-   else if(result == false){
+   else if(result == 422){
+      alert("Invalid data");
+  
       
-
-   }
-   else{
-      alert( "You didn´t do any changes");
-      
-   }
+   }else{}
 
 });
 
 
+async function updateProfile(token,updatedUserData) {
 
+   try {
+       const response = await fetch("http://localhost:8080/project_backend/rest/users/updateProfile", {
+           method: 'PUT',
+           headers: {
+            'Content-Type': 'application/json',
+            'Accept': '*/*',
+            token:token
+           },
+           body: JSON.stringify(updatedUserData)
+       });
+
+       if (response.ok) {
+           const data = await response.json();
+       }else{
+         const errorMessage = await response.text();
+           if (response.status === 401) {
+               window.location.href = "login.html";
+           } else if (response.status === 422) {
+         
+           } else {   
+       }
+      }
+      return response.status;
+   }catch(error){
+      alert("Something went wrong");
+   }
+}
 
 function isValidPhoneNumber(phoneNumber) {
    valideNumber = true;
