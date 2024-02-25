@@ -74,4 +74,31 @@ public class CategoryService {
 
         return response;
     }
+
+    @DELETE
+    @Path("/delete/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response deleteCategory(@HeaderParam("token") String token, @PathParam("id") String id) {
+
+        Response response;
+
+        if (userBean.getUserByToken(token) == null) {
+            response = Response.status(403).entity("Invalid token").build();
+
+        } else if (!categoryBean.isUserAllowedToInteractWithCategories(token)) {
+            response = Response.status(422).entity("You dont have enough permissions").build();
+
+        } else if (categoryBean.isCategoryInUse(id)) {
+            response = Response.status(422).entity("There are tasks with this category, cant delete it.").build();
+
+        } else if (categoryBean.deleteCategory(token, id)) {
+            response = Response.status(200).entity("Category deleted successfully").build();
+
+        } else {
+            response = Response.status(400).entity("Failed to delete category").build();
+        }
+
+        return response;
+    }
+
 }

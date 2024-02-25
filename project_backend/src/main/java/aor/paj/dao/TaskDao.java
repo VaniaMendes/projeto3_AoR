@@ -1,6 +1,7 @@
 package aor.paj.dao;
 
 
+import aor.paj.entity.CategoryEntity;
 import aor.paj.entity.TaskEntity;
 import aor.paj.entity.UserEntity;
 import jakarta.ejb.Stateless;
@@ -38,6 +39,15 @@ public class TaskDao extends AbstractDao<TaskEntity> {
 			return null;
 		}
 
+	}
+
+	public ArrayList<TaskEntity> findTasksByCategory(CategoryEntity categoryEntity) {
+		try {
+			ArrayList<TaskEntity> taskEntities = (ArrayList<TaskEntity>) em.createNamedQuery("Task.findTasksByCategory").setParameter("category", categoryEntity).getResultList();
+			return taskEntities;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	public ArrayList<TaskEntity> findTasksByUser(UserEntity userEntity) {
