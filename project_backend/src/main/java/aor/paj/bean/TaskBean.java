@@ -1,45 +1,50 @@
 package aor.paj.bean;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.Date;
 
+import java.util.Date;
+import aor.paj.dao.CategoryDao;
 import aor.paj.dao.TaskDao;
 import aor.paj.dao.UserDao;
+import aor.paj.dto.Category;
 import aor.paj.dto.Task;
-import aor.paj.dto.User;
+import aor.paj.entity.CategoryEntity;
 import aor.paj.entity.TaskEntity;
 import aor.paj.entity.UserEntity;
 import jakarta.ejb.EJB;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.json.bind.Jsonb;
-import jakarta.json.bind.JsonbBuilder;
-import jakarta.json.bind.JsonbConfig;
+import jakarta.ejb.Singleton;
 
-@ApplicationScoped
+@Singleton
 public class TaskBean {
-
-    final String filename = "tasks.json";
-    private ArrayList<Task> tasks;
 
     @EJB
     UserDao userDao;
     @EJB
     TaskDao taskDao;
 
+    @EJB
+    CategoryDao categoryDao;
+
     public TaskBean(){
     }
     public boolean addTask(String token, Task task) {
         UserEntity userEntity = userDao.findUserByToken(token);
+
+        CategoryEntity categoryEntity = categoryDao.findCategoryById(task.getCategory().getIdCategory());
+
         if(userEntity != null){
             TaskEntity taskEntity = convertTaskToTaskEntity(task);
             taskEntity.setOwner(userEntity);
+            taskEntity.setCategory(categoryEntity);
             taskDao.persist(taskEntity);
             return true;
         }
         return false;
+    }
+
+    public boolean isTaskTitleAvailable(Task task) { //No user estou a passar diretamento o username, aqui passo o objeto todo??
+
+        TaskEntity taskEntity = taskDao.findTaskByTitle(task.getTitle());
+
+        return taskEntity == null;
     }
 
     public boolean updateTask(String token, String id, Task task) {
@@ -54,8 +59,8 @@ public class TaskBean {
 
                 //verifica a função do user e se tem permissão para editar a tarefa
                 if (confirmUser.getTypeOfUser().equals("developer") && taskToUpdate.getOwner().equals(confirmUser)
-                        || confirmUser.getTypeOfUser().equals("scrum master")
-                        || confirmUser.getTypeOfUser().equals("product owner")) {
+                        || confirmUser.getTypeOfUser().equals("scrum_master")
+                        || confirmUser.getTypeOfUser().equals("product_owner")) {
 
                     taskToUpdate.setTitle(task.getTitle());
                     taskToUpdate.setDescription(task.getDescription());
@@ -99,6 +104,42 @@ public class TaskBean {
         return status;
     }
 
+    public boolean updateTaskCategory(String token, String id, Category category) {
+        boolean status;
+
+        UserEntity confirmUser = userDao.findUserByToken(token);
+        TaskEntity taskToUpdate = taskDao.findTaskById(Long.parseLong(id));
+        CategoryEntity newCategory = categoryDao.findCategoryById(category.getIdCategory());
+
+        if (confirmUser != null) {
+            if (taskToUpdate != null) {
+                if (newCategory != null) {
+                    taskToUpdate.setCategory(convertCategoryToCategoryEntity(category));
+                    taskDao.merge(taskToUpdate);
+                    status = true;
+                } else {
+                    status = false;
+                }
+            } else {
+                status = false;
+            }
+        } else {
+            status = false;
+        }
+        return status;
+    }
+
+    private CategoryEntity convertCategoryToCategoryEntity(Category category){
+
+        Date idTime=new Date();
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setIdCategory(idTime.getTime());
+        categoryEntity.setTitle(category.getTitle());
+        categoryEntity.setDescription(category.getDescription());
+
+        return categoryEntity;
+    }
+
     private TaskEntity convertTaskToTaskEntity(Task task){
 
         Date idTime=new Date();
@@ -108,46 +149,10 @@ public class TaskBean {
         taskEntity.setId(idTime.getTime());
         taskEntity.setInitialDate(task.getInitialDate());
         taskEntity.setEndDate(task.getEndDate());
+        taskEntity.setActive(task.isActive());
         taskEntity.setState("toDo");
         taskEntity.setPriority(100);
         return taskEntity;
     }
 
-    public Task getTask(int id){
-        Task taskRequested=null;
-        for (int i=0;i<tasks.size() && taskRequested==null;i++){
-            if (tasks.get(i).getId()==id){
-                taskRequested=tasks.get(i);
-            }
-        }
-        return taskRequested;
-    }
-    public ArrayList<Task> getTasks() {
-        return tasks;
-    }
-
-
-
-    public boolean oldUpdateTask(int id, Task task) {
-        for (Task a : tasks) {
-            if (a.getId() == id) {
-                a.setTitle(task.getTitle());
-                a.setDescription(task.getDescription());
-                writeIntoJsonFile();
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void writeIntoJsonFile(){
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream(filename);
-            JsonbConfig config = new JsonbConfig().withFormatting(true);
-            Jsonb jsonb = JsonbBuilder.create(config);
-            jsonb.toJson(tasks, fileOutputStream);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

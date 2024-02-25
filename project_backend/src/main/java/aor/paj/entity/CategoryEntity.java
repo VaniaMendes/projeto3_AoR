@@ -9,67 +9,57 @@ import java.util.Set;
 @Entity
 @Table(name="category")
 @NamedQuery(name = "Category.findCategoryByTitle", query = "SELECT u FROM CategoryEntity u WHERE u.title = :title")
-@NamedQuery(name = "Category.findCategoryByUser", query = "SELECT u FROM CategoryEntity u WHERE u.idCategory = :idCategory")
+@NamedQuery(name = "Category.findCategoryById", query = "SELECT u FROM CategoryEntity u WHERE u.idCategory = :idCategory")
 public class CategoryEntity implements Serializable{
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @Column(name="idCategory", nullable=false, unique = false, updatable = true)
-    private int idCategory;
+    @Column(name="id_Category", nullable=false, unique = false, updatable = true)
+    private long idCategory;
 
-    @Column(name="title", nullable=false, unique = false, updatable = true)
-    private int title;
+    @Column(name="title", nullable=false, unique = true, updatable = true)
+    private String title;
     @Column(name="description", nullable=false, unique = false, updatable = true)
-    private int description;
+    private String description;
 
-    @Column(name="username", nullable=false, unique = false, updatable = true)
-    private String username;
-
-    @OneToOne
-    private CategoryEntity owner;
-
+    @ManyToOne
+    @JoinColumn(name="author", nullable = false, unique = false, updatable = false)
+    private UserEntity owner;
 
     //default empty constructor
     public CategoryEntity() {}
 
-    public int getIdCategory() {
+    public long getIdCategory() {
         return idCategory;
     }
 
-    public void setIdCategory(int idCategory) {
+    public void setIdCategory(long idCategory) {
         this.idCategory = idCategory;
     }
 
-    public int getTitle() {
+    public String getTitle() {
         return title;
     }
 
-    public void setTitle(int title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 
-    public int getDescription() {
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(int description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    public String getUsername() {
-        return username;
-    }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public CategoryEntity getOwner() {
+    public UserEntity getOwner() {
         return owner;
     }
 
-    public void setOwner(CategoryEntity owner) {
+    public void setOwner(UserEntity owner) {
         this.owner = owner;
     }
 }

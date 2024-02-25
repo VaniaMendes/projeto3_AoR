@@ -7,11 +7,7 @@ import aor.paj.dto.User;
 import aor.paj.dto.UserDetails;
 import aor.paj.entity.UserEntity;
 import jakarta.ejb.EJB;
-import jakarta.ejb.Stateless;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.json.bind.Jsonb;
-import jakarta.json.bind.JsonbBuilder;
-import jakarta.json.bind.JsonbConfig;
+import jakarta.ejb.Singleton;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 
@@ -24,9 +20,8 @@ import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
 
-@Stateless
+@Singleton
 public class UserBean implements Serializable {
 
     @EJB
@@ -70,6 +65,11 @@ public class UserBean implements Serializable {
         return null;
     }
 
+    /**
+     *
+     * @param token
+     * @return return is null if user is not found or token not found
+     */
     public User getUserByToken(String token) {
         UserEntity userEntity = userDao.findUserByToken(token);
         User u = null;
@@ -95,7 +95,7 @@ public class UserBean implements Serializable {
             userDto.setImgURL(userEntity.getImgURL());
             userDto.setFirstName(userEntity.getFirstName());
             userDto.setLastName(userEntity.getLastName());
-            userDto.setTypeOfUSer(userEntity.getTypeOfUser());
+            userDto.setTypeOfUser(userEntity.getTypeOfUser());
             return userDto;
         }
         return null;

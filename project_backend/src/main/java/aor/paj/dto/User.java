@@ -3,9 +3,6 @@ package aor.paj.dto;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-
 @XmlRootElement
 public class User{
     @XmlElement
@@ -27,7 +24,7 @@ public class User{
     @XmlElement
     private boolean isActive;
     @XmlElement
-    private String typeOfUSer;
+    private String typeOfUser;
 
 
 
@@ -40,7 +37,7 @@ public class User{
         this.phoneNumber=null;
         this.imgURL=null;
         this.isActive=true;
-        this.typeOfUSer = "developer";
+        this.typeOfUser = "developer";
 
     }
 
@@ -118,12 +115,12 @@ public class User{
         isActive = active;
     }
 
-    public String getTypeOfUSer() {
-        return typeOfUSer;
+    public String getTypeOfUser() {
+        return typeOfUser;
     }
 
-    public void setTypeOfUSer(String typeOfUSer) {
-        this.typeOfUSer = typeOfUSer;
+    public void setTypeOfUser(String typeOfUser) {
+        this.typeOfUser = typeOfUser;
     }
 }
 
