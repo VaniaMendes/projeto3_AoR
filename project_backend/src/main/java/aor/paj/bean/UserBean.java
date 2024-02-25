@@ -53,6 +53,7 @@ public class UserBean implements Serializable {
         return userRequested;
     }
 
+
     public String loginDB(LoginDto user){
         UserEntity userEntity = userDao.findUserByUsername(user.getUsername());
         if (userEntity != null){
@@ -65,11 +66,45 @@ public class UserBean implements Serializable {
         return null;
     }
 
+
     /**
      *
      * @param token
      * @return return is null if user is not found or token not found
      */
+
+    public boolean updateUser(String token, User updatedUser) {
+        if (token == null || token.isEmpty()) {
+            return false;
+        }
+        UserEntity userEntity = userDao.findUserByToken(token);
+        if (userEntity == null) {
+            return false;
+        }
+
+        if (updatedUser.getEmail() != null ) {
+            userEntity.setEmail(updatedUser.getEmail());
+        }
+        if (updatedUser.getFirstName() != null) {
+            userEntity.setFirstName(updatedUser.getFirstName());
+        }
+        if (updatedUser.getLastName() != null) {
+            userEntity.setLastName(updatedUser.getLastName());
+        }
+        if (updatedUser.getPhoneNumber() != null) {
+            userEntity.setPhoneNumber(updatedUser.getPhoneNumber());
+        }
+        if (updatedUser.getImgURL() != null) {
+            userEntity.setImgURL(updatedUser.getImgURL());
+        }
+        if (updatedUser.getPassword() != null){
+            userEntity.setPassword(updatedUser.getPassword());
+    }
+            return userDao.update(userEntity);
+
+    }
+
+
     public User getUserByToken(String token) {
         UserEntity userEntity = userDao.findUserByToken(token);
         User u = null;
@@ -200,6 +235,12 @@ public class UserBean implements Serializable {
             }
         }
         return status;
+    }
+
+    public boolean emailAvailable (String email){
+        UserEntity userEntity = userDao.findUserByEmail(email);
+
+        return userEntity == null;
     }
 
     ///////////////////////METODOS ANTIGOS\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\

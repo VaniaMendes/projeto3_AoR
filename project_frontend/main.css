@@ -6,7 +6,6 @@
    --text_shadow: 0px 0px 2px 0px black;
    --blue: rgb(23, 43, 76);
 }
-
 * {
    font-family: "Segoe UI", Verdana, sans-serif;
    margin: 0;
@@ -1229,10 +1228,13 @@ label {
    display: flex;
    flex-direction: column;
    align-items: center;
+   margin-top:20px;
    position: absolute;
-   top: 45%;
-   left: 55%;
+   top:25%;
+   left: 58%;
    transform: translate(-50%, -50%);
+   width: 40%;
+   height: 150px;
 }
 .edit_photo,
 .edit_profile,
@@ -1240,43 +1242,56 @@ label {
 .form_edit {
    margin: 5px;
    padding: 15px;
-   width: 500px;
+   width: 100%;
    background-color: var(--white);
    border-radius: 10px;
-   height: auto;
+   box-sizing: border-box;
+}
+.edit_photo{
+   display: flex;
+   align-items: center;
+   
 }
 .edit_profile {
    display: grid;
-   grid-template-columns: 1fr 1fr; /* Dividir em duas colunas de largura igual */
-   grid-column-gap: 20px; /* Espaço entre as colunas */
+   grid-template-columns: repeat(2, 1fr); /* Dividir em duas colunas de largura igual */
+   gap: 30px; /* Espaço entre as colunas */
+   grid-row-gap: 3px;
 }
 .confirm_profile {
-   background-color: var(--white);
-   transform: translate(-51%, 138%);
-}
-.btn_save,
-.btn_cancel {
-   background-color: var(--white);
-   height: 50px;
-   width: 247px;
-   text-align: center;
-}
-.change_photo {
-   align-items: center;
-   position: right;
-}
-.edit_photo {
    display: flex;
    justify-content: space-between;
    align-items: center;
 }
+.btn_save,
+.btn_cancel {
+   
+   background-color: var(--white);
+   height: 40px;
+   width: 100px;
+   text-align: center;
+   cursor: pointer;
+   
+}
+.btn_save {
+   margin-right: 10px; /* Adicion margem à direita do botão "Save" */
+}
+
+.btn_cancel {
+   margin-left: 10px; /* Adiciona margem à esquerda do botão "Cancel" */
+  
+}
+
 .edit_photo img {
    height: 100px;
    width: 100px;
+   border-radius: 50px;
+   
 }
 .edit_profile input[type="text"] {
-   width: 200px;
-   margin: 5px;
+   margin-bottom: 5px;
+   box-sizing: border-box;
+   width: calc(100% - 30px);
 }
 .descriptioLabel {
    font-size: 10px;
@@ -1285,20 +1300,17 @@ label {
 }
 #user_photo {
    border-radius: 50%;
-}
-.edit_button {
-   border: none;
+   height: 100px;
+   width: 100px;
+   margin-right: 10px;
 }
 
-.edit_button img {
-   width: 20px;
-   height: 20px;
-   cursor: pointer;
-   background: none;
-   border: none;
-}
+
 #username_edit {
    font-size: 18px;
+   position: relative;
+   text-align: right;
+   margin-left: 10px;
 }
 
 #aside_editProfile {
