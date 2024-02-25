@@ -100,6 +100,30 @@ public class UserBean implements Serializable {
     }
 
 
+    /**
+     * Update ao role do user, só disponivel para users do tipo product owner
+     * @param username
+     * @param newRole
+     * @return
+     */
+    public boolean updateUserRole(String username, String newRole) {
+        boolean status;
+
+        UserEntity userEntity = userDao.findUserByUsername(username);
+
+        if(userEntity != null) {
+            userEntity.setTypeOfUser(newRole);
+            userDao.update(userEntity);
+            status = true;
+        } else {
+            status = false;
+        }
+
+
+        return status;
+    }
+
+
     public User getUserByToken(String token) {
         UserEntity userEntity = userDao.findUserByToken(token);
         User u = null;

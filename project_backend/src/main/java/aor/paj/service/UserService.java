@@ -17,6 +17,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.io.StringReader;
 import java.util.List;
 
 @Path("/users")
@@ -166,8 +167,39 @@ public class UserService {
             }
         }else{
         return Response.status(401).entity("Invalid credentials").build();
+        }
     }
-}
+
+    @PUT
+    @Path("/{username}/updateUserRole")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateUser(@HeaderParam("token") String token, @PathParam("username") String username, String newRole) {
+        Response response;
+
+        JsonObject jsonObject = Json.createReader(new StringReader(newRole)).readObject();
+        String newRoleConverted = jsonObject.getString("typeOfUser");
+
+        if (userBean.getUserByToken(token) == null) {
+            response = Response.status(403).entity("Invalid token").build();
+
+        } else if (!userBean.getUserByToken(token).getTypeOfUser().equals("product_owner")) {
+            response = Response.status(403).entity("You dont have permission to do that").build();
+
+        } else if (!newRoleConverted.equals("developer") && !newRoleConverted.equals("scrum_master") && !newRoleConverted.equals("product_owner")) {
+            response = Response.status(403).entity("Invalid role").build();
+
+        } else if (userBean.updateUserRole(username, newRoleConverted)) {
+            response = Response.status(200).entity("User role updated").build();
+
+        } else {
+            response = Response.status(401).entity("Role couldnt be updated").build();
+        }
+
+        return response;
+    }
+
+
 
 
 
