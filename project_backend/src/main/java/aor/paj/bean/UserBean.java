@@ -6,8 +6,10 @@ import aor.paj.dto.Task;
 import aor.paj.dto.User;
 import aor.paj.dto.UserDetails;
 import aor.paj.entity.UserEntity;
+import aor.paj.utils.EncryptHelper;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
+import jakarta.inject.Inject;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 
@@ -27,22 +29,15 @@ public class UserBean implements Serializable {
     @EJB
     UserDao userDao;
 
+    @Inject
+    EncryptHelper encryptHelper;
+
     ArrayList<User>users;
 
 
     public UserBean(){
     }
-    //Método para adicionar um user novo ao json
-    public boolean addUser(User user) {
 
-        UserEntity userFromDb = userDao.findUserByUsername(user.getUsername());
-        if (userFromDb == null) {
-            userDao.persist(convertUserDtotoUserEntity(user));
-            return true;
-        } else {
-            return false;
-        }
-    }
     public User getUser(String username, String password){
         User userRequested=null;
         for(int i=0;i<users.size() && userRequested==null;i++){
@@ -56,6 +51,7 @@ public class UserBean implements Serializable {
 
     public String loginDB(LoginDto user){
         UserEntity userEntity = userDao.findUserByUsername(user.getUsername());
+        user.setPassword(encryptHelper.encryptPassword(user.getPassword()));
         if (userEntity != null){
             if (userEntity.getPassword().equals(user.getPassword())){
                 String token = generateNewToken();
@@ -65,7 +61,6 @@ public class UserBean implements Serializable {
         }
         return null;
     }
-
 
     /**
      *
@@ -153,7 +148,9 @@ public class UserBean implements Serializable {
 
     public boolean register(User user){
         UserEntity u= userDao.findUserByUsername(user.getUsername());
+
         if (u==null){
+            user.setPassword(encryptHelper.encryptPassword(user.getPassword()));
             userDao.persist(convertUserDtotoUserEntity(user));
             return true;
         }else

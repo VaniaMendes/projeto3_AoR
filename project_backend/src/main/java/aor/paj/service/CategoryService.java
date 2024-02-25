@@ -8,10 +8,7 @@ import aor.paj.dto.Category;
 import aor.paj.dto.Task;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.HeaderParam;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -35,7 +32,7 @@ public class CategoryService {
     public Response addTask(@HeaderParam("token") String token, Category category) {
         Response response;
 
-        if (!categoryBean.isUserAllowedToCreateCategories(token)) {
+        if (!categoryBean.isUserAllowedToInteractWithCategories(token)) {
             response = Response.status(403).entity("You dont have permissions to do that").build();
 
         }else if (!categoryBean.isCategoryTitleAvailable(category)) {
@@ -47,6 +44,33 @@ public class CategoryService {
         } else {
             response = Response.status(403).entity("Invalid Token").build();
         }
+
+        return response;
+    }
+
+    @PUT
+    @Path("/update/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateCategory(@HeaderParam("token") String token, @PathParam("id") String id, Category category) {
+
+        Response response;
+
+        if (userBean.getUserByToken(token) == null) {
+            response = Response.status(403).entity("Invalid token").build();
+
+        } else if (!categoryBean.isUserAllowedToInteractWithCategories(token)) {
+            response = Response.status(422).entity("You dont have enough permissions").build();
+
+        } else if (!categoryBean.isCategoryTitleAvailable(category)) {
+            response = Response.status(422).entity("Title not available").build();
+
+        } else if (categoryBean.updateCategory(token, id, category)) {
+            response = Response.status(200).entity("Category updated sucessfully").build();
+
+        } else
+            response = Response.status(400).entity("Failed to update category").build();
+
+
 
         return response;
     }

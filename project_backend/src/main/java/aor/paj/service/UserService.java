@@ -46,9 +46,6 @@ public class UserService {
         boolean isImageValid = userBean.isImageUrlValid(user.getImgURL());
         boolean isPhoneValid = userBean.isPhoneNumberValid(user.getPhoneNumber());
 
-        // Encrypt the user password
-       user.setPassword(encryptHelper.encryptPassword(user.getPassword()));
-
 
         if (isFieldEmpty) {
             response = Response.status(422).entity("There's an empty field. ALl fields must be filled in").build();
@@ -101,7 +98,7 @@ public class UserService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(LoginDto user) {
-        user.setPassword(encryptHelper.encryptPassword(user.getPassword()));
+
         String token = userBean.loginDB(user);
         if (token != null) {
             // Criar um objeto JSON contendo apenas o token

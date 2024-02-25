@@ -10,9 +10,7 @@ import aor.paj.entity.TaskEntity;
 import aor.paj.entity.UserEntity;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
-import jakarta.enterprise.context.ApplicationScoped;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 @Singleton
@@ -42,6 +40,30 @@ public class CategoryBean {
         return false;
     }
 
+    public boolean updateCategory(String token, String id, Category category) {
+
+        boolean status;
+
+        UserEntity confirmUser = userDao.findUserByToken(token);
+        CategoryEntity categoryToUpdate = categoryDao.findCategoryById(Long.parseLong(id));
+
+        if (confirmUser != null) {
+            if (categoryToUpdate != null) {
+                categoryToUpdate.setTitle(category.getTitle());
+                categoryToUpdate.setDescription(category.getDescription());
+
+                categoryDao.merge(categoryToUpdate);
+                status = true;
+            } else {
+                status = false;
+            }
+        } else {
+            status = false;
+        }
+
+        return status;
+    }
+
     public boolean isCategoryTitleAvailable(Category category) { //No user estou a passar diretamento o username, aqui passo o objeto todo??
 
         CategoryEntity categoryEntity = categoryDao.findCategoryByTitle(category.getTitle());
@@ -49,7 +71,7 @@ public class CategoryBean {
         return categoryEntity == null;
     }
 
-    public boolean isUserAllowedToCreateCategories (String token) {
+    public boolean isUserAllowedToInteractWithCategories(String token) {
 
         UserEntity userEntity = userDao.findUserByToken(token);
 
