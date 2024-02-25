@@ -10,6 +10,7 @@ import java.util.Set;
 @NamedQuery(name = "User.findUserByUsername", query = "SELECT u FROM UserEntity u WHERE u.username = :username")
 @NamedQuery(name = "User.findUserByEmail", query = "SELECT u FROM UserEntity u WHERE u.email = :email")
 @NamedQuery(name = "User.findUserByToken", query = "SELECT DISTINCT u FROM UserEntity u WHERE u.token = :token")
+@NamedQuery(name = "User.findAllUsers", query = "SELECT u FROM UserEntity u " )
 public class UserEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;

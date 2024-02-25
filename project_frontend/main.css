@@ -1317,3 +1317,21 @@ label {
    margin-top: 70px;
 }
  /* Página product Owner */
+ .users_container {
+   position: absolute;
+   top: 50%;
+   left: 60%;
+   transform: translate(-50%, -50%);
+   width: 80%; /* Ajuste a largura conforme necessário */
+   width: 400px; /* Defina uma largura máxima se desejar */
+   padding: 20px; /* Adicione preenchimento interno conforme necessário */
+   background-color: var(--white); /* Cor de fundo */
+   border-radius: 10px; /* Adicione borda arredondada conforme necessário */
+   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Adicione sombra conforme desejado */
+   box-sizing: border-box; /* Certifique-se de que a largura inclui padding e borda */
+   text-align: center; /* Centralize o conteúdo dentro do container */
+}
+
+.users_list{
+   font-size: 40px;
+}

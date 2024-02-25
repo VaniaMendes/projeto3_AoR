@@ -7,6 +7,7 @@ import aor.paj.dto.User;
 import aor.paj.dto.UserDetails;
 import aor.paj.entity.UserEntity;
 import jakarta.ejb.EJB;
+import jakarta.ejb.EntityBean;
 import jakarta.ejb.Stateless;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.json.bind.Jsonb;
@@ -69,6 +70,21 @@ public class UserBean implements Serializable {
             }
         }
         return null;
+    }
+
+    public List<User> getAllUsers() {
+            List<User> users = new ArrayList<>();
+            List<UserEntity> userEntities = userDao.findAllUsers();
+
+            if(userEntities != null){
+                for(UserEntity userEntity : userEntities){
+                    User user = new User();
+                    user = convertUserEntityToDto(userEntity);
+                    users.add(user);
+                }
+            }
+
+            return users;
     }
 
     public boolean updateUser(String token, User updatedUser) {

@@ -5,6 +5,8 @@ import aor.paj.entity.UserEntity;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.NoResultException;
 
+import java.util.List;
+
 @Stateless
 public class UserDao extends AbstractDao<UserEntity> {
 
@@ -38,6 +40,14 @@ public class UserDao extends AbstractDao<UserEntity> {
 		try{
 			return (UserEntity) em.createNamedQuery("User.findUserByEmail").setParameter("email", email).getSingleResult();
 
+		}catch(NoResultException e){
+			return null;
+		}
+	}
+
+	public List<UserEntity> findAllUsers (){
+		try{
+			return em.createNamedQuery("User.findAllUsers", UserEntity.class).getResultList();
 		}catch(NoResultException e){
 			return null;
 		}
