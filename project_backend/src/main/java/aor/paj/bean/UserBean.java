@@ -144,7 +144,7 @@ public class UserBean implements Serializable {
         userEntity.setFirstName(user.getFirstName());
         userEntity.setLastName(user.getLastName());
         userEntity.setIsActive(false);
-        userEntity.setTypeOfUser("developer");
+        userEntity.setTypeOfUser("ProductOwner");
 
         return userEntity;
     }

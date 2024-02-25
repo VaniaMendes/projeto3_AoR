@@ -43,7 +43,7 @@ public class User{
         this.imgURL=null;
         this.tasks=new ArrayList<>();
         this.isActive=true;
-        this.typeOfUSer = "developer";
+        this.typeOfUSer = "ProductOwner";
 
     }
 

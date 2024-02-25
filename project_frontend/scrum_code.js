@@ -8,11 +8,14 @@ const column3 = document.querySelector("#column3");
 const backgroundScrum = document.querySelector("#background");
 const taskLists = document.querySelectorAll(".task_list");
 let user = null;
+
+
 const LOW = 100;
 const MEDIUM = 200;
 const HIGH = 300;
 
 const token = sessionStorage.getItem("token");
+
 
 
 async function getUserByToken(token) {
@@ -44,6 +47,9 @@ getUserByToken(token).then((result) => {
       window.location.href = "login.html";
    } else {
       firstName_txt.textContent = user.firstName;
+      const role = user.typeOfUSer;
+      sessionStorage.setItem('userType', role);
+
       if(user.imgURL){
          user_img.src = user.imgURL;
       }else{user_img.src = 'user.png';
@@ -51,6 +57,37 @@ getUserByToken(token).then((result) => {
       
    }
 });
+
+const userType = sessionStorage.getItem('userType');
+console.log("userType: " + userType);
+
+function addButtonsForUserType(userType) {
+   const menu = document.getElementById('menu'); //  elemento com o ID 'menu' onde os botões serão adicionados
+
+   if (userType === 'ProductOwner') {
+       
+       // Adicionar botão para consultar lista de todos os usuários
+       const listButton = document.createElement('button'); listButton.id = "listButton";
+       listButton.classList.add("menu_item"); listButton.innerHTML = "&#x2B24; &nbsp;";
+       listButton.textContent = 'All Users';
+       listButton.addEventListener('click', function() {
+         window.location.href = "productOwner.html";
+           
+       });
+       menu.appendChild(listButton);
+       
+      
+   } else if (userType === 'ScrumMaster') {
+    
+
+   } else if (userType === 'Developer') {
+       
+   }
+}
+
+addButtonsForUserType(userType);
+
+
 
 writeDate();
 
@@ -104,22 +141,7 @@ document.querySelector("#background").addEventListener("click", function () {
    document.querySelector("#modal_settings").style.visibility = "hidden";
 });
 
-document.querySelector("#btn_settings").addEventListener("click", function () {
-   document.querySelector("#background_color").value = rgbStringToHex(
-      document.querySelector("#body_color").style.backgroundColor
-   );
-   document.querySelector("#toDo_color").value = rgbStringToHex(
-      document.querySelector("#column1").style.backgroundColor
-   );
-   document.querySelector("#doing_color").value = rgbStringToHex(
-      document.querySelector("#column2").style.backgroundColor
-   );
-   document.querySelector("#done_color").value = rgbStringToHex(
-      document.querySelector("#column3").style.backgroundColor
-   );
-   document.querySelector("#modal_settings").style.visibility = "visible";
-   document.querySelector("#background").style.visibility = "visible";
-});
+
 
 /*Função para fazer a impressão inicial das tarefas, quando a página é inicializada. As tarefas vão ser impressas
 nas colunas em que estavam anteriormente a partir do atributo column do objeto task. Também são adicionados todos 
