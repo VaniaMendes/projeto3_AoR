@@ -6,6 +6,7 @@ import aor.paj.dao.CategoryDao;
 import aor.paj.dto.Category;
 import aor.paj.dto.Task;
 import aor.paj.dto.User;
+import aor.paj.entity.TaskEntity;
 import jakarta.inject.Inject;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
@@ -15,6 +16,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 
 @Path("/tasks")
 public class TaskService {
@@ -109,10 +111,12 @@ public class TaskService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateTaskCategory(@HeaderParam("token") String token, @PathParam("taskId") String taskId, Category category) {
         Response response;
-
         User requestingUser = userBean.getUserByToken(token);
 
-        if (!requestingUser.getTypeOfUser().equals("Product Owner")) {
+        if (userBean.getUserByToken(token) == null) {
+            response = Response.status(403).entity("Invalid token").build();
+
+        } else if (!requestingUser.getTypeOfUser().equals("Product Owner")) {
             response = Response.status(409).entity("You dont have permissions to edit that").build();
 
         } else if (taskBean.updateTaskCategory(token, taskId, category)) {
@@ -133,7 +137,10 @@ public class TaskService {
         JsonObject jsonObject = Json.createReader(new StringReader(newStatus)).readObject();
         String newStatusConverted = jsonObject.getString("state");
 
-        if (!newStatusConverted.equalsIgnoreCase("toDo") && !newStatusConverted.equalsIgnoreCase("doing") && !newStatusConverted.equalsIgnoreCase("done")) {
+        if (userBean.getUserByToken(token) == null) {
+            response = Response.status(403).entity("Invalid token").build();
+
+        } else if (!newStatusConverted.equalsIgnoreCase("toDo") && !newStatusConverted.equalsIgnoreCase("doing") && !newStatusConverted.equalsIgnoreCase("done")) {
             response = Response.status(422).entity("State can only be toDo, doing or done").build();
 
         } else if (taskBean.updateTaskState(token, taskId, newStatusConverted)) {
@@ -163,7 +170,10 @@ public class TaskService {
         JsonObject jsonObject = Json.createReader(new StringReader(newStatus)).readObject();
         boolean newActiveStatus = jsonObject.getBoolean("isActive");
 
-        if(!userBean.getUserByToken(token).getTypeOfUser().equals("product_owner") && !userBean.getUserByToken(token).getTypeOfUser().equals("scrum_master")) {
+        if (userBean.getUserByToken(token) == null) {
+            response = Response.status(403).entity("Invalid token").build();
+
+        } else if(!userBean.getUserByToken(token).getTypeOfUser().equals("product_owner") && !userBean.getUserByToken(token).getTypeOfUser().equals("scrum_master")) {
             response = Response.status(409).entity("You dont have permissions to edit that").build();
 
         } else if (userBean.getUserByToken(token).getTypeOfUser().equals("scrum_master") && newActiveStatus) {
@@ -177,6 +187,32 @@ public class TaskService {
 
         return response;
     }
+
+    @GET
+    @Path("/getAllSoftDeletedTasks")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response softDeleteTask(@HeaderParam("token") String token) {
+        Response response;
+
+        ArrayList<Task> softDeletedTasks = taskBean.getSoftDeletedTasks();
+
+        if (userBean.getUserByToken(token) == null) {
+            response = Response.status(403).entity("Invalid token").build();
+
+        } else if (!userBean.getUserByToken(token).getTypeOfUser().equals("scrum_master") && !userBean.getUserByToken(token).getTypeOfUser().equals("product_owner")) {
+            response = Response.status(403).entity("You dont have permissions to do that").build();
+
+        } else if (softDeletedTasks != null) {
+            response = Response.status(200).entity(softDeletedTasks).build();
+
+        } else {
+            response = Response.status(400).entity("Failed to retrieve tasks").build();
+        }
+
+
+        return response;
+    }
+
 
     /*
     @GET

@@ -1,5 +1,6 @@
 package aor.paj.bean;
 
+import java.util.ArrayList;
 import java.util.Date;
 import aor.paj.dao.CategoryDao;
 import aor.paj.dao.TaskDao;
@@ -11,6 +12,7 @@ import aor.paj.entity.TaskEntity;
 import aor.paj.entity.UserEntity;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
+import jakarta.inject.Inject;
 
 @Singleton
 public class TaskBean {
@@ -22,6 +24,9 @@ public class TaskBean {
 
     @EJB
     CategoryDao categoryDao;
+
+    @Inject
+    UserBean userBean;
 
     public TaskBean(){
     }
@@ -151,6 +156,25 @@ public class TaskBean {
         return status;
     }
 
+    public ArrayList<Task> getSoftDeletedTasks() {
+
+        ArrayList<TaskEntity> softDeletedTasksEntities = taskDao.findSoftDeletedTasks();
+        ArrayList<Task> softDeletedTasks = new ArrayList<>();
+
+        if (softDeletedTasksEntities == null) {
+            return new ArrayList<>();
+        } else {
+            for (TaskEntity taskEntity : softDeletedTasksEntities) {
+                Task task = convertTaskEntityToTask(taskEntity);
+                softDeletedTasks.add(task);
+            }
+        }
+
+        return softDeletedTasks;
+
+    }
+
+    //passar estes dois métodos para o CategoryBean e chamar categoryBean aqui?
     private CategoryEntity convertCategoryToCategoryEntity(Category category){
 
         Date idTime=new Date();
@@ -160,6 +184,35 @@ public class TaskBean {
         categoryEntity.setDescription(category.getDescription());
 
         return categoryEntity;
+    }
+
+    private Category convertCategoryEntityToCategoryForTask(CategoryEntity categoryEntity){
+
+
+        Category category = new Category();
+
+        category.setTitle(categoryEntity.getTitle());
+
+
+        return category;
+    }
+
+    private Task convertTaskEntityToTask(TaskEntity taskEntity){
+
+        Task task = new Task();
+
+        task.setTitle(taskEntity.getTitle());
+        task.setDescription(taskEntity.getDescription());
+        task.setId(taskEntity.getId());
+        task.setInitialDate(taskEntity.getInitialDate());
+        task.setEndDate(taskEntity.getEndDate());
+        task.setPriority(taskEntity.getPriority());
+        task.setState(taskEntity.getState());
+        task.setActive(taskEntity.isActive());
+        task.setAuthor(userBean.convertUserEntityToDtoForTask(taskEntity.getOwner()));
+        task.setCategory(convertCategoryEntityToCategoryForTask(taskEntity.getCategory()));
+
+        return task;
     }
 
     private TaskEntity convertTaskToTaskEntity(Task task){
