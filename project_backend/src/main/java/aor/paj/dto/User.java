@@ -27,20 +27,21 @@ public class User{
     private String typeOfUser;
 
 
-
-    public User(){
-        this.username=null;
-        this.password=null;
-        this.email=null;
-        this.firstName=null;
-        this.lastName=null;
-        this.phoneNumber=null;
-        this.imgURL=null;
-        this.isActive=true;
-        this.typeOfUser = "developer";
-
+    public User(String username, String password, String email, String firstName, String lastName,
+                String phoneNumber, String imgURL, String token, String typeOfUser) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+        this.imgURL = imgURL;
+        this.token = token;
+        this.typeOfUser = typeOfUser;
+        this.isActive = true;
     }
 
+    public User(){}
 
     public String getUsername() {
         return username;

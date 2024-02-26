@@ -75,8 +75,7 @@ public class UserBean implements Serializable {
 
             if(userEntities != null){
                 for(UserEntity userEntity : userEntities){
-                    User user = new User();
-                    user = convertUserEntityToDto(userEntity);
+                    User user = convertUserEntityToDto(userEntity);
                     users.add(user);
                 }
             }
