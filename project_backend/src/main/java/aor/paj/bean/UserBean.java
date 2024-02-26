@@ -14,6 +14,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.json.bind.JsonbConfig;
+import jakarta.ejb.Singleton;
+import jakarta.inject.Inject;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 
@@ -26,6 +28,7 @@ import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
 @Singleton
 public class UserBean implements Serializable {
@@ -174,7 +177,7 @@ public class UserBean implements Serializable {
             userDto.setImgURL(userEntity.getImgURL());
             userDto.setFirstName(userEntity.getFirstName());
             userDto.setLastName(userEntity.getLastName());
-            userDto.setTypeOfUSer(userEntity.getTypeOfUser());
+            userDto.setTypeOfUser(userEntity.getTypeOfUser());
             userDto.setActive(userEntity.getIsActive());
             return userDto;
         }
