@@ -14,6 +14,7 @@ const MEDIUM = 200;
 const HIGH = 300;
 
 const token = sessionStorage.getItem("token");
+const userType = sessionStorage.getItem('role');
 
 
 
@@ -46,8 +47,8 @@ getUserByToken(token).then((result) => {
       window.location.href = "login.html";
    } else {
       firstName_txt.textContent = user.firstName;
-      const role = user.typeOfUSer;
-      sessionStorage.setItem('userType', role);
+      const role = user.typeOfUser;
+      sessionStorage.setItem('role', role);
      
 
       if(user.imgURL){
@@ -63,7 +64,7 @@ getUserByToken(token).then((result) => {
 function addButtonsForUserType(userType) {
    const menu = document.getElementById('menu'); //  elemento com o ID 'menu' onde os botões serão adicionados
 
-   if (userType === 'ProductOwner') {
+   if (userType === 'product_owner') {
        
        // Adicionar botão para consultar lista de todos os usuários
        const listButton = document.createElement('button'); listButton.id = "listButton";

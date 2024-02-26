@@ -11,6 +11,8 @@ import jakarta.ejb.EJB;
 import jakarta.ejb.EntityBean;
 import jakarta.ejb.Stateless;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.json.bind.JsonbConfig;
@@ -26,14 +28,15 @@ import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
-@Singleton
+@Stateless
 public class UserBean implements Serializable {
 
     @EJB
     UserDao userDao;
 
-    @Inject
+    @EJB
     EncryptHelper encryptHelper;
 
     ArrayList<User>users;
@@ -150,7 +153,7 @@ public class UserBean implements Serializable {
         return u;
     }
     public User getUserByUsername(String username) {
-        UserEntity userEntity = userDao.findUserByToken(username);
+        UserEntity userEntity = userDao.findUserByUsername(username);
         User u = null;
         u = convertUserEntityToDto(userEntity);
         return u;
@@ -174,7 +177,7 @@ public class UserBean implements Serializable {
             userDto.setImgURL(userEntity.getImgURL());
             userDto.setFirstName(userEntity.getFirstName());
             userDto.setLastName(userEntity.getLastName());
-            userDto.setTypeOfUSer(userEntity.getTypeOfUser());
+            userDto.setTypeOfUser(userEntity.getTypeOfUser());
             userDto.setActive(userEntity.getIsActive());
             return userDto;
         }
@@ -191,7 +194,7 @@ public class UserBean implements Serializable {
         userEntity.setFirstName(user.getFirstName());
         userEntity.setLastName(user.getLastName());
         userEntity.setIsActive(true);
-        userEntity.setTypeOfUser("Developer");
+        userEntity.setTypeOfUser("developer");
 
         return userEntity;
     }

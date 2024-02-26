@@ -43,25 +43,23 @@ getUserByToken(token).then((result) => {
    } else {
       user=result;
       user_img.src = user.imgURL;
-      document.getElementById("username_edit").textContent = user.username; 
+      document.getElementById("user").textContent = user.username; 
    }
 
 });
 
 async function getUserByUsername(token, username) {
-    const data = {username: username};
     try {
 
         const response = await fetch("http://localhost:8080/project_backend/rest/users/user", {
 
-            method: "GET",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-
-                token:token
-            },
-             body: JSON.stringify(data)
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept':   'application/json',
+            "token":token,
+            'username': username
+        },
 
         });
  
@@ -86,15 +84,15 @@ async function getUserByUsername(token, username) {
        alert("User does not exist");
     
     } else {
-       user1=result;
-       user_photo.src = user1.imgURL;
-       document.getElementById("edit_firstName").placeholder = user1.firstName;
-       document.getElementById("edit_URL").placeholder = user1.imgURL;
-       document.getElementById("edit_lastName").placeholder = user1.lastName;
-       document.getElementById("edit_email").placeholder = user1.email;
-       document.getElementById("edit_password").placeholder = user1.password;
-       document.getElementById("edit_phone").placeholder = user1.phoneNumber;
-       document.getElementById("user_photo").placeholder = user1.imgURL;
+       user=result;
+       user_photo.src = user.imgURL;
+       document.getElementById("edit_firstName").placeholder = user.firstName;
+       document.getElementById("edit_URL").placeholder = user.imgURL;
+       document.getElementById("edit_lastName").placeholder = user.lastName;
+       document.getElementById("edit_email").placeholder = user.email;
+       document.getElementById("edit_phone").placeholder = user.phoneNumber;
+       document.getElementById("user_photo").placeholder = user.imgURL;
+       document.getElementById("username_edit").textContent = user.username;
 
     }
     
@@ -115,7 +113,7 @@ document.querySelector("#logout").addEventListener("click", function () {
 //action Listenner para o botao Cancel
 document.getElementById("btn_cancel").addEventListener("click", function () {
 
-   window.location.href = "scrum.html";
+   window.location.href = "productOwner.html";
 });
 
 
@@ -127,8 +125,8 @@ document.querySelector("header h1").addEventListener("click", function () {
 
 
 // Adiciona um evento de alteração para cada campo de entrada
-document.getElementById("edit_password").addEventListener("change", function () {
-   passwordEdited = true;
+document.getElementById("edit_element").addEventListener("change", function () {
+   typeOfUSer = true;
 });
 
 document.getElementById("edit_email").addEventListener("change", function () {
@@ -178,7 +176,7 @@ function writeDate() {
       let firstNameEdited = false;
       let lastNameEdited = false;
       let phoneEdited = false;
-      let passwordEdited = false;
+      let typeOfUSer = false;
       let photoEdited = false;
       let editField = false;
 
@@ -233,22 +231,21 @@ async function saveChanges() {
       }
    }
    
-   if (passwordEdited && document.getElementById("edit_password").value != "") {
-      updatedUserData.password = document.getElementById("edit_password").value;
+   if (typeOfUSer && document.getElementById("edit_element").value != "") {
+      updatedUserData.typeOfUSer = document.getElementById("edit_element").value;
       editField = true;
    }
 
 
    try {
       const responseStatus = await updateProfile(token, updatedUserData);
+      console.log(responseStatus);
       return responseStatus; 
    } catch (error) {
       
    }
    
 }
-
-
 
 //action listenner para o botao save da pagina
 

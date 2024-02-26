@@ -77,7 +77,7 @@ public class UserService {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getUserByToken(@HeaderParam("Token") String token) {
+    public Response getUserByToken(@HeaderParam("token") String token) {
         if (token != null) {
 
             User user = userBean.getUserByToken(token);
@@ -97,7 +97,7 @@ public class UserService {
     @Path("/user")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getUserByToken(@HeaderParam("token") String token, @QueryParam("username") String username) {
+    public Response getUserByToken(@HeaderParam("token") String token, @HeaderParam("username") String username) {
         if (token != null) {
 
             User user = userBean.getUserByToken(token);
@@ -106,9 +106,9 @@ public class UserService {
                 User userFind = userBean.getUserByUsername(username);
                 return Response.ok(userFind).build();
             } else {
-
-                return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
             }
+
         } else {
 
             return Response.status(Response.Status.BAD_REQUEST).build();
@@ -128,6 +128,23 @@ public class UserService {
             return Response.status(Response.Status.NOT_FOUND).entity("No users found").build();
         }
     }
+
+    @DELETE
+    @Path("/deleteUser")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response removeUser(@HeaderParam("token") String token, @HeaderParam("username") String username) {
+        User user = userBean.getUserByToken(token);
+        if (user != null && (user.getTypeOfUser().equals("product_owner"))) {
+            boolean deleted = userBean.removeUser(username);
+            if (deleted) {
+                return Response.status(Response.Status.OK).entity("User deleted successfully").build();
+            }
+
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Forbidden").build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).entity("User with this token is not found").build();
+    }
+
 
     @POST
     @Path("/login")
@@ -256,34 +273,9 @@ public class UserService {
         if (userRequested==null) return Response.status(400).entity("Failed").build();
         return Response.status(200).entity(userRequested).build();
     }
-/*
-    @POST
-    @Path("/login")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response login(LoginDto user){
-        String token = userBean.login(user);
-        if(token != null){
-            return Response.status(200).entity(token).build();
-        }
-        return Response.status(403).entity("Wrong Username or Password!").build();
-    }
-*/
 
 
 
-
-
-
-    @DELETE
-    @Path("/delete")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response removeUser(@QueryParam("username")String username) {
-        boolean deleted = userBean.removeUser(username);
-        if (!deleted) return Response.status(200).entity("User with this username is not found").build();
-
-        return Response.status(200).entity("deleted").build();
-    }
     @POST
     @Path("/logout")
     @Produces(MediaType.APPLICATION_JSON)

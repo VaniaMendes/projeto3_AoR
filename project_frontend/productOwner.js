@@ -81,16 +81,18 @@ async function getAllUsers(token) {
  }
 
  async function deleteUser(token, username) {
-    const data = { username: username };
+
+
     try {
         const response = await fetch("http://localhost:8080/project_backend/rest/users/deleteUser", {
             method: "DELETE",
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': '*/*',
-                "token":token
+                'Accept':   'application/json',
+                "token":token,
+                'username': username
             },
-            body: JSON.stringify(data)
+            
         });
  
         if (response.ok) {
@@ -126,10 +128,12 @@ async function getAllUsers(token) {
             usersListElement.innerHTML = '';
             
             for (const user of users) {
+                if(user.active){
                 const fullName = (user.firstName + " " + user.lastName).toUpperCase();
                 const cardElement = createCardElement(user, token);              
                 usersListElement.appendChild(cardElement);
-            }          
+            } 
+        }         
             // Após imprimir os usuários, adiciona os ouvintes de evento aos cartões
             addCardEventListeners();
         }
@@ -199,8 +203,9 @@ function createCardElement(user, token) {
         const userUsername = event.currentTarget.closest("[data-username]").dataset.username;
         if (confirm("Do you want to delete this user?")) {
         deleteUser(token, userUsername).then(result => {
-            console.log(result);
+            console.log(userUsername);
             if (result) {
+                alert("Successfully deleted user");
                 printListUsers(token);
             } else {
                 console.log("Failed to delete user");
