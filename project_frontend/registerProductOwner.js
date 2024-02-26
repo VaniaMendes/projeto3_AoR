@@ -18,7 +18,8 @@ document.querySelector("header h1").addEventListener("click", function () {
         'register_firstName',
         'register_lastName',
         'register_phone',
-        'register_photo_main'
+        'register_photo_main',
+        'register_typeOfUser'
     ];
  
     try {

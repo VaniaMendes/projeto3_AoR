@@ -303,6 +303,16 @@ public class UserBean implements Serializable {
         return wasRemoved;
     }
 
+    public boolean deletePermanentlyUser(String username){
+        UserEntity userEntity = userDao.findUserByUsername(username);
+        boolean wasRemoved=false;
+        if (userEntity != null) {
+            userEntity.setIsActive(false);
+            wasRemoved =  userDao.removed(userEntity);
+        }
+        return wasRemoved;
+    }
+
     ///////////////////////METODOS ANTIGOS\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 /*
     //Método para adicionar uma task nova a um user

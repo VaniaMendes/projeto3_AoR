@@ -2,7 +2,8 @@ const token = sessionStorage.getItem("token");
 let user = null;
 const user_photo = document.getElementById("user_img");
 
-
+const role = sessionStorage.getItem("role");
+console.log(role);
 async function getUserByToken(token) {
    try {
        const response = await fetch("http://localhost:8080/project_backend/rest/users", {
@@ -37,10 +38,53 @@ getUserByToken(token).then((result) => {
       user_img.src = user.imgURL;
       user_photo.src = user.imgURL;
       document.getElementById("user").textContent = user.firstName;  
+      addButtonsForUserType(role);
        
    }
     printListUsers(token); 
 });
+
+function addButtonsForUserType(role) {
+    const menu = document.getElementById('menu'); //  elemento com o ID 'menu' onde os botões serão adicionados
+ 
+    if (role === 'product_owner') {
+        
+        
+        const listButton = document.createElement('button'); listButton.id = "listButton";
+        listButton.classList.add("menu_item"); listButton.innerHTML = ".";
+        listButton.textContent = 'Active Users';
+        listButton.addEventListener('click', function() {
+         printListUsers(token);
+            
+        });
+        menu.appendChild(listButton);
+
+         const listButton1 = document.createElement('button'); listButton1.id = "listButton";
+         listButton1.classList.add("menu_item"); listButton1.innerHTML = ".";
+         listButton1.textContent = 'Inactive Users';
+         listButton1.addEventListener('click', function() {
+         printInativeUsers(token);
+            
+        });
+       
+        menu.appendChild(listButton1);
+        
+       
+        
+       
+    } else if (userType === 'ScrumMaster') {
+        const listButton = document.createElement('button'); listButton.id = "listButton";
+        listButton.classList.add("menu_item"); listButton.innerHTML = ".";
+        listButton.textContent = 'Active Users';
+        listButton.addEventListener('click', function() {
+         printListUsers(token);
+            
+        });
+        menu.appendChild(listButton);
+ 
+        
+    }
+ }
 
 
 document.getElementById("btn_scrumBoard").addEventListener("click", async function () {
@@ -107,12 +151,38 @@ async function getAllUsers(token) {
  }
 
 
+ async function deleteUserForever(token, username) {
+
+
+    try {
+        const response = await fetch("http://localhost:8080/project_backend/rest/users/removeUser", {
+            method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept':   'application/json',
+                "token":token,
+                'username': username
+            },
+            
+        });
+ 
+        if (response.ok) {
+        return true;  
+        } else {
+            return false;
+        }
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        return false;
+    }
+ }
+
  async function printListUsers(token) {
     try {
         const users = await getAllUsers(token);
         const usersListElement = document.querySelector('.user_list');
         
-        if(users !== null) { 
+        if(users !== null && (user.token != token )) { 
             users.sort((a, b) => {
                 const nameA = a.firstName.toUpperCase();
                 const nameB = b.firstName.toUpperCase();
@@ -142,6 +212,45 @@ async function getAllUsers(token) {
     }
 }
 
+async function printInativeUsers(token) {
+    try {
+        const users = await getAllUsers(token);
+        const usersListElement = document.querySelector('.user_list');
+        
+        if(users !== null) { 
+            users.sort((a, b) => {
+                const nameA = a.firstName.toUpperCase();
+                const nameB = b.firstName.toUpperCase();
+                if (nameA < nameB) {
+                    return -1;
+                }
+                if (nameA > nameB) {
+                    return 1;
+                }
+                return 0;
+            }); 
+            
+            usersListElement.innerHTML = '';
+            
+            for (const user of users) {
+                if(!user.active && (user.token != token )){
+                const fullName = (user.firstName + " " + user.lastName).toUpperCase();
+                const cardElement = createCardElement(user, token);              
+                usersListElement.appendChild(cardElement);
+            } 
+        }         
+            // Após imprimir os usuários, adiciona os ouvintes de evento aos cartões
+            addCardEventListeners();
+        }
+    } catch (error) {
+        console.error('Error printing user list:', error);
+    }
+}
+
+
+
+
+
 // Função para mostrar os botões quando o mouse passa sobre o cartão
 function showButtons(event) {
     const buttonDiv = event.currentTarget.querySelector(".button_container");
@@ -170,6 +279,12 @@ function createCardElement(user, token) {
     const cardElement = document.createElement("div");
     cardElement.classList.add("user_card");
     cardElement.dataset.username = user.username;
+
+    if(user.active){
+        cardElement.classList.add("active_user");
+    }else{
+        cardElement.classList.add("inactive_user");
+    }
    
 
     // Cria a div para o cabeçalho do cartão
@@ -185,7 +300,7 @@ function createCardElement(user, token) {
 
     // Botão de edição
     const editButton = document.createElement("button");
-    editButton.innerHTML = "&#9998;";
+    editButton.innerHTML = "&#128214;";
     editButton.classList.add("edit_button");
     editButton.addEventListener("click", function (event) {
         const userUsername = event.currentTarget.closest("[data-username]").dataset.username;
@@ -201,19 +316,39 @@ function createCardElement(user, token) {
     deleteButton.addEventListener("click", function (event) {
 
         const userUsername = event.currentTarget.closest("[data-username]").dataset.username;
-        if (confirm("Do you want to delete this user?")) {
-        deleteUser(token, userUsername).then(result => {
+
+        if(user.active){
+            if (confirm("Do you want to remove this user?")) {
+            deleteUser(token, userUsername).then(result => {
+                console.log(userUsername);
+                if (result) {
+                    alert("Successfully removed user");
+                    printListUsers(token);
+                } else {
+                    console.log("Failed to remove user");
+                }
+            }).catch(error => {
+                console.error("Error remove user:", error);
+            });
+        }
+    }else {
+
+        if(confirm("Do you want to delete this user permanently?")){
+        deleteUserForever(token, userUsername).then(result => {
             console.log(userUsername);
             if (result) {
                 alert("Successfully deleted user");
-                printListUsers(token);
+                printInativeUsers(token);
             } else {
                 console.log("Failed to delete user");
             }
         }).catch(error => {
             console.error("Error deleting user:", error);
         });
+
+        }
     }
+
     });
 
     // Adiciona os botões à div de botões

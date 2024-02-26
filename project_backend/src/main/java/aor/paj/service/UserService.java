@@ -132,7 +132,7 @@ public class UserService {
     @DELETE
     @Path("/deleteUser")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response removeUser(@HeaderParam("token") String token, @HeaderParam("username") String username) {
+    public Response deleteUser(@HeaderParam("token") String token, @HeaderParam("username") String username) {
         User user = userBean.getUserByToken(token);
         if (user != null && (user.getTypeOfUser().equals("product_owner"))) {
             boolean deleted = userBean.removeUser(username);
@@ -144,6 +144,23 @@ public class UserService {
         }
         return Response.status(Response.Status.NOT_FOUND).entity("User with this token is not found").build();
     }
+
+    @DELETE
+    @Path("/removeUser")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response removeUser(@HeaderParam("token") String token, @HeaderParam("username") String username) {
+        User user = userBean.getUserByToken(token);
+        if (user != null && (user.getTypeOfUser().equals("product_owner"))) {
+            boolean deleted = userBean.deletePermanentlyUser(username);
+            if (deleted) {
+                return Response.status(Response.Status.OK).entity("User deleted successfully").build();
+            }
+
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Forbidden").build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).entity("User with this token is not found").build();
+    }
+
 
 
     @POST

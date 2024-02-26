@@ -85,7 +85,7 @@ async function getUserByUsername(token, username) {
     
     } else {
        user=result;
-       user_photo.src = user.imgURL;
+       document.getElementById("user_photo").src = user.imgURL;
        document.getElementById("edit_firstName").placeholder = user.firstName;
        document.getElementById("edit_URL").placeholder = user.imgURL;
        document.getElementById("edit_lastName").placeholder = user.lastName;
@@ -93,6 +93,7 @@ async function getUserByUsername(token, username) {
        document.getElementById("edit_phone").placeholder = user.phoneNumber;
        document.getElementById("user_photo").placeholder = user.imgURL;
        document.getElementById("username_edit").textContent = user.username;
+       document.getElementById("register_typeOfUser").placeholder = user.typeOfUSer;
 
     }
     

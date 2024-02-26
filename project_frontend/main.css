@@ -1351,7 +1351,7 @@ label {
 }
 
 .edit_button, .delete_button {
-   background-color: var(--white); 
+   background-color: none; 
    border: none; 
    margin-left: 5px; 
    border-radius: 5px; 
@@ -1395,6 +1395,19 @@ label {
    margin-bottom: 40px;
    width: 300px;
    height: 400px;
+}
+
+.active_user{
+   background-color: #d6f4d6; 
+   border-radius: 5px;
+   margin: 5px;
+   
+}
+
+.inactive_user{
+   background-color: #f7d4d4;
+   border-radius: 5px;
+   margin: 5px;
 }
 
 
