@@ -83,25 +83,30 @@ async function getAllUsers(token) {
     }
  }
 
- deleteButton.addEventListener("click", function () {
-    const username = user.username; // Supondo que você tenha o nome de usuário disponível
-    deleteUser(username); // Chama a função para excluir o usuário
-});
-
-async function deleteUser(userId, token) {
+ async function deleteUser(token, username) {
+    const data = { username: username };
     try {
-        // Faça uma solicitação para o servidor para atualizar o estado do usuário
-        await updateUserStatus(userId, "inactive");
-        // Remova o cartão do usuário da interface do usuário
-        const userCard = document.querySelector(`.user_card[data-user-id="${userId}"]`);
-        if (userCard) {
-            userCard.remove();
+        const response = await fetch("http://localhost:8080/project_backend/rest/users/deleteUser", {
+            method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*',
+                "token":token
+            },
+            body: JSON.stringify(data)
+        });
+ 
+        if (response.ok) {
+        return true;  
+        } else {
+            return false;
         }
-        console.log("Usuário desativado com sucesso.");
     } catch (error) {
-        console.error("Erro ao desativar o usuário:", error);
+        console.error("Error deleting user:", error);
+        return false;
     }
-}
+ }
+
 
 
  async function printListUsers(token) {
@@ -125,20 +130,12 @@ async function deleteUser(userId, token) {
             usersListElement.innerHTML = '';
             
             for (const user of users) {
-                const fullName = user.firstName.toUpperCase() + " " + user.lastName.toUpperCase();
-                const cardElement = createCardElement(fullName); 
-                
-                // Adicionar o ID do usuário como atributo de dados para o elemento do cartão
-                cardElement.dataset.userId = user.id;
-                
-                // Adicionar um ouvinte de evento para o cartão do usuário
-                cardElement.addEventListener("click", function(event) {
-                    const userId = event.currentTarget.dataset.userId;
-                    console.log("Clicou no usuário com ID:", userId);
-                });
-                
+                if(user.active){
+                const fullName = (user.firstName + " " + user.lastName).toUpperCase();
+                const cardElement = createCardElement(user, token);              
                 usersListElement.appendChild(cardElement);
             }
+        }
 
             // Após imprimir os usuários, adiciona os ouvintes de evento aos cartões
             addCardEventListeners();
@@ -171,15 +168,20 @@ function addCardEventListeners() {
     });
 }
 
-function createCardElement(userName) {
+function createCardElement(user, token) {
+    console.log(user);
     // Cria a div principal para o cartão do usuário
     const cardElement = document.createElement("div");
     cardElement.classList.add("user_card");
+    cardElement.dataset.username = user.username;
+   
 
     // Cria a div para o cabeçalho do cartão
     const cardHeaderElement = document.createElement("div");
     cardHeaderElement.classList.add("card_header");
-    cardHeaderElement.textContent = userName;
+    const fullName = (user.firstName + " " + user.lastName).toUpperCase();
+    cardHeaderElement.textContent = fullName;
+    
 
     // Cria a div para os botões
     const buttonDiv = document.createElement("div");
@@ -193,12 +195,26 @@ function createCardElement(userName) {
         // Lógica para editar o usuário
     });
 
-    // Botão de exclusão
+    // Botão de delete
     const deleteButton = document.createElement("button");
     deleteButton.innerHTML = "&#128465;";
     deleteButton.classList.add("delete_button");
-    deleteButton.addEventListener("click", function () {
-        // Lógica para excluir o usuário
+    deleteButton.addEventListener("click", function (event) {
+
+        const userUsername = event.currentTarget.closest("[data-username]").dataset.username;
+        console.log(userUsername);
+        if (confirm("Do you want to delete this user?")) {
+        deleteUser(token, userUsername).then(result => {
+            console.log(result);
+            if (result) {
+                printListUsers(token);
+            } else {
+                console.log("Failed to delete user");
+            }
+        }).catch(error => {
+            console.error("Error deleting user:", error);
+        });
+    }
     });
 
     // Adiciona os botões à div de botões
@@ -214,12 +230,11 @@ function createCardElement(userName) {
     // Retorna o cartão completo
     return cardElement;
 }
-
-
-
   document.getElementById("btn_task").addEventListener("click", async function () {
     window.location.href = "register.html";
   });
+
+
  
 
  

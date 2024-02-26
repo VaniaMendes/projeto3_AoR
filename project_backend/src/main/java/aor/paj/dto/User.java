@@ -141,5 +141,7 @@ public class User{
     public void setTypeOfUSer(String typeOfUSer) {
         this.typeOfUSer = typeOfUSer;
     }
+
+
 }
 

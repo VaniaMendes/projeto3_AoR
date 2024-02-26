@@ -145,6 +145,7 @@ public class UserBean implements Serializable {
             userDto.setFirstName(userEntity.getFirstName());
             userDto.setLastName(userEntity.getLastName());
             userDto.setTypeOfUSer(userEntity.getTypeOfUser());
+            userDto.setActive(userEntity.getIsActive());
             return userDto;
         }
         return null;
@@ -159,7 +160,7 @@ public class UserBean implements Serializable {
         userEntity.setImgURL(user.getImgURL());
         userEntity.setFirstName(user.getFirstName());
         userEntity.setLastName(user.getLastName());
-        userEntity.setIsActive(false);
+        userEntity.setIsActive(true);
         userEntity.setTypeOfUser("Developer");
 
         return userEntity;
