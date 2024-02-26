@@ -1316,3 +1316,86 @@ label {
 #aside_editProfile {
    margin-top: 70px;
 }
+ /* Página product Owner */
+#users_container{
+   position: absolute;
+   top:35%;
+   left: 58%;
+   transform: translate(-50%, -50%);
+}
+#btn_user{
+  outline:none !important;
+  font-weight: bold;
+}
+
+.user_list{
+   height: 455px;
+   max-width:310px;
+   display:flex;
+   flex-direction: column;
+   align-items: left;
+   border-radius: 5px;
+   padding: 10px;
+   overflow-y: auto;
+}
+
+
+.card-header{
+   border-radius: 5px;
+   border: 2px solid var(--blue);
+   width:280px;
+   align-items:left;
+   margin: 5px auto;
+   padding: 5px;
+
+}
+
+.edit_button, .delete_button {
+   background-color: var(--white); 
+   border: none; 
+   margin-left: 5px; 
+   border-radius: 5px; 
+   cursor: pointer; 
+   align-items: right;
+}
+
+
+.edit_button:hover, .delete_button:hover {
+   background-color: var(--white_active); 
+}
+.edit_button:active, .delete_button:active {
+   background-color: var(--light-blue); 
+}
+.card_header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+}
+
+.container{
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   margin-top:20px;
+   position: absolute;
+   top:50%;
+   left: 58%;
+   transform: translate(-50%, -50%);
+   width: 500px;
+   height: 300px;
+
+}
+
+.form_register_PO{
+   display: grid;
+   grid-template-columns: repeat(2, 1fr);
+   gap: 30px; 
+   grid-row-gap: 3px;
+   margin-top: 40px;
+   margin-bottom: 40px;
+   width: 300px;
+   height: 400px;
+}
+
+
+

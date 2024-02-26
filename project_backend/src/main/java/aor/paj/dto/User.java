@@ -43,7 +43,7 @@ public class User{
         this.imgURL=null;
         this.tasks=new ArrayList<>();
         this.isActive=true;
-        this.typeOfUSer = "developer";
+        this.typeOfUSer = "Developer";
 
     }
 
@@ -141,5 +141,7 @@ public class User{
     public void setTypeOfUSer(String typeOfUSer) {
         this.typeOfUSer = typeOfUSer;
     }
+
+
 }
 

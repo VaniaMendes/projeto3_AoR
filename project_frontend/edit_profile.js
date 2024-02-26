@@ -47,8 +47,8 @@ getUserByToken(token).then((result) => {
       document.getElementById("edit_email").placeholder = user.email;
       document.getElementById("edit_password").placeholder = user.password;
       document.getElementById("edit_phone").placeholder = user.phoneNumber;
-      document.getElementById("user_photo").placeholder = user.imgURL
-      document.getElementById("user").textContent = user.firstName;    
+      document.getElementById("user_photo").placeholder = user.imgURL;
+         
       
    }
 

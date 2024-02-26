@@ -40,7 +40,8 @@ document.getElementById("register_submit").addEventListener('click', async funct
            inputFieldIds.forEach(fieldId => {
                document.getElementById(fieldId).value = '';
            });
-           window.location.href = 'login.html';
+         window.location.href = 'login.html';
+            
        } else {
            switch (response.status) {
                case 422:

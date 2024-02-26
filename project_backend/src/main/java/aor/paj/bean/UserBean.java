@@ -7,6 +7,7 @@ import aor.paj.dto.User;
 import aor.paj.dto.UserDetails;
 import aor.paj.entity.UserEntity;
 import jakarta.ejb.EJB;
+import jakarta.ejb.EntityBean;
 import jakarta.ejb.Stateless;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.json.bind.Jsonb;
@@ -71,6 +72,21 @@ public class UserBean implements Serializable {
         return null;
     }
 
+    public List<User> getAllUsers() {
+            List<User> users = new ArrayList<>();
+            List<UserEntity> userEntities = userDao.findAllUsers();
+
+            if(userEntities != null){
+                for(UserEntity userEntity : userEntities){
+                    User user = new User();
+                    user = convertUserEntityToDto(userEntity);
+                    users.add(user);
+                }
+            }
+
+            return users;
+    }
+
     public boolean updateUser(String token, User updatedUser) {
         if (token == null || token.isEmpty()) {
             return false;
@@ -109,6 +125,12 @@ public class UserBean implements Serializable {
         u = convertUserEntityToDto(userEntity);
         return u;
     }
+    public User getUserByUsername(String username) {
+        UserEntity userEntity = userDao.findUserByToken(username);
+        User u = null;
+        u = convertUserEntityToDto(userEntity);
+        return u;
+    }
 
     private String generateNewToken() {
         SecureRandom secureRandom = new SecureRandom();
@@ -129,6 +151,7 @@ public class UserBean implements Serializable {
             userDto.setFirstName(userEntity.getFirstName());
             userDto.setLastName(userEntity.getLastName());
             userDto.setTypeOfUSer(userEntity.getTypeOfUser());
+            userDto.setActive(userEntity.getIsActive());
             return userDto;
         }
         return null;
@@ -143,8 +166,8 @@ public class UserBean implements Serializable {
         userEntity.setImgURL(user.getImgURL());
         userEntity.setFirstName(user.getFirstName());
         userEntity.setLastName(user.getLastName());
-        userEntity.setIsActive(false);
-        userEntity.setTypeOfUser("developer");
+        userEntity.setIsActive(true);
+        userEntity.setTypeOfUser("Developer");
 
         return userEntity;
     }
@@ -254,6 +277,16 @@ public class UserBean implements Serializable {
         UserEntity userEntity = userDao.findUserByEmail(email);
 
         return userEntity == null;
+    }
+
+    public boolean removeUser(String username){
+        UserEntity userEntity = userDao.findUserByUsername(username);
+        boolean wasRemoved=false;
+        if (userEntity != null) {
+            userEntity.setIsActive(false);
+            wasRemoved =  userDao.update(userEntity);
+        }
+        return wasRemoved;
     }
 
     ///////////////////////METODOS ANTIGOS\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -408,15 +441,6 @@ public class UserBean implements Serializable {
         return user_validate;
     }
 
-    public boolean removeUser(String username) {
-        for (User user : users) {
-            if (user.getUsername().equals(username)) {
-                users.remove(user);
-                return true;
-            }
-        }
-        return false;
-    }
 
 
     public User updatePhoto(String username,String pass,String newPhoto){

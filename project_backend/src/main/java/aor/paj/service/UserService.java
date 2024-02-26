@@ -88,6 +88,41 @@ public class UserService {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }
+    @GET
+    @Path("/user")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getUserByToken(@HeaderParam("token") String token, @QueryParam("username") String username) {
+        if (token != null) {
+
+            User user = userBean.getUserByToken(token);
+
+            if (user != null) {
+                User userFind = userBean.getUserByUsername(username);
+                return Response.ok(userFind).build();
+            } else {
+
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+        } else {
+
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+    }
+
+    @GET
+    @Path("/all")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getAllUsers(@HeaderParam("Token") String token) {
+        List<User> allUsers = userBean.getAllUsers();
+
+        if (allUsers != null && !allUsers.isEmpty()) {
+            return Response.ok(allUsers).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).entity("No users found").build();
+        }
+    }
 
     @POST
     @Path("/login")
@@ -259,12 +294,22 @@ public class UserService {
 
     }
 
+    @DELETE
+    @Path("/deleteUser")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response removeUser(@HeaderParam("token") String token, @QueryParam("username") String username) {
+        User user = userBean.getUserByToken(token);
+        if (user != null) {
+            boolean deleted = userBean.removeUser(username);
+            if (deleted) {
+                return Response.status(Response.Status.OK).entity("User deleted successfully").build();
+            }
 
-
-
-
-
-
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to delete user").build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).entity("User with this token is not found").build();
+    }
 
     @DELETE
     @Path("/delete")
@@ -275,80 +320,6 @@ public class UserService {
 
         return Response.status(200).entity("deleted").build();
     }
-    @PUT
-    @Path("/updatePhoto")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response updatePhoto(@HeaderParam("username") String username, @HeaderParam("password")String password,@HeaderParam("newPhoto") String newPhoto){
-        User updateUser = userBean.updatePhoto(username, password,newPhoto);
-        if(updateUser != null){
-            return Response.status(200).entity(updateUser).build();
-        }else{
-            return Response.status(404).entity("not found").build();
-        }
-    }
-    @PUT
-    @Path("/updatePassword")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response updatePassword(@HeaderParam("username") String username, @HeaderParam("password") String password, @HeaderParam("newPassword") String newPassword){
-        boolean fieldChanged = userBean.updatePassword(username, password, newPassword);
-        if(fieldChanged){
-            return Response.status(200).entity("Password changed with successfuly").build();
-        }else{
-            return Response.status(404).entity("not found").build();
-        }
-
-    }
-
-    @PUT
-    @Path("/updateEmail")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response updateEmail(@HeaderParam("username") String username, @HeaderParam("password") String password, @HeaderParam("email") String email){
-        boolean fieldChanged = userBean.updateEmail(username, password, email);
-        if(fieldChanged){
-            return Response.status(200).entity("Email changed with successfuly").build();
-        }else{
-            return Response.status(404).entity("not found").build();
-        }
-    }
-
-    @PUT
-    @Path("/updateFirstName")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response updateFirstName(@HeaderParam("username") String username, @HeaderParam("password") String password, @HeaderParam("firstName") String firstName){
-        boolean fieldChanged = userBean.updateFirstName(username, password,firstName);
-        if(fieldChanged){
-            return Response.status(200).entity("First Name changed with successfuly").build();
-        }else{
-            return Response.status(404).entity("not found").build();
-        }
-
-    }
-    @PUT
-    @Path("/updateLastName")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response updateLastName(@HeaderParam("username") String username, @HeaderParam( "password") String password, @HeaderParam("lastName") String lastName){
-           boolean fieldChanged = userBean.updateLastName(username, password, lastName);
-            if(fieldChanged){
-                return Response.status(200).entity("Last Name changed with successfuly").build();
-            }else{
-                return Response.status(404).entity("not found").build();
-            }
-    }
-
-    @PUT
-    @Path("/updatePhoneNumber")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response updatePhoneNumber(@HeaderParam("username") String username, @HeaderParam("password") String password, @HeaderParam("phonenumber") String phonenumber){
-        boolean fieldChanged = userBean.updatePhoneNumber(username, password, phonenumber);
-        if(fieldChanged){
-            return Response.status(200).entity("Phone Number  changed with successfuly").build();
-        }else{
-            return Response.status(404).entity("not found").build();
-        }
-
-    }
-
-
     @POST
     @Path("/logout")
     @Produces(MediaType.APPLICATION_JSON)
@@ -359,6 +330,5 @@ public class UserService {
 
         return Response.status(200).entity("Success").build();
     }
-
 
 }
