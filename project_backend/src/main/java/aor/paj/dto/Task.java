@@ -25,16 +25,35 @@ public class Task  {
     @XmlElement
     private String state;
 
+    @XmlElement
+    private boolean isActive;
+    @XmlElement
+    private User author;
+    @XmlElement
+    private Category category;
+
     public Task() {
 
         Date idTime=new Date();
-        this.id =  idTime.getTime();;
+        this.id =  idTime.getTime();
         this.title = null;
         this.description = null;
         this.initialDate = null;
         this.endDate = null;
-        this.priority=0;
+        this.priority=100;
         this.state="toDo";
+        this.author=null;
+        this.category = null;
+        this.isActive = true;
+    }
+
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
     public int getPriority() {
@@ -63,7 +82,7 @@ public class Task  {
 
     public void setId(long id) {
 
-        this.id =  id;;
+        this.id =  id;
     }
 
     public String getTitle() {
@@ -96,5 +115,21 @@ public class Task  {
 
     public void setEndDate(LocalDate finalDate) {
         this.endDate = finalDate;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }

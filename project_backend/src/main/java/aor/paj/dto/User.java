@@ -3,9 +3,6 @@ package aor.paj.dto;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-
 @XmlRootElement
 public class User{
     @XmlElement
@@ -27,9 +24,7 @@ public class User{
     @XmlElement
     private boolean isActive;
     @XmlElement
-    private String typeOfUSer;
-    @XmlElement
-    private ArrayList<Task> tasks;
+    private String typeOfUser;
 
 
 
@@ -41,21 +36,10 @@ public class User{
         this.lastName=null;
         this.phoneNumber=null;
         this.imgURL=null;
-        this.tasks=new ArrayList<>();
         this.isActive=true;
-        this.typeOfUSer = "Developer";
+        this.typeOfUser = "developer";
 
     }
-
-
-    public ArrayList<Task> getTasks() {
-        return tasks;
-    }
-
-    public void setTasks(ArrayList<Task> tasks) {
-        this.tasks = tasks;
-    }
-
 
 
     public String getUsername() {
@@ -121,10 +105,7 @@ public class User{
     public void setToken(String token) {
         this.token = token;
     }
-
-    public void addTask(Task task){
-        tasks.add(task);
-    }
+    
 
     public boolean isActive() {
         return isActive;
@@ -134,12 +115,12 @@ public class User{
         isActive = active;
     }
 
-    public String getTypeOfUSer() {
-        return typeOfUSer;
+    public String getTypeOfUser() {
+        return typeOfUser;
     }
 
-    public void setTypeOfUSer(String typeOfUSer) {
-        this.typeOfUSer = typeOfUSer;
+    public void setTypeOfUser(String typeOfUser) {
+        this.typeOfUser = typeOfUser;
     }
 
 

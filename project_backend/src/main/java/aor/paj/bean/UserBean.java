@@ -6,6 +6,7 @@ import aor.paj.dto.Task;
 import aor.paj.dto.User;
 import aor.paj.dto.UserDetails;
 import aor.paj.entity.UserEntity;
+import aor.paj.utils.EncryptHelper;
 import jakarta.ejb.EJB;
 import jakarta.ejb.EntityBean;
 import jakarta.ejb.Stateless;
@@ -25,30 +26,22 @@ import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
 
-@Stateless
+@Singleton
 public class UserBean implements Serializable {
 
     @EJB
     UserDao userDao;
+
+    @Inject
+    EncryptHelper encryptHelper;
 
     ArrayList<User>users;
 
 
     public UserBean(){
     }
-    //Método para adicionar um user novo ao json
-    public boolean addUser(User user) {
 
-        UserEntity userFromDb = userDao.findUserByUsername(user.getUsername());
-        if (userFromDb == null) {
-            userDao.persist(convertUserDtotoUserEntity(user));
-            return true;
-        } else {
-            return false;
-        }
-    }
     public User getUser(String username, String password){
         User userRequested=null;
         for(int i=0;i<users.size() && userRequested==null;i++){
@@ -62,6 +55,7 @@ public class UserBean implements Serializable {
 
     public String loginDB(LoginDto user){
         UserEntity userEntity = userDao.findUserByUsername(user.getUsername());
+        user.setPassword(encryptHelper.encryptPassword(user.getPassword()));
         if (userEntity != null){
             if (userEntity.getPassword().equals(user.getPassword())){
                 String token = generateNewToken();
@@ -86,6 +80,12 @@ public class UserBean implements Serializable {
 
             return users;
     }
+
+    /**
+     *
+     * @param token
+     * @return return is null if user is not found or token not found
+     */
 
     public boolean updateUser(String token, User updatedUser) {
         if (token == null || token.isEmpty()) {
@@ -116,6 +116,30 @@ public class UserBean implements Serializable {
     }
             return userDao.update(userEntity);
 
+    }
+
+
+    /**
+     * Update ao role do user, só disponivel para users do tipo product owner
+     * @param username
+     * @param newRole
+     * @return
+     */
+    public boolean updateUserRole(String username, String newRole) {
+        boolean status;
+
+        UserEntity userEntity = userDao.findUserByUsername(username);
+
+        if(userEntity != null) {
+            userEntity.setTypeOfUser(newRole);
+            userDao.update(userEntity);
+            status = true;
+        } else {
+            status = false;
+        }
+
+
+        return status;
     }
 
 
@@ -171,25 +195,12 @@ public class UserBean implements Serializable {
 
         return userEntity;
     }
-/*
-    public String login(User user){
-        UserEntity userEntity = userDao.fin(user.getEmail());
-        if (userEntity != null){
-            if (userEntity.getPassword().equals(user.getPassword())){
-                String token = generateNewToken();
-                userEntity.setToken(token);
-                return token;
-            }
-        }
-        return null;
-    }
-
-
-    */
 
     public boolean register(User user){
         UserEntity u= userDao.findUserByUsername(user.getUsername());
+
         if (u==null){
+            user.setPassword(encryptHelper.encryptPassword(user.getPassword()));
             userDao.persist(convertUserDtotoUserEntity(user));
             return true;
         }else
@@ -290,12 +301,13 @@ public class UserBean implements Serializable {
     }
 
     ///////////////////////METODOS ANTIGOS\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
+/*
     //Método para adicionar uma task nova a um user
     public void addTask(User user, Task task){
         user.getTasks().add(task);
 
     }
+
     //Método para eliminar uma task
     public boolean removeTask(User user,long id) {
         boolean taskRemoved=false;
@@ -324,6 +336,8 @@ public class UserBean implements Serializable {
         System.out.println(taskRequested);
         return taskRequested;
     }
+
+     */
 
     //faz o update do estado da task que recebe como input
     public void updateTaskState(Task task, String state){

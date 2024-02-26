@@ -83,6 +83,10 @@ public class UserEntity implements Serializable{
 		return password;
 	}
 
+	/**
+	 * This method stores the password hashed
+	 * @param password recieved as hashed
+	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}

@@ -8,6 +8,7 @@ import aor.paj.dto.User;
 import aor.paj.dto.UserDetails;
 
 import aor.paj.entity.UserEntity;
+import aor.paj.utils.EncryptHelper;
 import jakarta.inject.Inject;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
@@ -16,6 +17,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.io.StringReader;
 import java.util.List;
 
 @Path("/users")
@@ -26,6 +28,9 @@ public class UserService {
 
     @Inject
     TaskBean taskBean;
+
+    @Inject
+    EncryptHelper encryptHelper;
 
 
     @POST
@@ -129,6 +134,7 @@ public class UserService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(LoginDto user) {
+
         String token = userBean.loginDB(user);
         if (token != null) {
             // Criar um objeto JSON contendo apenas o token
@@ -182,7 +188,9 @@ public class UserService {
             }
 
             if(updatedUser.getPassword() != null){
-                user.setPassword(updatedUser.getPassword());
+                String plainPassword = updatedUser.getPassword();
+                String hashedPassword = encryptHelper.encryptPassword(plainPassword);
+                user.setPassword(hashedPassword);
             }
 
 
@@ -194,8 +202,39 @@ public class UserService {
             }
         }else{
         return Response.status(401).entity("Invalid credentials").build();
+        }
     }
-}
+
+    @PUT
+    @Path("/{username}/updateUserRole")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateUser(@HeaderParam("token") String token, @PathParam("username") String username, String newRole) {
+        Response response;
+
+        JsonObject jsonObject = Json.createReader(new StringReader(newRole)).readObject();
+        String newRoleConverted = jsonObject.getString("typeOfUser");
+
+        if (userBean.getUserByToken(token) == null) {
+            response = Response.status(403).entity("Invalid token").build();
+
+        } else if (!userBean.getUserByToken(token).getTypeOfUser().equals("product_owner")) {
+            response = Response.status(403).entity("You dont have permission to do that").build();
+
+        } else if (!newRoleConverted.equals("developer") && !newRoleConverted.equals("scrum_master") && !newRoleConverted.equals("product_owner")) {
+            response = Response.status(403).entity("Invalid role").build();
+
+        } else if (userBean.updateUserRole(username, newRoleConverted)) {
+            response = Response.status(200).entity("User role updated").build();
+
+        } else {
+            response = Response.status(401).entity("Role couldnt be updated").build();
+        }
+
+        return response;
+    }
+
+
 
 
 
@@ -230,86 +269,11 @@ public class UserService {
         return Response.status(403).entity("Wrong Username or Password!").build();
     }
 */
-    @POST
-    @Path("/register")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Transactional
-    public Response validateUserRegister(User user) {
 
-        int validate = userBean.validateUserRegister(
-                user.getUsername(),
-                user.getPassword(),
-                user.getEmail(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getPhoneNumber()
-        );
 
-        if (validate==10) return Response.status(200).entity("New user was validated").build();
 
-        else if(validate==4) return Response.status(400).entity("Phone number invalid").build();
 
-        else if(validate==3) return Response.status(400).entity("Email invalid").build();
 
-        else if(validate==2) return Response.status(409).entity("Email exists").build();
-
-        else if(validate==1) return Response.status(409).entity("Username exists").build();
-
-        else if(validate==0) return Response.status(400).entity("There are empty fields").build();
-
-        return Response.status(405).entity("Something went wrong").build();
-
-    }
-
-    @POST
-    @Path("/add")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Transactional
-    public Response addUser(User user) {
-        int validateUser = userBean.validateUserRegister(
-                user.getUsername(),
-                user.getPassword(),
-                user.getEmail(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getPhoneNumber()
-
-        );
-            if (validateUser == 10) {
-                if (userBean.isValidUrl(user.getImgURL())) {
-                    userBean.addUser(user);
-                    return Response.status(200).entity("A new user was created").build();
-                } else return Response.status(400).entity("The URL is invalid").build();
-            } else if (validateUser == 4) return Response.status(400).entity("Phone number invalid").build();
-
-            else if (validateUser == 3) return Response.status(400).entity("Email invalid").build();
-
-            else if (validateUser == 2) return Response.status(409).entity("Email exists").build();
-
-            else if (validateUser == 1) return Response.status(409).entity("Username exists").build();
-
-            else if (validateUser == 0) return Response.status(400).entity("There are empty fields").build();
-
-            return Response.status(405).entity("Something went wrong").build();
-
-    }
-
-    @DELETE
-    @Path("/deleteUser")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response removeUser(@HeaderParam("token") String token, @QueryParam("username") String username) {
-        User user = userBean.getUserByToken(token);
-        if (user != null) {
-            boolean deleted = userBean.removeUser(username);
-            if (deleted) {
-                return Response.status(Response.Status.OK).entity("User deleted successfully").build();
-            }
-
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to delete user").build();
-        }
-        return Response.status(Response.Status.NOT_FOUND).entity("User with this token is not found").build();
-    }
 
     @DELETE
     @Path("/delete")
