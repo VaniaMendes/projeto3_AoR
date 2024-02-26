@@ -39,9 +39,7 @@ getUserByToken(token).then((result) => {
       document.getElementById("user").textContent = user.firstName;  
        
    }
-   
     printListUsers(token); 
-
 });
 
 
@@ -108,7 +106,6 @@ async function getAllUsers(token) {
  }
 
 
-
  async function printListUsers(token) {
     try {
         const users = await getAllUsers(token);
@@ -130,13 +127,10 @@ async function getAllUsers(token) {
             usersListElement.innerHTML = '';
             
             for (const user of users) {
-                if(user.active){
                 const fullName = (user.firstName + " " + user.lastName).toUpperCase();
                 const cardElement = createCardElement(user, token);              
                 usersListElement.appendChild(cardElement);
-            }
-        }
-
+            }          
             // Após imprimir os usuários, adiciona os ouvintes de evento aos cartões
             addCardEventListeners();
         }
@@ -191,8 +185,11 @@ function createCardElement(user, token) {
     const editButton = document.createElement("button");
     editButton.innerHTML = "&#9998;";
     editButton.classList.add("edit_button");
-    editButton.addEventListener("click", function () {
-        // Lógica para editar o usuário
+    editButton.addEventListener("click", function (event) {
+        const userUsername = event.currentTarget.closest("[data-username]").dataset.username;
+        console.log(userUsername);
+        sessionStorage.setItem("username", userUsername);
+        window.location.href = 'edit_Profile_ProductOwner.html';
     });
 
     // Botão de delete
@@ -202,7 +199,6 @@ function createCardElement(user, token) {
     deleteButton.addEventListener("click", function (event) {
 
         const userUsername = event.currentTarget.closest("[data-username]").dataset.username;
-        console.log(userUsername);
         if (confirm("Do you want to delete this user?")) {
         deleteUser(token, userUsername).then(result => {
             console.log(result);
@@ -231,7 +227,7 @@ function createCardElement(user, token) {
     return cardElement;
 }
   document.getElementById("btn_task").addEventListener("click", async function () {
-    window.location.href = "register.html";
+    window.location.href = "registerProductOwner.html";
   });
 
 
