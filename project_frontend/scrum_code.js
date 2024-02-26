@@ -9,7 +9,6 @@ const backgroundScrum = document.querySelector("#background");
 const taskLists = document.querySelectorAll(".task_list");
 let user = null;
 
-
 const LOW = 100;
 const MEDIUM = 200;
 const HIGH = 300;
@@ -84,9 +83,6 @@ function addButtonsForUserType(userType) {
        
    }
 }
-
-
-
 
 
 writeDate();

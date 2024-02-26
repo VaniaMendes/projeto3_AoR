@@ -88,6 +88,27 @@ public class UserService {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }
+    @GET
+    @Path("/user")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getUserByToken(@HeaderParam("Token") String token, @QueryParam("username") String username) {
+        if (token != null) {
+
+            User user = userBean.getUserByToken(token);
+
+            if (user != null) {
+                User userFind = userBean.getUserByUsername(username);
+                return Response.ok(userFind).build();
+            } else {
+
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+        } else {
+
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+    }
 
     @GET
     @Path("/all")

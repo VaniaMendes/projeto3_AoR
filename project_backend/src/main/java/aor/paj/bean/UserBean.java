@@ -125,6 +125,12 @@ public class UserBean implements Serializable {
         u = convertUserEntityToDto(userEntity);
         return u;
     }
+    public User getUserByUsername(String username) {
+        UserEntity userEntity = userDao.findUserByToken(username);
+        User u = null;
+        u = convertUserEntityToDto(userEntity);
+        return u;
+    }
 
     private String generateNewToken() {
         SecureRandom secureRandom = new SecureRandom();
