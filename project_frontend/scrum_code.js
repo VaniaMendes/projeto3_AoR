@@ -49,17 +49,17 @@ getUserByToken(token).then((result) => {
       firstName_txt.textContent = user.firstName;
       const role = user.typeOfUSer;
       sessionStorage.setItem('userType', role);
+     
 
       if(user.imgURL){
          user_img.src = user.imgURL;
       }else{user_img.src = 'user.png';
    }
+   addButtonsForUserType(role);
       
    }
 });
 
-const userType = sessionStorage.getItem('userType');
-console.log("userType: " + userType);
 
 function addButtonsForUserType(userType) {
    const menu = document.getElementById('menu'); //  elemento com o ID 'menu' onde os botões serão adicionados
@@ -68,7 +68,7 @@ function addButtonsForUserType(userType) {
        
        // Adicionar botão para consultar lista de todos os usuários
        const listButton = document.createElement('button'); listButton.id = "listButton";
-       listButton.classList.add("menu_item"); listButton.innerHTML = "&#x2B24; &nbsp;";
+       listButton.classList.add("menu_item"); listButton.innerHTML = ".";
        listButton.textContent = 'All Users';
        listButton.addEventListener('click', function() {
          window.location.href = "productOwner.html";
@@ -85,7 +85,7 @@ function addButtonsForUserType(userType) {
    }
 }
 
-addButtonsForUserType(userType);
+
 
 
 

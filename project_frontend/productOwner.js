@@ -37,8 +37,10 @@ getUserByToken(token).then((result) => {
       user_img.src = user.imgURL;
       user_photo.src = user.imgURL;
       document.getElementById("user").textContent = user.firstName;  
-      printListUsers(token);  
+       
    }
+   
+    printListUsers(token); 
 
 });
 
@@ -81,26 +83,149 @@ async function getAllUsers(token) {
     }
  }
 
- async function printListUsers(token) {
-    const users = await getAllUsers(token);
+ deleteButton.addEventListener("click", function () {
+    const username = user.username; // Supondo que você tenha o nome de usuário disponível
+    deleteUser(username); // Chama a função para excluir o usuário
+});
 
-    if (users !== null || users.length > 0) {
-        const activeUsers = users.filter(user => user.isActive); // Filtra apenas os usuários ativos
-
-    const usersContainer = document.querySelector('.users_list');
-    const userListElement = document.createElement('ul');
-
-    activeUsers.forEach(user => {
-        const userListItem = document.createElement('li');
-        userListItem.textContent = user.firstName;
-        userListElement.appendChild(userListItem);
-    });
-
-    usersContainer.appendChild(userListElement);
-
-} else {
-        console.error("Failed to fetch user data or empty user list");
+async function deleteUser(userId, token) {
+    try {
+        // Faça uma solicitação para o servidor para atualizar o estado do usuário
+        await updateUserStatus(userId, "inactive");
+        // Remova o cartão do usuário da interface do usuário
+        const userCard = document.querySelector(`.user_card[data-user-id="${userId}"]`);
+        if (userCard) {
+            userCard.remove();
+        }
+        console.log("Usuário desativado com sucesso.");
+    } catch (error) {
+        console.error("Erro ao desativar o usuário:", error);
     }
 }
 
 
+ async function printListUsers(token) {
+    try {
+        const users = await getAllUsers(token);
+        const usersListElement = document.querySelector('.user_list');
+        
+        if(users !== null) { 
+            users.sort((a, b) => {
+                const nameA = a.firstName.toUpperCase();
+                const nameB = b.firstName.toUpperCase();
+                if (nameA < nameB) {
+                    return -1;
+                }
+                if (nameA > nameB) {
+                    return 1;
+                }
+                return 0;
+            }); 
+            
+            usersListElement.innerHTML = '';
+            
+            for (const user of users) {
+                const fullName = user.firstName.toUpperCase() + " " + user.lastName.toUpperCase();
+                const cardElement = createCardElement(fullName); 
+                
+                // Adicionar o ID do usuário como atributo de dados para o elemento do cartão
+                cardElement.dataset.userId = user.id;
+                
+                // Adicionar um ouvinte de evento para o cartão do usuário
+                cardElement.addEventListener("click", function(event) {
+                    const userId = event.currentTarget.dataset.userId;
+                    console.log("Clicou no usuário com ID:", userId);
+                });
+                
+                usersListElement.appendChild(cardElement);
+            }
+
+            // Após imprimir os usuários, adiciona os ouvintes de evento aos cartões
+            addCardEventListeners();
+        }
+    } catch (error) {
+        console.error('Error printing user list:', error);
+    }
+}
+
+// Função para mostrar os botões quando o mouse passa sobre o cartão
+function showButtons(event) {
+    const buttonDiv = event.currentTarget.querySelector(".button_container");
+    buttonDiv.style.visibility = "visible";
+}
+
+// Função para ocultar os botões quando o mouse sai do cartão
+function hideButtons(event) {
+    const buttonDiv = event.currentTarget.querySelector(".button_container");
+    buttonDiv.style.visibility = "hidden";
+}
+
+// Adiciona ouvintes de evento aos cartões do usuário
+function addCardEventListeners() {
+    const userCards = document.querySelectorAll(".user_card");
+    userCards.forEach(function(card) {
+        card.addEventListener("mouseover", showButtons);
+        card.addEventListener("mouseout", hideButtons);
+        // Oculta os botões inicialmente
+        hideButtons({ currentTarget: card });
+    });
+}
+
+function createCardElement(userName) {
+    // Cria a div principal para o cartão do usuário
+    const cardElement = document.createElement("div");
+    cardElement.classList.add("user_card");
+
+    // Cria a div para o cabeçalho do cartão
+    const cardHeaderElement = document.createElement("div");
+    cardHeaderElement.classList.add("card_header");
+    cardHeaderElement.textContent = userName;
+
+    // Cria a div para os botões
+    const buttonDiv = document.createElement("div");
+    buttonDiv.classList.add("button_container");
+
+    // Botão de edição
+    const editButton = document.createElement("button");
+    editButton.innerHTML = "&#9998;";
+    editButton.classList.add("edit_button");
+    editButton.addEventListener("click", function () {
+        // Lógica para editar o usuário
+    });
+
+    // Botão de exclusão
+    const deleteButton = document.createElement("button");
+    deleteButton.innerHTML = "&#128465;";
+    deleteButton.classList.add("delete_button");
+    deleteButton.addEventListener("click", function () {
+        // Lógica para excluir o usuário
+    });
+
+    // Adiciona os botões à div de botões
+    buttonDiv.appendChild(editButton);
+    buttonDiv.appendChild(deleteButton);
+
+    // Adiciona a div de botões ao cabeçalho do cartão
+    cardHeaderElement.appendChild(buttonDiv);
+
+    // Adiciona o cabeçalho ao cartão principal
+    cardElement.appendChild(cardHeaderElement);
+
+    // Retorna o cartão completo
+    return cardElement;
+}
+
+
+
+  document.getElementById("btn_task").addEventListener("click", async function () {
+    window.location.href = "register.html";
+  });
+ 
+
+ 
+
+
+
+
+
+    

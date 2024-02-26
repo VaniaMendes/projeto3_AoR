@@ -273,6 +273,23 @@ public class UserService {
 
     }
 
+    @DELETE
+    @Path("/deleteUser")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response removeUser(@HeaderParam("token") String token, @QueryParam("username") String username) {
+        User user = userBean.getUserByToken(token);
+        if (user != null) {
+            boolean deleted = userBean.removeUser(username);
+            if (deleted) {
+                return Response.status(Response.Status.OK).entity("User deleted successfully").build();
+            }
+
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to delete user").build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).entity("User with this token is not found").build();
+    }
+
 
 
 

@@ -1317,21 +1317,58 @@ label {
    margin-top: 70px;
 }
  /* Página product Owner */
- .users_container {
+#users_container{
    position: absolute;
-   top: 50%;
-   left: 60%;
+   top:35%;
+   left: 58%;
    transform: translate(-50%, -50%);
-   width: 80%; /* Ajuste a largura conforme necessário */
-   width: 400px; /* Defina uma largura máxima se desejar */
-   padding: 20px; /* Adicione preenchimento interno conforme necessário */
-   background-color: var(--white); /* Cor de fundo */
-   border-radius: 10px; /* Adicione borda arredondada conforme necessário */
-   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Adicione sombra conforme desejado */
-   box-sizing: border-box; /* Certifique-se de que a largura inclui padding e borda */
-   text-align: center; /* Centralize o conteúdo dentro do container */
+}
+#btn_user{
+  outline:none !important;
+  font-weight: bold;
 }
 
-.users_list{
-   font-size: 40px;
+.user_list{
+   height: 455px;
+   max-width:310px;
+   display:flex;
+   flex-direction: column;
+   align-items: left;
+   border-radius: 5px;
+   padding: 10px;
+   overflow-y: auto;
 }
+
+
+.card-header{
+   border-radius: 5px;
+   border: 2px solid var(--blue);
+   width:280px;
+   align-items:left;
+   margin: 5px auto;
+   padding: 5px;
+
+}
+
+.edit_button, .delete_button {
+   background-color: var(--white); 
+   border: none; 
+   margin-left: 5px; 
+   border-radius: 5px; 
+   cursor: pointer; 
+   align-items: right;
+}
+
+
+.edit_button:hover, .delete_button:hover {
+   background-color: var(--white_active); 
+}
+.edit_button:active, .delete_button:active {
+   background-color: var(--light-blue); 
+}
+.card_header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+}
+

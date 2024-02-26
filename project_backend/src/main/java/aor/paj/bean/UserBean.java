@@ -160,7 +160,7 @@ public class UserBean implements Serializable {
         userEntity.setFirstName(user.getFirstName());
         userEntity.setLastName(user.getLastName());
         userEntity.setIsActive(false);
-        userEntity.setTypeOfUser("ProductOwner");
+        userEntity.setTypeOfUser("Developer");
 
         return userEntity;
     }
@@ -270,6 +270,16 @@ public class UserBean implements Serializable {
         UserEntity userEntity = userDao.findUserByEmail(email);
 
         return userEntity == null;
+    }
+
+    public boolean removeUser(String username){
+        UserEntity userEntity = userDao.findUserByUsername(username);
+        boolean wasRemoved=false;
+        if (userEntity != null) {
+            userEntity.setIsActive(false);
+            wasRemoved =  userDao.update(userEntity);
+        }
+        return wasRemoved;
     }
 
     ///////////////////////METODOS ANTIGOS\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -424,15 +434,6 @@ public class UserBean implements Serializable {
         return user_validate;
     }
 
-    public boolean removeUser(String username) {
-        for (User user : users) {
-            if (user.getUsername().equals(username)) {
-                users.remove(user);
-                return true;
-            }
-        }
-        return false;
-    }
 
 
     public User updatePhoto(String username,String pass,String newPhoto){

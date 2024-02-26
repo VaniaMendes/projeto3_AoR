@@ -4,6 +4,9 @@ document.querySelector("header h1").addEventListener("click", function () {
    window.location.href = "login.html";
 });
 
+let typeOfUser = sessionStorage.getItem('userType'); 
+
+
 
 //Request para criar nova conta 
 document.getElementById("register_submit").addEventListener('click', async function (event) {
@@ -40,7 +43,12 @@ document.getElementById("register_submit").addEventListener('click', async funct
            inputFieldIds.forEach(fieldId => {
                document.getElementById(fieldId).value = '';
            });
-           window.location.href = 'login.html';
+           if(typeOfUser === "ProductOwner"){
+                window.location.href = 'productOwner.html';
+            }else{
+                window.location.href = 'login.html';
+            }
+           
        } else {
            switch (response.status) {
                case 422:
