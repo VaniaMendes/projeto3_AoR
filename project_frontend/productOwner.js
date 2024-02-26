@@ -67,7 +67,6 @@ async function getAllUsers(token) {
  
         if (response.ok) {
             const users = await response.json();
-            console.log(users);
             return users;
             
             
@@ -163,7 +162,6 @@ function addCardEventListeners() {
 }
 
 function createCardElement(user, token) {
-    console.log(user);
     // Cria a div principal para o cartão do usuário
     const cardElement = document.createElement("div");
     cardElement.classList.add("user_card");

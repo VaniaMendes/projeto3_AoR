@@ -92,7 +92,7 @@ public class UserService {
     @Path("/user")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getUserByToken(@HeaderParam("Token") String token, @QueryParam("username") String username) {
+    public Response getUserByToken(@HeaderParam("token") String token, @QueryParam("username") String username) {
         if (token != null) {
 
             User user = userBean.getUserByToken(token);
@@ -311,13 +311,6 @@ public class UserService {
         return Response.status(Response.Status.NOT_FOUND).entity("User with this token is not found").build();
     }
 
-
-
-
-
-
-
-
     @DELETE
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
@@ -327,11 +320,6 @@ public class UserService {
 
         return Response.status(200).entity("deleted").build();
     }
-
-
-
-
-
     @POST
     @Path("/logout")
     @Produces(MediaType.APPLICATION_JSON)
@@ -342,6 +330,5 @@ public class UserService {
 
         return Response.status(200).entity("Success").build();
     }
-
 
 }
