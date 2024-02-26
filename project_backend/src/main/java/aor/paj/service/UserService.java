@@ -240,6 +240,61 @@ public class UserService {
     }
 
     @PUT
+    @Path("/updateProfile/{username}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateUser(@HeaderParam("token") String token, @PathParam("username") String username, User updatedUser) {
+        User user = userBean.getUserByUsername(username);
+        User typeOfUser = userBean.getUserByToken(token);
+
+        if (typeOfUser != null) {
+            if (updatedUser.getEmail() != null) {
+                if (!userBean.isEmailValid(updatedUser.getEmail())) {
+                    return Response.status(422).entity("Invalid email").build();
+                } else if(!userBean.emailAvailable(updatedUser.getEmail())) {
+                    return Response.status(422).entity("Email allready exists").build();
+                }else {
+                    user.setEmail(updatedUser.getEmail());
+                }
+            }
+            if (updatedUser.getFirstName() != null) {
+                user.setFirstName(updatedUser.getFirstName());
+            }
+            if (updatedUser.getLastName() != null) {
+                user.setLastName(updatedUser.getLastName());
+            }
+            if (updatedUser.getPhoneNumber() != null) {
+                if (!userBean.isPhoneNumberValid(updatedUser.getPhoneNumber())) {
+                    return Response.status(422).entity("Invalid phone number").build();
+                } else {
+                    user.setPhoneNumber(updatedUser.getPhoneNumber());
+                }
+            }
+            if (updatedUser.getImgURL() != null) {
+                if (!userBean.isImageUrlValid(updatedUser.getImgURL())) {
+                    return Response.status(422).entity("Image URL invalid").build();
+                } else {
+                    user.setImgURL(updatedUser.getImgURL());
+                }
+            }
+
+            if(updatedUser.getTypeOfUser() != null){
+                user.setTypeOfUser(updatedUser.getTypeOfUser());
+            }
+
+
+            boolean updatedUSer = userBean.updateUserByPO(token, username, user);
+            if (updatedUSer) {
+                return Response.status(Response.Status.OK).entity(user).build();
+            } else {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to update user").build();
+            }
+        }else{
+            return Response.status(401).entity("Invalid credentials").build();
+        }
+    }
+
+    @PUT
     @Path("/{username}/updateUserRole")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

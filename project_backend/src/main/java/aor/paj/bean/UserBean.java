@@ -89,7 +89,42 @@ public class UserBean implements Serializable {
      * @param token
      * @return return is null if user is not found or token not found
      */
+    public boolean updateUserByPO(String token, String username, User updatedUser) {
+        if (token == null || token.isEmpty()) {
+            return false;
+        }
+        UserEntity userEntity = userDao.findUserByUsername(username);
+        if (userEntity == null) {
+            return false;
+        }
 
+        if (updatedUser.getEmail() != null ) {
+            userEntity.setEmail(updatedUser.getEmail());
+        }
+        if (updatedUser.getFirstName() != null) {
+            userEntity.setFirstName(updatedUser.getFirstName());
+        }
+        if (updatedUser.getLastName() != null) {
+            userEntity.setLastName(updatedUser.getLastName());
+        }
+        if (updatedUser.getPhoneNumber() != null) {
+            userEntity.setPhoneNumber(updatedUser.getPhoneNumber());
+        }
+        if (updatedUser.getImgURL() != null) {
+            userEntity.setImgURL(updatedUser.getImgURL());
+        }
+        if (updatedUser.getPassword() != null){
+            userEntity.setPassword(updatedUser.getPassword());
+        }
+        if(updatedUser.getTypeOfUser() != null){
+            userEntity.setTypeOfUser(updatedUser.getTypeOfUser());
+        }
+        if(updatedUser.getTypeOfUser()!= null){
+            userEntity.setTypeOfUser(updatedUser.getTypeOfUser());
+        }
+        return userDao.update(userEntity);
+
+    }
     public boolean updateUser(String token, User updatedUser) {
         if (token == null || token.isEmpty()) {
             return false;

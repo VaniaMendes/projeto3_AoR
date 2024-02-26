@@ -42,8 +42,8 @@ getUserByToken(token).then((result) => {
       window.location.href = "login.html";
    } else {
       user=result;
-      user_img.src = user.imgURL;
-      document.getElementById("user").textContent = user.username; 
+      document.getElementById("user_img").src = user.imgURL;
+      document.getElementById("user").textContent = user.firstName; 
    }
 
 });
@@ -93,7 +93,7 @@ async function getUserByUsername(token, username) {
        document.getElementById("edit_phone").placeholder = user.phoneNumber;
        document.getElementById("user_photo").placeholder = user.imgURL;
        document.getElementById("username_edit").textContent = user.username;
-       document.getElementById("register_typeOfUser").placeholder = user.typeOfUSer;
+       document.getElementById("register_typeOfUser").textContent = user.typeOfUSer;
 
     }
     
@@ -182,7 +182,7 @@ function writeDate() {
       let editField = false;
 
    const updatedUserData = {};
-async function saveChanges() {
+async function saveChanges(token, username) {
   
     //Objeto para armazenar os dados atualizados do user
 
@@ -236,10 +236,10 @@ async function saveChanges() {
       updatedUserData.typeOfUSer = document.getElementById("edit_element").value;
       editField = true;
    }
-
+console.log(updatedUserData);
 
    try {
-      const responseStatus = await updateProfile(token, updatedUserData);
+      const responseStatus = await updateProfileByPO(token, username, updatedUserData);
       console.log(responseStatus);
       return responseStatus; 
    } catch (error) {
@@ -257,7 +257,7 @@ bntSave.addEventListener("click", async function () {
 
    if(result == 200 && Object.keys(updatedUserData).length !== 0){
       alert("Your valid changes have been saved");
-      window.location.href = "scrum.html";
+      window.location.href = "productOwner.html";
    }
    else if(result == 422){
       alert("Invalid data");
@@ -268,10 +268,10 @@ bntSave.addEventListener("click", async function () {
 });
 
 
-async function updateProfile(token,updatedUserData) {
+async function updateProfileByPO(token,username, updatedUserData) {
 
    try {
-       const response = await fetch("http://localhost:8080/project_backend/rest/users/updateProfile", {
+       const response = await fetch("http://localhost:8080/project_backend/rest/users/updateProfile/${username}", {
            method: 'PUT',
            headers: {
             'Content-Type': 'application/json',
@@ -286,7 +286,6 @@ async function updateProfile(token,updatedUserData) {
        }else{
          const errorMessage = await response.text();
            if (response.status === 401) {
-               window.location.href = "login.html";
            } else if (response.status === 422) {
          
            } else {   

@@ -68,9 +68,6 @@ function addButtonsForUserType(role) {
         });
        
         menu.appendChild(listButton1);
-        
-       
-        
        
     } else if (userType === 'ScrumMaster') {
         const listButton = document.createElement('button'); listButton.id = "listButton";
