@@ -6,10 +6,9 @@ setInterval(writeDate, 1000);
 
 const token = sessionStorage.getItem("token");
 const username = sessionStorage.getItem("username");
-<<<<<<< HEAD
+
 console.log(username);
-=======
->>>>>>> 232b7b7e2cc55248190b67bddabf8ba3b188fa72
+
 let user = null;
 
 async function getUserByToken(token) {
@@ -52,24 +51,18 @@ getUserByToken(token).then((result) => {
 async function getUserByUsername(token, username) {
     const data = {username: username};
     try {
-<<<<<<< HEAD
+
         const response = await fetch("http://localhost:8080/project_backend/rest/users/user", {
-=======
-        const response = await fetch("http://localhost:8080/project_backend/rest/users", {
->>>>>>> 232b7b7e2cc55248190b67bddabf8ba3b188fa72
+
             method: "GET",
             headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
-<<<<<<< HEAD
-                "token":token
-            },
-             
-=======
+
                 token:token
             },
              body: JSON.stringify(data)
->>>>>>> 232b7b7e2cc55248190b67bddabf8ba3b188fa72
+
         });
  
         if (response.ok) {
@@ -89,7 +82,7 @@ async function getUserByUsername(token, username) {
  getUserByUsername(token, username).then((result) => {
     
     if (result == null) {
-<<<<<<< HEAD
+
        alert("User does not exist");
     
     } else {
@@ -102,29 +95,11 @@ async function getUserByUsername(token, username) {
        document.getElementById("edit_password").placeholder = user1.password;
        document.getElementById("edit_phone").placeholder = user1.phoneNumber;
        document.getElementById("user_photo").placeholder = user1.imgURL;
-=======
-       window.location.href = "login.html";
-    
-    } else {
-       user=result;
-       user_photo.src = user.imgURL;
-       document.getElementById("edit_firstName").placeholder = user.firstName;
-       document.getElementById("edit_URL").placeholder = user.imgURL;
-       document.getElementById("edit_lastName").placeholder = user.lastName;
-       document.getElementById("edit_email").placeholder = user.email;
-       document.getElementById("edit_password").placeholder = user.password;
-       document.getElementById("edit_phone").placeholder = user.phoneNumber;
-       document.getElementById("user_photo").placeholder = user.imgURL;
->>>>>>> 232b7b7e2cc55248190b67bddabf8ba3b188fa72
+
     }
     
  });
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 232b7b7e2cc55248190b67bddabf8ba3b188fa72
 document.querySelector("#btn_scrumBoard").addEventListener("click", function () {
    window.location.href = "scrum.html";
 });
@@ -139,18 +114,13 @@ document.querySelector("#logout").addEventListener("click", function () {
 
 //action Listenner para o botao Cancel
 document.getElementById("btn_cancel").addEventListener("click", function () {
-<<<<<<< HEAD
-   window.location.href = "productOwner.html";
-});
 
-
-=======
    window.location.href = "scrum.html";
 });
 
 
 
->>>>>>> 232b7b7e2cc55248190b67bddabf8ba3b188fa72
+// 
 document.querySelector("header h1").addEventListener("click", function () {
    window.location.href = "scrum.html";
 });
