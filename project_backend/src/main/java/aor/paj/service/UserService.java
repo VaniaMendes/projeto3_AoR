@@ -209,7 +209,7 @@ public class UserService {
     @Path("/{username}/updateUserRole")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateUser(@HeaderParam("token") String token, @PathParam("username") String username, String newRole) {
+    public Response updateUserRole(@HeaderParam("token") String token, @PathParam("username") String username, String newRole) {
         Response response;
 
         JsonObject jsonObject = Json.createReader(new StringReader(newRole)).readObject();

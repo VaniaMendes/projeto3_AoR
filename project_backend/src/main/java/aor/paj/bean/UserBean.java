@@ -180,6 +180,18 @@ public class UserBean implements Serializable {
         }
         return null;
     }
+
+    public User convertUserEntityToDtoForTask(UserEntity userEntity) {
+        if(userEntity != null) {
+            User userDto = new User();
+            userDto.setUsername(userEntity.getUsername());
+
+            return userDto;
+        }
+        return null;
+    }
+
+
     private UserEntity convertUserDtotoUserEntity(User user){
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(user.getUsername());
