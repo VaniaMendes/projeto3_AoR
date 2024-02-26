@@ -129,6 +129,28 @@ public class TaskBean {
         return status;
     }
 
+    public boolean updateTaskActiveState(String token, String id, boolean newActiveStatus) {
+        boolean status;
+
+        UserEntity confirmUser = userDao.findUserByToken(token);
+        TaskEntity taskToUpdate = taskDao.findTaskById(Long.parseLong(id));
+
+
+        if (confirmUser != null) {
+            if (taskToUpdate != null) {
+
+                    taskToUpdate.setActive(newActiveStatus);
+                    taskDao.merge(taskToUpdate);
+                    status = true;
+            } else {
+                status = false;
+            }
+        } else {
+            status = false;
+        }
+        return status;
+    }
+
     private CategoryEntity convertCategoryToCategoryEntity(Category category){
 
         Date idTime=new Date();

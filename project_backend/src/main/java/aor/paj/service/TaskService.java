@@ -75,7 +75,7 @@ public class TaskService {
 
         //TODO TESTAR ESTA MERDA,
         // VERIFICAR SE O ID ESTÁ CORRETO,
-        // VERIFICAR SE O TITULO ESTÁ EM USO
+
 
         if (userBean.getUserByToken(token) == null) {
             response = Response.status(403).entity("Invalid token").build();
@@ -137,10 +137,43 @@ public class TaskService {
             response = Response.status(422).entity("State can only be toDo, doing or done").build();
 
         } else if (taskBean.updateTaskState(token, taskId, newStatusConverted)) {
-            response = Response.status(200).entity("Task state updated sucessfully").build();
+            response = Response.status(200).entity("Task state updated successfully").build();
 
         } else
             response = Response.status(400).entity("Failed to update task state").build();
+
+        return response;
+    }
+
+    /**
+     * Editar atributo isActive da task (soft delete), permite ao scrum master só colocar
+     * para falso, enquanto ao owner pode mudar para false ou true, o developer não deixa
+     * fazer nada
+     * @param token
+     * @param taskId
+     * @param newStatus
+     * @return
+     */
+    @PUT
+    @Path("/{taskId}/softDelete")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response softDeleteTask(@HeaderParam("token") String token, @PathParam("taskId") String taskId, String newStatus) {
+        Response response;
+
+        JsonObject jsonObject = Json.createReader(new StringReader(newStatus)).readObject();
+        boolean newActiveStatus = jsonObject.getBoolean("isActive");
+
+        if(!userBean.getUserByToken(token).getTypeOfUser().equals("product_owner") && !userBean.getUserByToken(token).getTypeOfUser().equals("scrum_master")) {
+            response = Response.status(409).entity("You dont have permissions to edit that").build();
+
+        } else if (userBean.getUserByToken(token).getTypeOfUser().equals("scrum_master") && newActiveStatus) {
+            response = Response.status(409).entity("Your role doesnt allow that").build();
+
+        } else if (taskBean.updateTaskActiveState(token, taskId, newActiveStatus)) {
+            response = Response.status(200).entity("Task active state updated successfully").build();
+
+        } else
+            response = Response.status(400).entity("Failed to update task active state").build();
 
         return response;
     }
