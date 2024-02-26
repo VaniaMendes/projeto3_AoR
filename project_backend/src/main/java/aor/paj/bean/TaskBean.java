@@ -156,6 +156,28 @@ public class TaskBean {
         return status;
     }
 
+    public boolean deleteTasksByUsername(String username) {
+        boolean status;
+
+        UserEntity confirmUser = userDao.findUserByUsername(username);
+        ArrayList<TaskEntity> tasksToDelete = taskDao.findTasksByUser(confirmUser);
+
+        if (confirmUser != null) {
+            if (tasksToDelete != null) {
+                for (TaskEntity taskEntity : tasksToDelete) {
+                    taskEntity.setActive(false);
+                }
+                status = true;
+            } else {
+                status = false;
+            }
+        } else {
+            status = false;
+        }
+
+        return status;
+    }
+
     public ArrayList<Task> getSoftDeletedTasks() {
 
         ArrayList<TaskEntity> softDeletedTasksEntities = taskDao.findSoftDeletedTasks();

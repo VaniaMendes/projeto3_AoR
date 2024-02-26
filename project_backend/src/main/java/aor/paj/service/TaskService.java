@@ -191,7 +191,7 @@ public class TaskService {
     @GET
     @Path("/getAllSoftDeletedTasks")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response softDeleteTask(@HeaderParam("token") String token) {
+    public Response getsoftDeletedTasks(@HeaderParam("token") String token) {
         Response response;
 
         ArrayList<Task> softDeletedTasks = taskBean.getSoftDeletedTasks();
@@ -209,6 +209,28 @@ public class TaskService {
             response = Response.status(400).entity("Failed to retrieve tasks").build();
         }
 
+
+        return response;
+    }
+
+    @DELETE
+    @Path("/{username}/deleteTasksByUsername")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteAllTasksByUsername(@HeaderParam("token") String token, @PathParam("username") String username) {
+        Response response;
+
+        if (userBean.getUserByToken(token) == null) {
+            response = Response.status(403).entity("Invalid token").build();
+
+        } else if (!userBean.getUserByToken(token).getTypeOfUser().equals("product_owner")) {
+            response = Response.status(403).entity("You dont have permissions to do that").build();
+
+        } else if (taskBean.deleteTasksByUsername(username))  {
+            response = Response.status(200).entity("Tasks deleted successfully").build();
+
+        } else {
+            response = Response.status(400).entity("Failed to execute order").build();
+        }
 
         return response;
     }
