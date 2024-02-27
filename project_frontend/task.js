@@ -7,7 +7,7 @@ window.onload = function() {
          window.location.href = "login.html";
       } else {
          firstName_txt.textContent = user.firstName;
-         const role = user.typeOfUSer;
+         const role = user.typeOfUser;
          sessionStorage.setItem('userType', role);
         
    
@@ -70,7 +70,7 @@ async function getUserByToken(token) {
 function addButtonsForUserType(userType) {
    const menu = document.getElementById('menu'); //  elemento com o ID 'menu' onde os botões serão adicionados
 
-   if (userType === 'ProductOwner') {
+   if (userType === 'product_owner') {
        
        // Adicionar botão para consultar lista de todos os usuários
        const listButton = document.createElement('button'); listButton.id = "listButton";
@@ -80,7 +80,17 @@ function addButtonsForUserType(userType) {
          window.location.href = "productOwner.html";
            
        });
-       menu.appendChild(listButton);
+
+       const createCategoryButton = document.createElement('button'); createCategoryButton.id = "listButton";
+       createCategoryButton.classList.add("menu_item"); createCategoryButton.innerHTML = ".";
+       createCategoryButton.textContent = 'Create Category';
+         createCategoryButton.addEventListener('click', function() {
+            window.location.href = "createCategory.html";
+            
+         });
+
+      menu.appendChild(listButton);
+      menu.appendChild(createCategoryButton);
        
       
    } else if (userType === 'ScrumMaster') {
@@ -92,30 +102,6 @@ function addButtonsForUserType(userType) {
 }
 
 
-
-function addButtonsForUserType(userType) {
-   const menu = document.getElementById('menu'); //  elemento com o ID 'menu' onde os botões serão adicionados
-
-   if (userType === 'ProductOwner') {
-       
-       // Adicionar botão para consultar lista de todos os usuários
-       const listButton = document.createElement('button'); listButton.id = "listButton";
-       listButton.classList.add("menu_item"); listButton.innerHTML = ".";
-       listButton.textContent = 'All Users';
-       listButton.addEventListener('click', function() {
-         window.location.href = "productOwner.html";
-           
-       });
-       menu.appendChild(listButton);
-       
-      
-   } else if (userType === 'ScrumMaster') {
-    
-
-   } else if (userType === 'Developer') {
-       
-   }
-}
 
 
 /*Se o título da tarefa for diferente de "" siginifica que esta existe e são impressos o título e descrição desta, 
