@@ -1,45 +1,33 @@
-
+const token = sessionStorage.getItem(token);
 //Carregar no logo para voltar à página inicial 
 document.querySelector("header h1").addEventListener("click", function () {
     window.location.href = "login.html";
  });
- 
- //Request para criar nova conta 
- document.getElementById("register_submit").addEventListener('click', async function (event) {
-    event.preventDefault();
- 
+
+ document.getElementById("register_submit").addEventListener("click", function () {
+    registerByPO(token);
+ });
+
+ async function registerByPO(token) {
     let newUser = createUserData();
- 
-    let registerRequest = "http://localhost:8080/project_backend/rest/users/addUserDB";
-    const inputFieldIds = [
-        'register_username', 
-        'register_password', 
-        'register_email', 
-        'register_firstName',
-        'register_lastName',
-        'register_phone',
-        'register_photo_main'
-    ];
- 
+    console.log(newUser)
+
     try {
-        const response = await fetch(registerRequest, {
-            method: 'POST',
+        const response = await fetch("http://localhost:8080/project_backend/rest/users/updateProfilePO", {
+            method: "PUT",
             headers: {
-                'Content-Type': 'application/json',
-                'Accept': '*/*'
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                token:token
             },
             body: JSON.stringify(newUser)
         });
  
         if (response.ok) {
+           
             alert("Account registered successfully!")
- 
-            //depois da conta criada com sucesso, apaga os campos escritos pelo user
-    
-            inputFieldIds.forEach(fieldId => {
-                document.getElementById(fieldId).value = '';
-            });
-          window.location.href = 'productOwner.html';
+            window.location.href = 'productOwner.html';
+            
              
         } else {
             switch (response.status) {
@@ -74,8 +62,8 @@ document.querySelector("header h1").addEventListener("click", function () {
         console.error('Error:', error);
         alert("Something went wrong");
     }
- });
- 
+ }
+
  
  function createUserData() {
     
@@ -96,7 +84,7 @@ document.querySelector("header h1").addEventListener("click", function () {
             lastName: lastName,
             phoneNumber: phone,
             imgURL: photoURL,
-            typeOfUSer: typeOfUSer
+            typeOfUser: typeOfUSer
         };
     
  }

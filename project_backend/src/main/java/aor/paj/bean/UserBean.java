@@ -11,6 +11,8 @@ import jakarta.ejb.EJB;
 import jakarta.ejb.EntityBean;
 import jakarta.ejb.Stateless;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.json.bind.JsonbConfig;
@@ -26,14 +28,15 @@ import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
-@Singleton
+@Stateless
 public class UserBean implements Serializable {
 
     @EJB
     UserDao userDao;
 
-    @Inject
+    @EJB
     EncryptHelper encryptHelper;
 
     ArrayList<User>users;
@@ -72,8 +75,7 @@ public class UserBean implements Serializable {
 
             if(userEntities != null){
                 for(UserEntity userEntity : userEntities){
-                    User user = new User();
-                    user = convertUserEntityToDto(userEntity);
+                    User user = convertUserEntityToDto(userEntity);
                     users.add(user);
                 }
             }
@@ -86,7 +88,42 @@ public class UserBean implements Serializable {
      * @param token
      * @return return is null if user is not found or token not found
      */
+    public boolean updateUserByPO(String token, String username, User updatedUser) {
+        if (token == null || token.isEmpty()) {
+            return false;
+        }
+        UserEntity userEntity = userDao.findUserByUsername(username);
+        if (userEntity == null) {
+            return false;
+        }
 
+        if (updatedUser.getEmail() != null ) {
+            userEntity.setEmail(updatedUser.getEmail());
+        }
+        if (updatedUser.getFirstName() != null) {
+            userEntity.setFirstName(updatedUser.getFirstName());
+        }
+        if (updatedUser.getLastName() != null) {
+            userEntity.setLastName(updatedUser.getLastName());
+        }
+        if (updatedUser.getPhoneNumber() != null) {
+            userEntity.setPhoneNumber(updatedUser.getPhoneNumber());
+        }
+        if (updatedUser.getImgURL() != null) {
+            userEntity.setImgURL(updatedUser.getImgURL());
+        }
+        if (updatedUser.getPassword() != null){
+            userEntity.setPassword(updatedUser.getPassword());
+        }
+        if(updatedUser.getTypeOfUser() != null){
+            userEntity.setTypeOfUser(updatedUser.getTypeOfUser());
+        }
+        if(updatedUser.getTypeOfUser()!= null){
+            userEntity.setTypeOfUser(updatedUser.getTypeOfUser());
+        }
+        return userDao.update(userEntity);
+
+    }
     public boolean updateUser(String token, User updatedUser) {
         if (token == null || token.isEmpty()) {
             return false;
@@ -150,7 +187,7 @@ public class UserBean implements Serializable {
         return u;
     }
     public User getUserByUsername(String username) {
-        UserEntity userEntity = userDao.findUserByToken(username);
+        UserEntity userEntity = userDao.findUserByUsername(username);
         User u = null;
         u = convertUserEntityToDto(userEntity);
         return u;
@@ -174,7 +211,7 @@ public class UserBean implements Serializable {
             userDto.setImgURL(userEntity.getImgURL());
             userDto.setFirstName(userEntity.getFirstName());
             userDto.setLastName(userEntity.getLastName());
-            userDto.setTypeOfUSer(userEntity.getTypeOfUser());
+            userDto.setTypeOfUser(userEntity.getTypeOfUser());
             userDto.setActive(userEntity.getIsActive());
             return userDto;
         }
@@ -191,7 +228,7 @@ public class UserBean implements Serializable {
         userEntity.setFirstName(user.getFirstName());
         userEntity.setLastName(user.getLastName());
         userEntity.setIsActive(true);
-        userEntity.setTypeOfUser("Developer");
+        userEntity.setTypeOfUser("developer");
 
         return userEntity;
     }
@@ -296,6 +333,16 @@ public class UserBean implements Serializable {
         if (userEntity != null) {
             userEntity.setIsActive(false);
             wasRemoved =  userDao.update(userEntity);
+        }
+        return wasRemoved;
+    }
+
+    public boolean deletePermanentlyUser(String username){
+        UserEntity userEntity = userDao.findUserByUsername(username);
+        boolean wasRemoved=false;
+        if (userEntity != null) {
+            userEntity.setIsActive(false);
+            wasRemoved =  userDao.removed(userEntity);
         }
         return wasRemoved;
     }

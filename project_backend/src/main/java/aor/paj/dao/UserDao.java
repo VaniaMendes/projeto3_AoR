@@ -62,6 +62,16 @@ public class UserDao extends AbstractDao<UserEntity> {
 			return false;
 		}
 	}
+
+	public boolean removed(UserEntity userEntity){
+		try{
+			em.remove(userEntity);
+			return true;
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+	}
 }
 
 

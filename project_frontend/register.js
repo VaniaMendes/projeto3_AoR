@@ -95,7 +95,8 @@ function createUserData() {
            firstName: firstName,
            lastName: lastName,
            phoneNumber: phone,
-           imgURL: photoURL
+           imgURL: photoURL, 
+           typeOfUser: "developer"
        };
    
 }

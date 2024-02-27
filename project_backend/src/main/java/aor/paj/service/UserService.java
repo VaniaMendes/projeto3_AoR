@@ -77,7 +77,7 @@ public class UserService {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getUserByToken(@HeaderParam("Token") String token) {
+    public Response getUserByToken(@HeaderParam("token") String token) {
         if (token != null) {
 
             User user = userBean.getUserByToken(token);
@@ -97,7 +97,7 @@ public class UserService {
     @Path("/user")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getUserByToken(@HeaderParam("token") String token, @QueryParam("username") String username) {
+    public Response getUserByToken(@HeaderParam("token") String token, @HeaderParam("username") String username) {
         if (token != null) {
 
             User user = userBean.getUserByToken(token);
@@ -106,9 +106,9 @@ public class UserService {
                 User userFind = userBean.getUserByUsername(username);
                 return Response.ok(userFind).build();
             } else {
-
-                return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
             }
+
         } else {
 
             return Response.status(Response.Status.BAD_REQUEST).build();
@@ -128,6 +128,39 @@ public class UserService {
             return Response.status(Response.Status.NOT_FOUND).entity("No users found").build();
         }
     }
+
+    @DELETE
+    @Path("/deleteUser")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response deleteUser(@HeaderParam("token") String token, @HeaderParam("username") String username) {
+        User user = userBean.getUserByToken(token);
+        if (user != null && (user.getTypeOfUser().equals("product_owner"))) {
+            boolean deleted = userBean.removeUser(username);
+            if (deleted) {
+                return Response.status(Response.Status.OK).entity("User deleted successfully").build();
+            }
+
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Forbidden").build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).entity("Forbidden").build();
+    }
+
+    @DELETE
+    @Path("/removeUser")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response removeUser(@HeaderParam("token") String token, @HeaderParam("username") String username) {
+        User user = userBean.getUserByToken(token);
+        if (user != null && (user.getTypeOfUser().equals("product_owner"))) {
+            boolean deleted = userBean.deletePermanentlyUser(username);
+            if (deleted) {
+                return Response.status(Response.Status.OK).entity("User deleted successfully").build();
+            }
+
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Forbidden").build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).entity("User with this token is not found").build();
+    }
+
 
     @POST
     @Path("/login")
@@ -206,6 +239,104 @@ public class UserService {
     }
 
     @PUT
+    @Path("/updateProfilePO")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateUser(@HeaderParam("token") String token, @HeaderParam("username") String username, User updatedUser) {
+        User user = userBean.getUserByUsername(username);
+        User typeOfUser = userBean.getUserByToken(token);
+
+
+        if (typeOfUser != null && (typeOfUser.getTypeOfUser()).equals("product_owner")) {
+            if (updatedUser.getEmail() != null) {
+                if (!userBean.isEmailValid(updatedUser.getEmail())) {
+                    return Response.status(422).entity("Invalid email").build();
+                } else if(!userBean.emailAvailable(updatedUser.getEmail())) {
+                    return Response.status(422).entity("Email allready exists").build();
+                }else {
+                    user.setEmail(updatedUser.getEmail());
+                }
+            }
+            if (updatedUser.getFirstName() != null) {
+                user.setFirstName(updatedUser.getFirstName());
+            }
+            if (updatedUser.getLastName() != null) {
+                user.setLastName(updatedUser.getLastName());
+            }
+            if (updatedUser.getPhoneNumber() != null) {
+                if (!userBean.isPhoneNumberValid(updatedUser.getPhoneNumber())) {
+                    return Response.status(422).entity("Invalid phone number").build();
+                } else {
+                    user.setPhoneNumber(updatedUser.getPhoneNumber());
+                }
+            }
+            if (updatedUser.getImgURL() != null) {
+                if (!userBean.isImageUrlValid(updatedUser.getImgURL())) {
+                    return Response.status(422).entity("Image URL invalid").build();
+                } else {
+                    user.setImgURL(updatedUser.getImgURL());
+                }
+            }
+
+            if(updatedUser.getTypeOfUser() != null){
+                user.setTypeOfUser(updatedUser.getTypeOfUser());
+            }
+
+
+            boolean updatedUSer = userBean.updateUserByPO(token, username, user);
+            if (updatedUSer) {
+                return Response.status(Response.Status.OK).entity(user).build();
+            } else {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to update user").build();
+            }
+        }else{
+            return Response.status(401).entity("Invalid credentials").build();
+        }
+    }
+
+    @PUT
+    @Path("/addUserByPO")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Response addUserByPO(User user) {
+
+        Response response;
+
+        boolean isFieldEmpty = userBean.isAnyFieldEmpty(user);
+        boolean isEmailValid = userBean.isEmailValid(user.getEmail());
+        boolean isUsernameAvailable = userBean.isUsernameAvailable(user.getUsername());
+        boolean isImageValid = userBean.isImageUrlValid(user.getImgURL());
+        boolean isPhoneValid = userBean.isPhoneNumberValid(user.getPhoneNumber());
+
+
+        if (isFieldEmpty) {
+            response = Response.status(422).entity("There's an empty field. ALl fields must be filled in").build();
+
+        } else if (!isEmailValid) {
+            response = Response.status(422).entity("Invalid email").build();
+
+        } else if (!isUsernameAvailable) {
+            response = Response.status(Response.Status.CONFLICT).entity("Username already in use").build(); //status code 409
+
+        } else if (!isImageValid) {
+            response = Response.status(422).entity("Image URL invalid").build();
+
+        } else if (!isPhoneValid) {
+            response = Response.status(422).entity("Invalid phone number").build();
+
+        } else if (userBean.register(user)) {
+            response = Response.status(Response.Status.CREATED).entity("User registered successfully").build();
+
+        } else {
+            response = Response.status(Response.Status.BAD_REQUEST).entity("Something went wrong").build();
+
+        }
+
+        return response;
+    }
+
+
+    @PUT
     @Path("/{username}/updateUserRole")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -236,9 +367,6 @@ public class UserService {
 
 
 
-
-
-
     /////////////////////REQUESTS ANTIGOS\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
     //@GET
@@ -256,34 +384,9 @@ public class UserService {
         if (userRequested==null) return Response.status(400).entity("Failed").build();
         return Response.status(200).entity(userRequested).build();
     }
-/*
-    @POST
-    @Path("/login")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response login(LoginDto user){
-        String token = userBean.login(user);
-        if(token != null){
-            return Response.status(200).entity(token).build();
-        }
-        return Response.status(403).entity("Wrong Username or Password!").build();
-    }
-*/
 
 
 
-
-
-
-    @DELETE
-    @Path("/delete")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response removeUser(@QueryParam("username")String username) {
-        boolean deleted = userBean.removeUser(username);
-        if (!deleted) return Response.status(200).entity("User with this username is not found").build();
-
-        return Response.status(200).entity("deleted").build();
-    }
     @POST
     @Path("/logout")
     @Produces(MediaType.APPLICATION_JSON)

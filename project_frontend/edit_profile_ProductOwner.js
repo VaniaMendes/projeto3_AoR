@@ -1,13 +1,12 @@
-
-
 //Executa a função em intervalos de 1 segundo para atualizar a data
 writeDate();
 setInterval(writeDate, 1000);
 
 const token = sessionStorage.getItem("token");
 const username = sessionStorage.getItem("username");
+const role = sessionStorage.getItem("role");
 
-console.log(username);
+console.log(username)
 
 let user = null;
 
@@ -42,26 +41,24 @@ getUserByToken(token).then((result) => {
       window.location.href = "login.html";
    } else {
       user=result;
-      user_img.src = user.imgURL;
-      document.getElementById("username_edit").textContent = user.username; 
+      document.getElementById("user_img").src = user.imgURL;
+      document.getElementById("user").textContent = user.firstName; 
    }
 
 });
 
 async function getUserByUsername(token, username) {
-    const data = {username: username};
     try {
 
         const response = await fetch("http://localhost:8080/project_backend/rest/users/user", {
 
-            method: "GET",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-
-                token:token
-            },
-             body: JSON.stringify(data)
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept':   'application/json',
+            "token":token,
+            'username': username
+        },
 
         });
  
@@ -86,19 +83,43 @@ async function getUserByUsername(token, username) {
        alert("User does not exist");
     
     } else {
-       user1=result;
-       user_photo.src = user1.imgURL;
-       document.getElementById("edit_firstName").placeholder = user1.firstName;
-       document.getElementById("edit_URL").placeholder = user1.imgURL;
-       document.getElementById("edit_lastName").placeholder = user1.lastName;
-       document.getElementById("edit_email").placeholder = user1.email;
-       document.getElementById("edit_password").placeholder = user1.password;
-       document.getElementById("edit_phone").placeholder = user1.phoneNumber;
-       document.getElementById("user_photo").placeholder = user1.imgURL;
+       user=result;
+       document.getElementById("user_photo").src = user.imgURL;
+       document.getElementById("edit_firstName").placeholder = user.firstName;
+       document.getElementById("edit_URL").placeholder = user.imgURL;
+       document.getElementById("edit_lastName").placeholder = user.lastName;
+       document.getElementById("edit_email").placeholder = user.email;
+       document.getElementById("edit_phone").placeholder = user.phoneNumber;
+       document.getElementById("user_photo").placeholder = user.imgURL;
+       document.getElementById("username_edit").textContent = user.username;
 
-    }
-    
- });
+       // Preencher o tipo de usuário no elemento select
+       const userTypeSelect = document.getElementById("edit_element");
+       userTypeSelect.value = user.typeOfUser.toLowerCase(); // Garante que o valor corresponde ao valor no objeto user
+   
+       addButtonsForUserType(role);
+     }
+
+    });
+
+    function addButtonsForUserType(role) {
+      const menu = document.getElementById('menu'); //  elemento com o ID 'menu' onde os botões serão adicionados
+   
+      if (role === 'product_owner') {
+         document.getElementById("btn-save").style.visibility="visible";
+        
+      } else if (role === 'scrum_master') {
+         document.getElementById("edit_firstName").disabled = true;
+         document.getElementById("edit_URL").disabled = true;
+         document.getElementById("edit_lastName").disabled = true;
+         document.getElementById("edit_email").disabled = true;
+         document.getElementById("edit_phone").disabled = true;
+         userTypeSelect.disabled = true;
+
+         document.getElementById("btn-save").style.visibility="hidden";
+
+      }
+   }
 
 document.querySelector("#btn_scrumBoard").addEventListener("click", function () {
    window.location.href = "scrum.html";
@@ -115,7 +136,7 @@ document.querySelector("#logout").addEventListener("click", function () {
 //action Listenner para o botao Cancel
 document.getElementById("btn_cancel").addEventListener("click", function () {
 
-   window.location.href = "scrum.html";
+   window.location.href = "productOwner.html";
 });
 
 
@@ -125,10 +146,9 @@ document.querySelector("header h1").addEventListener("click", function () {
    window.location.href = "scrum.html";
 });
 
-
 // Adiciona um evento de alteração para cada campo de entrada
-document.getElementById("edit_password").addEventListener("change", function () {
-   passwordEdited = true;
+document.getElementById("edit_element").addEventListener("change", function () {
+   typeOfUser = true;
 });
 
 document.getElementById("edit_email").addEventListener("change", function () {
@@ -178,12 +198,12 @@ function writeDate() {
       let firstNameEdited = false;
       let lastNameEdited = false;
       let phoneEdited = false;
-      let passwordEdited = false;
+      let typeOfUser = false;
       let photoEdited = false;
       let editField = false;
 
    const updatedUserData = {};
-async function saveChanges() {
+async function saveChanges(token, username) {
   
     //Objeto para armazenar os dados atualizados do user
 
@@ -233,22 +253,20 @@ async function saveChanges() {
       }
    }
    
-   if (passwordEdited && document.getElementById("edit_password").value != "") {
-      updatedUserData.password = document.getElementById("edit_password").value;
+   if (typeOfUser && document.getElementById("edit_element").value != "") {
+      updatedUserData.typeOfUser = document.getElementById("edit_element").value;
       editField = true;
    }
-
+console.log(updatedUserData);
 
    try {
-      const responseStatus = await updateProfile(token, updatedUserData);
+      const responseStatus = await updateProfileByPO(token, updatedUserData);
+      console.log(responseStatus);
       return responseStatus; 
    } catch (error) {
       
    }
-   
 }
-
-
 
 //action listenner para o botao save da pagina
 
@@ -259,26 +277,26 @@ bntSave.addEventListener("click", async function () {
 
    if(result == 200 && Object.keys(updatedUserData).length !== 0){
       alert("Your valid changes have been saved");
-      window.location.href = "scrum.html";
+      sessionStorage.removeItem('username');
+      window.location.href = "productOwner.html";
    }
    else if(result == 422){
       alert("Invalid data");
   
-      
    }else{}
 
 });
 
-
-async function updateProfile(token,updatedUserData) {
+async function updateProfileByPO(token, username, updatedUserData) {
 
    try {
-       const response = await fetch("http://localhost:8080/project_backend/rest/users/updateProfile", {
+       const response = await fetch('http://localhost:8080/project_backend/rest/users/updateProfilePO', {
            method: 'PUT',
            headers: {
             'Content-Type': 'application/json',
-            'Accept': '*/*',
-            token:token
+            'Accept':   'application/json',
+            token:token,
+            username: username
            },
            body: JSON.stringify(updatedUserData)
        });
@@ -288,7 +306,6 @@ async function updateProfile(token,updatedUserData) {
        }else{
          const errorMessage = await response.text();
            if (response.status === 401) {
-               window.location.href = "login.html";
            } else if (response.status === 422) {
          
            } else {   

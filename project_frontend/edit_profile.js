@@ -48,14 +48,9 @@ getUserByToken(token).then((result) => {
       document.getElementById("edit_password").placeholder = "*******";
       document.getElementById("edit_phone").placeholder = user.phoneNumber;
       document.getElementById("user_photo").placeholder = user.imgURL;
-         
-      
    }
 
 });
-
-
-
 
 
 document.querySelector("#btn_scrumBoard").addEventListener("click", function () {
