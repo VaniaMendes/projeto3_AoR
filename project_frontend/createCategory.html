@@ -31,15 +31,18 @@
                 <div class="descricaoCategoria">
                     <btn class="modal_exit" id="cancel">&times;</btn>
                     <h2 id="task_creationTitle"></h2>
+                    <label for="title">Category Title:</label>
                     <input type="text" placeholder="Category Title" id="title" required />
+                    <label for="title">Description:</label>
                     <textarea cols="30" rows="14" placeholder="Category Description" id="description"></textarea>
-
+                     
 
                     <div class="buttons">
                     <button class="btns_task" id="category_save">Save</button>
                     <button class="btns_task" id="category_delete">Cancel</button>
                     </div>
-                    <!-- Your existing modal content here -->
+                    
+                    <div id="error_creating_category"></div>
                 </div>
             </div>
          </aside>
@@ -49,21 +52,12 @@
                 <tr>
                     <th id="th-head-left-corner">Title</th>
                     <th>Description</th>
-                    <th id="th-head-right-corner">Author</th>
+                    <th>Author</th>
+                    <th id="th-head-right-corner">Category Edition</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Object 1</td>
-                    <td>Detail 1</td>
-                    <td>Detail 2</td>
-                    
-                </tr>
-                <tr>
-                    <td>Object 1</td>
-                    <td>Detail 1</td>
-                    <td>Detail 2</td>
-                    
+                <tr class="category_table_row">
                 </tr>
                 <!-- Add more rows as needed -->
             </tbody>

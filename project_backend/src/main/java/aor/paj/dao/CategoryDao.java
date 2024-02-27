@@ -5,6 +5,8 @@ import aor.paj.entity.TaskEntity;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.NoResultException;
 
+import java.util.ArrayList;
+
 @Stateless
 public class CategoryDao  extends AbstractDao<CategoryEntity> {
 
@@ -32,5 +34,14 @@ public class CategoryDao  extends AbstractDao<CategoryEntity> {
             return null;
         }
 
+    }
+
+    public ArrayList<CategoryEntity> findAllCategories() {
+        try {
+            ArrayList<CategoryEntity> categoryEntities = (ArrayList<CategoryEntity>) em.createNamedQuery("Category.findAllCategories").getResultList();
+            return categoryEntities;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
