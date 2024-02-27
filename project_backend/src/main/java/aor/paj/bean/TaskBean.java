@@ -134,7 +134,7 @@ public class TaskBean {
         return status;
     }
 
-    public boolean updateTaskActiveState(String token, String id, boolean newActiveStatus) {
+    public boolean updateTaskActiveState(String token, String id) {
         boolean status;
 
         UserEntity confirmUser = userDao.findUserByToken(token);
@@ -144,15 +144,63 @@ public class TaskBean {
         if (confirmUser != null) {
             if (taskToUpdate != null) {
 
-                    taskToUpdate.setActive(newActiveStatus);
-                    taskDao.merge(taskToUpdate);
-                    status = true;
+                if(taskToUpdate.isActive()) {
+                    taskToUpdate.setActive(false);
+                } else {
+                    taskToUpdate.setActive(true);
+                }
+
+
+                taskDao.merge(taskToUpdate);
+                status = true;
             } else {
                 status = false;
             }
         } else {
             status = false;
         }
+        return status;
+    }
+
+    public boolean deleteTasksByUsername(String username) {
+        boolean status;
+
+        UserEntity confirmUser = userDao.findUserByUsername(username);
+        ArrayList<TaskEntity> tasksToDelete = taskDao.findTasksByUser(confirmUser);
+
+        if (confirmUser != null) {
+            if (tasksToDelete != null) {
+                for (TaskEntity taskEntity : tasksToDelete) {
+                    taskEntity.setActive(false);
+                }
+                status = true;
+            } else {
+                status = false;
+            }
+        } else {
+            status = false;
+        }
+
+        return status;
+    }
+
+    public boolean hardDeleteTask(String token, String id) {
+        boolean status;
+
+        UserEntity confirmUser = userDao.findUserByToken(token);
+        TaskEntity taskToDelete = taskDao.findTaskById(Long.parseLong(id));
+
+        if (confirmUser != null) {
+            if (taskToDelete != null) {
+                taskDao.remove(taskToDelete);
+                status = true;
+            } else {
+                status = false;
+            }
+        } else {
+            status = false;
+        }
+
         return status;
     }
 
