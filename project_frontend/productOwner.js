@@ -45,7 +45,7 @@ getUserByToken(token).then((result) => {
 });
 
 function addButtonsForUserType(role) {
-    const menu = document.getElementById('menu'); //  elemento com o ID 'menu' onde os botões serão adicionados
+    const menu = document.getElementById('menu'); 
  
     if (role === 'product_owner') {
         printListUsers(token, createCardElement);
@@ -70,9 +70,6 @@ function addButtonsForUserType(role) {
        
         menu.appendChild(listButton1);
         btn_task.style.visibility="visible";
-      
-
-
        
     } else if (role === 'scrum_master') {
         printListUsers(token, createCardElementForScrum);
@@ -85,7 +82,6 @@ function addButtonsForUserType(role) {
         });
         menu.appendChild(listButton);
         btn_task.style.visibility="hidden";
-
     }
  }
 

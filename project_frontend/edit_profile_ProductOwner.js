@@ -6,6 +6,7 @@ setInterval(writeDate, 1000);
 
 const token = sessionStorage.getItem("token");
 const username = sessionStorage.getItem("username");
+const role = sessionStorage.getItem("role");
 
 console.log(username);
 
@@ -93,8 +94,6 @@ async function getUserByUsername(token, username) {
        document.getElementById("edit_phone").placeholder = user.phoneNumber;
        document.getElementById("user_photo").placeholder = user.imgURL;
        document.getElementById("username_edit").textContent = user.username;
-       document.getElementById("register_typeOfUser").textContent = user.typeOfUSer;
-
 
        // Preencher o tipo de usuário no elemento select
        const userTypeSelect = document.getElementById("edit_element");
@@ -293,7 +292,7 @@ bntSave.addEventListener("click", async function () {
 });
 
 
-async function updateProfileByPO(token,username, updatedUserData) {
+async function updateProfileByPO(token, updatedUserData) {
 
    try {
        const response = await fetch("http://localhost:8080/project_backend/rest/users/updateProfile/${username}", {
