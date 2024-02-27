@@ -11,8 +11,6 @@ import jakarta.ejb.EJB;
 import jakarta.ejb.EntityBean;
 import jakarta.ejb.Stateless;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.json.bind.JsonbConfig;
@@ -32,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
-@Stateless
+@Singleton
 public class UserBean implements Serializable {
 
     @EJB
