@@ -134,7 +134,7 @@ public class TaskBean {
         return status;
     }
 
-    public boolean updateTaskActiveState(String token, String id, boolean newActiveStatus) {
+    public boolean updateTaskActiveState(String token, String id) {
         boolean status;
 
         UserEntity confirmUser = userDao.findUserByToken(token);
@@ -144,9 +144,15 @@ public class TaskBean {
         if (confirmUser != null) {
             if (taskToUpdate != null) {
 
-                    taskToUpdate.setActive(newActiveStatus);
-                    taskDao.merge(taskToUpdate);
-                    status = true;
+                if(taskToUpdate.isActive()) {
+                    taskToUpdate.setActive(false);
+                } else {
+                    taskToUpdate.setActive(true);
+                }
+
+
+                taskDao.merge(taskToUpdate);
+                status = true;
             } else {
                 status = false;
             }

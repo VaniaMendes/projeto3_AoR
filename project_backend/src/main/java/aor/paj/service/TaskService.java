@@ -163,12 +163,10 @@ public class TaskService {
      */
     @PUT
     @Path("/{taskId}/softDelete")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response softDeleteTask(@HeaderParam("token") String token, @PathParam("taskId") String taskId, String newStatus) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response softDeleteTask(@HeaderParam("token") String token, @PathParam("taskId") String taskId) {
         Response response;
 
-        JsonObject jsonObject = Json.createReader(new StringReader(newStatus)).readObject();
-        boolean newActiveStatus = jsonObject.getBoolean("isActive");
 
         if (userBean.getUserByToken(token) == null) {
             response = Response.status(403).entity("Invalid token").build();
@@ -176,10 +174,8 @@ public class TaskService {
         } else if(!userBean.getUserByToken(token).getTypeOfUser().equals("product_owner") && !userBean.getUserByToken(token).getTypeOfUser().equals("scrum_master")) {
             response = Response.status(409).entity("You dont have permissions to edit that").build();
 
-        } else if (userBean.getUserByToken(token).getTypeOfUser().equals("scrum_master") && newActiveStatus) {
-            response = Response.status(409).entity("Your role doesnt allow that").build();
 
-        } else if (taskBean.updateTaskActiveState(token, taskId, newActiveStatus)) {
+        } else if (taskBean.updateTaskActiveState(token, taskId)) {
             response = Response.status(200).entity("Task active state updated successfully").build();
 
         } else
