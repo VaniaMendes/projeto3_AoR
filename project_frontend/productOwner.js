@@ -267,6 +267,25 @@ async function getAllUsers(token) {
 
     }
 }
+
+// Adiciona uma linha vazia para o botão 'btn_task'
+const blankRow = document.createElement('tr');
+const blankCell = document.createElement('td');
+blankCell.colSpan = 5; // Colspan deve ser igual ao número de colunas na tabela
+blankRow.appendChild(blankCell);
+tbody.appendChild(blankRow);
+
+// Adiciona o botão criar user na célula
+const btnTaskCell = document.createElement('td');
+const btnTaskButton = document.createElement('button');
+btnTaskButton.textContent = '+ New User'; 
+btnTaskButton.classList.add('btn_task'); // Adicione classes CSS conforme necessário
+btnTaskButton.addEventListener('click', function() {
+   
+    window.location.href = 'registerProductOwner.html';
+});
+btnTaskCell.appendChild(btnTaskButton);
+blankRow.appendChild(btnTaskCell);
 }
 
 
