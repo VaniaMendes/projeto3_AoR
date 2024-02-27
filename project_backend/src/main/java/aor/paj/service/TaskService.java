@@ -235,129 +235,26 @@ public class TaskService {
         return response;
     }
 
-
-    /*
-    @GET
-    @Path("/")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<Task> getTasks(@HeaderParam("username")String username, @HeaderParam("pass")String password) {
-        User user=userBean.getUser(username, password);
-        if(user==null)  return null;
-        return user.getTasks();
-    }
-
-
-    //getter da task com o id {id}
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Task getTask(@PathParam("id")String id,@HeaderParam("username")String username, @HeaderParam("pass")String password) {
-        User userRequested=userBean.getUser(username, password);
-
-        if (userRequested==null) return null;
-        long idLong=Long.parseLong(id);
-
-        return userBean.getTask(userRequested,idLong);
-    }
-
-
-    @PUT
-    @Path("/update")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response updateTask(@HeaderParam("username") String username,@HeaderParam("pass")String password,@HeaderParam("id") long id,@HeaderParam("title") String title,
-                               @HeaderParam("description") String description, @HeaderParam("initialDate") String initialDate,
-                               @HeaderParam("endDate")String endDate, @HeaderParam("priority")int priority){
-
-        User userRequested=userBean.getUser(username, password);
-        if (userRequested==null){
-            return Response.status(404).entity("This user doesn't exist").build();
-        }
-        else {
-            Task taskChanged = userBean.getTask(userRequested, id);
-            if (taskChanged == null) {
-                return Response.status(404).entity("This task doesn't exist").build();
-            }
-            if (title.equals("")) {
-                return Response.status(400).entity("The task must have a title").build();
-            } else {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                LocalDate initialDateFormated = LocalDate.parse(initialDate, formatter);
-                LocalDate endDateFormated = LocalDate.parse(endDate, formatter);
-                LocalDate currentDate=LocalDate.now();
-                if (endDateFormated.isBefore(initialDateFormated) || initialDateFormated.isBefore(currentDate)  ) {
-                    return Response.status(400).entity("Entered wrong date").build();
-                } else {
-                    if (priority != 300 && priority != 200 && priority != 100) {
-                        return Response.status(400).entity("This priority isn't valid").build();
-                    } else {
-                        userBean.updateTask(taskChanged, title, description, initialDateFormated, endDateFormated, priority);
-                        return Response.status(200).entity("Task was updated").build();
-                    }
-                }
-            }
-        }
-    }
-
-    @PUT
-    @Path("/state")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response updateState(@HeaderParam("username")String username,@HeaderParam("pass")String password, @HeaderParam("id")long id,@HeaderParam("state")String state){
-        User userRequested=userBean.getUser(username, password);
-        if (userRequested==null){
-            return Response.status(404).entity("This user doesn't exist").build();
-        }
-        else {
-            Task taskRequested = userBean.getTask(userRequested, id);
-            if(taskRequested==null){
-                return Response.status(404).entity("This task id doesn't exist").build();
-            }
-            else {
-                if(state.equals("toDo") || state.equals("doing") || state.equals("done")) {
-                    userBean.updateTaskState(taskRequested, state);
-                    return Response.status(200).entity("Task was updated").build();
-                }
-                else  return Response.status(400).entity("This state isn't valid").build();
-            }
-        }
-    }
-
-    @POST
-    @Path("/oldCreate")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response oldAddTask(@HeaderParam("username")String username,@HeaderParam("pass")String password ,Task task){
-        User userRequested=userBean.getUser(username, password);
-        if (userRequested==null){
-            return Response.status(404).entity("This user doesn't exist").build();
-        }
-        else {
-
-            LocalDate currentDate=LocalDate.now();
-            if(!task.getTitle().equals("") && task.getEndDate().isAfter(task.getInitialDate()) && (task.getInitialDate().isAfter(currentDate) || task.getInitialDate().isEqual(currentDate))) {
-                userBean.addTask(userRequested, task);
-                return Response.status(200).entity("Task created").build();
-            }
-            else{
-                return Response.status(404).entity("Entered wrong data").build();
-            }
-        }
-    }
-
-
     @DELETE
-    @Path("/{id}")
+    @Path("/{id}/hardDeleteTask")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response removeTask(@HeaderParam("username")String username,@HeaderParam("pass")String pass,@PathParam("id") long id) {
-        User userRequested=userBean.getUser(username,pass);
-        if (userRequested!=null) {
-            boolean deleted = userBean.removeTask(userRequested,id);
-            if (deleted) return Response.status(200).entity("deleted").build();
-            else   return Response.status(406).entity("Task with this id was not found").build();
-        }
-        else{
-            return Response.status(404).entity("This user doesn't exist").build();
-        }
-    }
+    public Response hardDeleteTask(@HeaderParam("token") String token, @PathParam("id") String id) {
+        Response response;
 
-     */
+        if (userBean.getUserByToken(token) == null) {
+            response = Response.status(403).entity("Invalid token").build();
+
+        } else if (!userBean.getUserByToken(token).getTypeOfUser().equals("product_owner")) {
+            response = Response.status(403).entity("You dont have permissions to do that").build();
+
+        } else if (taskBean.hardDeleteTask(token, id))  {
+            response = Response.status(200).entity("Task permanently deleted").build();
+
+        } else {
+            response = Response.status(400).entity("Failed to execute order").build();
+        }
+
+        return response;
+    }
 
 }
