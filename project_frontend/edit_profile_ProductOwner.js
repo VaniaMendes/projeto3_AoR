@@ -4,7 +4,7 @@ setInterval(writeDate, 1000);
 
 const token = sessionStorage.getItem("token");
 const username = sessionStorage.getItem("username");
-const role = sessionStorage.getItem("role");
+const role = sessionStorage.getItem("userType");
 
 console.log(username)
 
