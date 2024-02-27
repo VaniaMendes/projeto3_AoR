@@ -76,7 +76,18 @@ function addButtonsForUserType(userType) {
          window.location.href = "productOwner.html";
            
        });
-       menu.appendChild(listButton);
+
+       const createCategoryButton = document.createElement('button'); createCategoryButton.id = "listButton";
+       createCategoryButton.classList.add("menu_item"); createCategoryButton.innerHTML = ".";
+       createCategoryButton.textContent = 'Categories';
+         createCategoryButton.addEventListener('click', function() {
+            window.location.href = "createCategory.html";
+            
+         });
+
+      menu.appendChild(listButton);
+      menu.appendChild(createCategoryButton);
+      
        
    } else if (userType === 'scrum_master') {
     
@@ -105,7 +116,7 @@ document.querySelector("#logout").addEventListener("click", function () {
       sessionStorage.clear();
       window.location.href = "login.html";
    }
-});
+});   
 
 //Event Listenner para o botao EditProfile
 
