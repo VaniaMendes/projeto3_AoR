@@ -41,20 +41,20 @@ getUserByToken(token).then((result) => {
       addButtonsForUserType(role);
        
    }
-    printListUsers(token); 
+    
 });
 
 function addButtonsForUserType(role) {
     const menu = document.getElementById('menu'); //  elemento com o ID 'menu' onde os botões serão adicionados
  
     if (role === 'product_owner') {
-        
+        printListUsers(token, createCardElement);
         
         const listButton = document.createElement('button'); listButton.id = "listButton";
         listButton.classList.add("menu_item"); listButton.innerHTML = ".";
         listButton.textContent = 'Active Users';
         listButton.addEventListener('click', function() {
-         printListUsers(token);
+         printListUsers(token, createCardElement);
             
         });
         menu.appendChild(listButton);
@@ -63,23 +63,29 @@ function addButtonsForUserType(role) {
          listButton1.classList.add("menu_item"); listButton1.innerHTML = ".";
          listButton1.textContent = 'Inactive Users';
          listButton1.addEventListener('click', function() {
-         printInativeUsers(token);
+         printInativeUsers(token, createCardElement);
+     
             
         });
        
         menu.appendChild(listButton1);
+        btn_task.style.visibility="visible";
+      
+
+
        
-    } else if (userType === 'ScrumMaster') {
+    } else if (role === 'scrum_master') {
+        printListUsers(token, createCardElementForScrum);
         const listButton = document.createElement('button'); listButton.id = "listButton";
         listButton.classList.add("menu_item"); listButton.innerHTML = ".";
         listButton.textContent = 'Active Users';
         listButton.addEventListener('click', function() {
-         printListUsers(token);
+         printListUsers(token, createCardElementForScrum);
             
         });
         menu.appendChild(listButton);
- 
-        
+        btn_task.style.visibility="hidden";
+
     }
  }
 
@@ -174,7 +180,7 @@ async function getAllUsers(token) {
     }
  }
 
- async function printListUsers(token) {
+ async function printListUsers(token, cardHeaderName) {
     try {
         const users = await getAllUsers(token);
         const usersListElement = document.querySelector('.user_list');
@@ -197,7 +203,7 @@ async function getAllUsers(token) {
             for (const user of users) {
                 if(user.active){
                 const fullName = (user.firstName + " " + user.lastName).toUpperCase();
-                const cardElement = createCardElement(user, token);              
+                const cardElement = cardHeaderName(user, token);              
                 usersListElement.appendChild(cardElement);
             } 
         }         
@@ -244,10 +250,6 @@ async function printInativeUsers(token) {
     }
 }
 
-
-
-
-
 // Função para mostrar os botões quando o mouse passa sobre o cartão
 function showButtons(event) {
     const buttonDiv = event.currentTarget.querySelector(".button_container");
@@ -270,6 +272,7 @@ function addCardEventListeners() {
         hideButtons({ currentTarget: card });
     });
 }
+
 
 function createCardElement(user, token) {
     // Cria a div principal para o cartão do usuário
@@ -364,6 +367,45 @@ function createCardElement(user, token) {
   document.getElementById("btn_task").addEventListener("click", async function () {
     window.location.href = "registerProductOwner.html";
   });
+
+  function createCardElementForScrum(user, token) {
+    // Cria a div principal para o cartão do usuário
+    const cardElement = document.createElement("div");
+    cardElement.classList.add("user_card");
+    cardElement.dataset.username = user.username;
+
+    if(user.active){
+        cardElement.classList.add("active_user");
+    }else{
+        cardElement.classList.add("inactive_user");
+    }
+
+    // Cria a div para o cabeçalho do cartão
+    const cardHeaderElement = document.createElement("div");
+    cardHeaderElement.classList.add("card_header");
+    const fullName = (user.firstName + " " + user.lastName).toUpperCase();
+    cardHeaderElement.textContent = fullName;
+    
+    // Botão de edição
+    const editButton = document.createElement("button");
+    editButton.innerHTML = "&#128214;";
+    editButton.classList.add("edit_button");
+    editButton.addEventListener("click", function (event) {
+        const userUsername = event.currentTarget.closest("[data-username]").dataset.username;
+        console.log(userUsername);
+        sessionStorage.setItem("username", userUsername);
+        window.location.href = 'edit_Profile_ProductOwner.html';
+    });
+    
+    cardHeaderElement.appendChild(editButton);
+
+    // Adiciona o cabeçalho ao cartão principal
+    cardElement.appendChild(cardHeaderElement);
+
+    // Retorna o cartão completo
+    return cardElement;
+}
+  
 
 
  

@@ -95,24 +95,34 @@ async function getUserByUsername(token, username) {
        document.getElementById("username_edit").textContent = user.username;
        document.getElementById("register_typeOfUser").textContent = user.typeOfUSer;
 
+
        // Preencher o tipo de usuário no elemento select
        const userTypeSelect = document.getElementById("edit_element");
        userTypeSelect.value = user.typeOfUser.toLowerCase(); // Garante que o valor corresponde ao valor no objeto user
-       // Desabilitar o elemento select se o tipo de usuário for Developer
    
+       addButtonsForUserType(role);
+     }
 
-       if (user.typeOfUser === "scrum_master") {
+    });
+
+    function addButtonsForUserType(role) {
+      const menu = document.getElementById('menu'); //  elemento com o ID 'menu' onde os botões serão adicionados
+   
+      if (role === 'product_owner') {
+         document.getElementById("btn-save").style.visibility="visible";
+        
+      } else if (role === 'scrum_master') {
          document.getElementById("edit_firstName").disabled = true;
          document.getElementById("edit_URL").disabled = true;
          document.getElementById("edit_lastName").disabled = true;
          document.getElementById("edit_email").disabled = true;
          document.getElementById("edit_phone").disabled = true;
          userTypeSelect.disabled = true;
-     }
 
-    }
-    
- });
+         document.getElementById("btn-save").style.visibility="hidden";
+
+      }
+   }
 
 document.querySelector("#btn_scrumBoard").addEventListener("click", function () {
    window.location.href = "scrum.html";

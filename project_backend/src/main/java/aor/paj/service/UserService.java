@@ -142,7 +142,7 @@ public class UserService {
 
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Forbidden").build();
         }
-        return Response.status(Response.Status.NOT_FOUND).entity("User with this token is not found").build();
+        return Response.status(Response.Status.NOT_FOUND).entity("Forbidden").build();
     }
 
     @DELETE
@@ -160,7 +160,6 @@ public class UserService {
         }
         return Response.status(Response.Status.NOT_FOUND).entity("User with this token is not found").build();
     }
-
 
 
     @POST
@@ -322,9 +321,6 @@ public class UserService {
 
         return response;
     }
-
-
-
 
 
 

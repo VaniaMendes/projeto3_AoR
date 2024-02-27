@@ -15,6 +15,7 @@ const HIGH = 300;
 
 const token = sessionStorage.getItem("token");
 const userType = sessionStorage.getItem('role');
+alert(userType);
 
 
 
@@ -76,15 +77,22 @@ function addButtonsForUserType(userType) {
        });
        menu.appendChild(listButton);
        
-      
-   } else if (userType === 'ScrumMaster') {
+   } else if (userType === 'scrum_master') {
     
+       // Adicionar botão para consultar lista de todos os usuários
+       const listButton = document.createElement('button'); listButton.id = "listButton";
+       listButton.classList.add("menu_item"); listButton.innerHTML = ".";
+       listButton.textContent = 'All Users';
+       listButton.addEventListener('click', function() {
+         window.location.href = "productOwner.html";
+           
+       });
+       menu.appendChild(listButton);
 
-   } else if (userType === 'Developer') {
+   } else if (userType === 'developer') {
        
    }
 }
-
 
 writeDate();
 
