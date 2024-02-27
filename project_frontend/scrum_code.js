@@ -16,6 +16,7 @@ const HIGH = 300;
 const token = sessionStorage.getItem("token");
 const userType = sessionStorage.getItem('role');
 alert(userType);
+alert(token);
 
 
 
@@ -612,6 +613,3 @@ function rgbStringToHex(rgbString) {
    return `#${redHex}${greenHex}${blueHex}`;
 }
 
-/*module.exports = {
-   getUser,
-};*/

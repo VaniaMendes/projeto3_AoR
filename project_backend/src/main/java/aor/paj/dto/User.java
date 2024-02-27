@@ -28,7 +28,7 @@ public class User{
 
 
     public User(String username, String password, String email, String firstName, String lastName,
-                String phoneNumber, String imgURL, String token, String typeOfUser) {
+                String phoneNumber, String imgURL, String token) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -37,7 +37,7 @@ public class User{
         this.phoneNumber = phoneNumber;
         this.imgURL = imgURL;
         this.token = token;
-        this.typeOfUser = typeOfUser;
+        this.typeOfUser = "developer";
         this.isActive = true;
     }
 

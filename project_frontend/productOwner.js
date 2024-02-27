@@ -288,7 +288,7 @@ function createCardElement(user, token) {
     cardHeaderElement.classList.add("card_header");
     const fullName = (user.firstName + " " + user.lastName).toUpperCase();
     cardHeaderElement.textContent = fullName;
-    
+
 
     // Cria a div para os botões
     const buttonDiv = document.createElement("div");
@@ -319,7 +319,8 @@ function createCardElement(user, token) {
                 console.log(userUsername);
                 if (result) {
                     alert("Successfully removed user");
-                    printListUsers(token);
+                    printListUsers(token, createCardElement);
+
                 } else {
                     console.log("Failed to remove user");
                 }

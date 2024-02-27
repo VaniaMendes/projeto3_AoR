@@ -1359,7 +1359,6 @@ label {
    align-items: right;
 }
 
-
 .edit_button:hover, .delete_button:hover {
    background-color: var(--white_active); 
 }
@@ -1383,10 +1382,7 @@ label {
    transform: translate(-50%, -50%);
    width: 500px;
    height: 300px;
-
 }
-
-
 .registerPO{
    height: 510px !important;
 }
@@ -1395,13 +1391,23 @@ label {
    background-color: #d6f4d6; 
    border-radius: 5px;
    margin: 5px;
-   
 }
 
 .inactive_user{
    background-color: #f7d4d4;
    border-radius: 5px;
    margin: 5px;
+}
+
+.column_PO {
+   margin: 80px 10px 0px 10px;
+   flex-shrink: 0;
+   width: 550px;
+   height: 552px;
+   background-color: var(--white);
+   border-radius: 12px;
+   border-width: 2px;
+   padding-top: 12px;
 }
 
 

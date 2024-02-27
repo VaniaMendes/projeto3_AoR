@@ -1,5 +1,3 @@
-
-
 //Executa a função em intervalos de 1 segundo para atualizar a data
 writeDate();
 setInterval(writeDate, 1000);
@@ -8,7 +6,7 @@ const token = sessionStorage.getItem("token");
 const username = sessionStorage.getItem("username");
 const role = sessionStorage.getItem("role");
 
-console.log(username);
+console.log(username)
 
 let user = null;
 
@@ -148,10 +146,9 @@ document.querySelector("header h1").addEventListener("click", function () {
    window.location.href = "scrum.html";
 });
 
-
 // Adiciona um evento de alteração para cada campo de entrada
 document.getElementById("edit_element").addEventListener("change", function () {
-   typeOfUSer = true;
+   typeOfUser = true;
 });
 
 document.getElementById("edit_email").addEventListener("change", function () {
@@ -201,7 +198,7 @@ function writeDate() {
       let firstNameEdited = false;
       let lastNameEdited = false;
       let phoneEdited = false;
-      let typeOfUSer = false;
+      let typeOfUser = false;
       let photoEdited = false;
       let editField = false;
 
@@ -256,20 +253,19 @@ async function saveChanges(token, username) {
       }
    }
    
-   if (typeOfUSer && document.getElementById("edit_element").value != "") {
-      updatedUserData.typeOfUSer = document.getElementById("edit_element").value;
+   if (typeOfUser && document.getElementById("edit_element").value != "") {
+      updatedUserData.typeOfUser = document.getElementById("edit_element").value;
       editField = true;
    }
 console.log(updatedUserData);
 
    try {
-      const responseStatus = await updateProfileByPO(token, username, updatedUserData);
+      const responseStatus = await updateProfileByPO(token, updatedUserData);
       console.log(responseStatus);
       return responseStatus; 
    } catch (error) {
       
    }
-   
 }
 
 //action listenner para o botao save da pagina
@@ -281,26 +277,26 @@ bntSave.addEventListener("click", async function () {
 
    if(result == 200 && Object.keys(updatedUserData).length !== 0){
       alert("Your valid changes have been saved");
+      sessionStorage.removeItem('username');
       window.location.href = "productOwner.html";
    }
    else if(result == 422){
       alert("Invalid data");
   
-      
    }else{}
 
 });
 
-
-async function updateProfileByPO(token, updatedUserData) {
+async function updateProfileByPO(token, username, updatedUserData) {
 
    try {
-       const response = await fetch("http://localhost:8080/project_backend/rest/users/updateProfile/${username}", {
+       const response = await fetch('http://localhost:8080/project_backend/rest/users/updateProfilePO', {
            method: 'PUT',
            headers: {
             'Content-Type': 'application/json',
-            'Accept': '*/*',
-            token:token
+            'Accept':   'application/json',
+            token:token,
+            username: username
            },
            body: JSON.stringify(updatedUserData)
        });

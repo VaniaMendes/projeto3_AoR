@@ -239,14 +239,15 @@ public class UserService {
     }
 
     @PUT
-    @Path("/updateProfile/{username}")
+    @Path("/updateProfilePO")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateUser(@HeaderParam("token") String token, @PathParam("username") String username, User updatedUser) {
+    public Response updateUser(@HeaderParam("token") String token, @HeaderParam("username") String username, User updatedUser) {
         User user = userBean.getUserByUsername(username);
         User typeOfUser = userBean.getUserByToken(token);
 
-        if (typeOfUser != null) {
+
+        if (typeOfUser != null && (typeOfUser.getTypeOfUser()).equals("product_owner")) {
             if (updatedUser.getEmail() != null) {
                 if (!userBean.isEmailValid(updatedUser.getEmail())) {
                     return Response.status(422).entity("Invalid email").build();
@@ -292,6 +293,48 @@ public class UserService {
             return Response.status(401).entity("Invalid credentials").build();
         }
     }
+
+    @PUT
+    @Path("/addUserByPO")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Response addUserByPO(User user) {
+
+        Response response;
+
+        boolean isFieldEmpty = userBean.isAnyFieldEmpty(user);
+        boolean isEmailValid = userBean.isEmailValid(user.getEmail());
+        boolean isUsernameAvailable = userBean.isUsernameAvailable(user.getUsername());
+        boolean isImageValid = userBean.isImageUrlValid(user.getImgURL());
+        boolean isPhoneValid = userBean.isPhoneNumberValid(user.getPhoneNumber());
+
+
+        if (isFieldEmpty) {
+            response = Response.status(422).entity("There's an empty field. ALl fields must be filled in").build();
+
+        } else if (!isEmailValid) {
+            response = Response.status(422).entity("Invalid email").build();
+
+        } else if (!isUsernameAvailable) {
+            response = Response.status(Response.Status.CONFLICT).entity("Username already in use").build(); //status code 409
+
+        } else if (!isImageValid) {
+            response = Response.status(422).entity("Image URL invalid").build();
+
+        } else if (!isPhoneValid) {
+            response = Response.status(422).entity("Invalid phone number").build();
+
+        } else if (userBean.register(user)) {
+            response = Response.status(Response.Status.CREATED).entity("User registered successfully").build();
+
+        } else {
+            response = Response.status(Response.Status.BAD_REQUEST).entity("Something went wrong").build();
+
+        }
+
+        return response;
+    }
+
 
     @PUT
     @Path("/{username}/updateUserRole")
