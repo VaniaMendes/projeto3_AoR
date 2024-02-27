@@ -1410,6 +1410,26 @@ label {
    padding-top: 12px;
 }
 
+.users_container {
+   background-color: var(--white);
+   border-radius: 12px;
+   width: 60em;
+   max-height: 50em;
+   transform: translate(-50%, -50%);
+   top: 50%;
+   left: 850px;
+   position: absolute;
+   overflow-y: auto;
+   border-collapse: collapse;
+   flex-direction: column;
+   border-collapse: collapse;
+}
+
+.imagem_user{
+   border-radius: 50%;
+   width: 2em;
+   height: 2em;
+}
 /* Página de Categorias */
 
 
@@ -1437,14 +1457,12 @@ label {
    border-collapse: collapse;
    background-color: var(--white);
    border-radius: 12px;
-   
    padding-top: 12px;
    margin-left: 375px;
    width: 1000px;
    max-height: 552px;
    margin-top: 80px;
    overflow-y: auto;
-   
    flex-direction: column;
    
 }
