@@ -46,7 +46,7 @@ getUserByToken(token).then((result) => {
       window.location.href = "login.html";
    } else {
       firstName_txt.textContent = user.firstName;
-      const role = user.typeOfUSer;
+      const role = user.typeOfUser;
       sessionStorage.setItem('userType', role);
      
 
@@ -63,7 +63,7 @@ getUserByToken(token).then((result) => {
 function addButtonsForUserType(userType) {
    const menu = document.getElementById('menu'); //  elemento com o ID 'menu' onde os botões serão adicionados
 
-   if (userType === 'ProductOwner') {
+   if (userType === 'product_owner') {
        
        // Adicionar botão para consultar lista de todos os usuários
        const listButton = document.createElement('button'); listButton.id = "listButton";
