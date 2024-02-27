@@ -29,13 +29,17 @@ public class CategoryService {
     @Path("/createCategory")
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response addTask(@HeaderParam("token") String token, Category category) {
+    public Response addCategory(@HeaderParam("token") String token, Category category) {
         Response response;
 
         if (!categoryBean.isUserAllowedToInteractWithCategories(token)) {
             response = Response.status(403).entity("You dont have permissions to do that").build();
 
-        }else if (!categoryBean.isCategoryTitleAvailable(category)) {
+        } else if (category.getTitle() == null || category.getTitle().isEmpty()) {
+            response = Response.status(422).entity("Category needs to be filled").build();
+
+
+        } else if (!categoryBean.isCategoryTitleAvailable(category)) {
             response = Response.status(422).entity("Category name already in use").build();
 
         } else if (categoryBean.addCategory(token, category)) {
@@ -96,6 +100,28 @@ public class CategoryService {
 
         } else {
             response = Response.status(400).entity("Failed to delete category").build();
+        }
+
+        return response;
+    }
+
+    @GET
+    @Path("/getAllCategories")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllCategories(@HeaderParam("token") String token) {
+        Response response;
+
+        if (userBean.getUserByToken(token) == null) {
+            response = Response.status(403).entity("Invalid token").build();
+
+        } else if (!categoryBean.isUserAllowedToInteractWithCategories(token)) {
+            response = Response.status(422).entity("You dont have enough permissions").build();
+
+        } else if (categoryBean.getAllCategories(token) == null) {
+            response = Response.status(400).entity("Failed to retrieve categories").build();
+
+        } else {
+            response = Response.status(200).entity(categoryBean.getAllCategories(token)).build();
         }
 
         return response;

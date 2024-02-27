@@ -10,6 +10,7 @@ import java.util.Set;
 @Table(name="category")
 @NamedQuery(name = "Category.findCategoryByTitle", query = "SELECT u FROM CategoryEntity u WHERE u.title = :title")
 @NamedQuery(name = "Category.findCategoryById", query = "SELECT u FROM CategoryEntity u WHERE u.idCategory = :idCategory")
+@NamedQuery(name = "Category.findAllCategories", query = "SELECT u FROM CategoryEntity u")
 public class CategoryEntity implements Serializable{
 
     private static final long serialVersionUID = 1L;

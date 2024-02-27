@@ -880,7 +880,7 @@ th {
 }
 
 #title {
-   margin-top: 15px;
+   
    width: 95%;
    margin-left: 10px;
 }
@@ -1460,7 +1460,7 @@ label {
    padding-top: 12px;
    margin-left: 375px;
    width: 1000px;
-   max-height: 552px;
+   max-height: 252px;
    margin-top: 80px;
    overflow-y: auto;
    flex-direction: column;
@@ -1487,6 +1487,19 @@ th {
    border-top-right-radius: 12px;
 }
 
+.category_table_row {
+   border-bottom: 1px solid black;
+   
+}
+
+
+#category_table tr:hover {
+   background-color: lightblue;
+   border-radius: 15px;
+}
+
+/* Category table */
+
 
 .modal-category {
    display: none;
@@ -1503,4 +1516,10 @@ th {
    background-color: rgba(0, 0, 0, 0.5); 
    display: none; 
    
+}
+
+#error_creating_category {
+
+   color: red;
+   text-align: center;
 }

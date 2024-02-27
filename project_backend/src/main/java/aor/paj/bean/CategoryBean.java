@@ -10,6 +10,7 @@ import aor.paj.entity.TaskEntity;
 import aor.paj.entity.UserEntity;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
+import jakarta.inject.Inject;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,6 +25,9 @@ public class CategoryBean {
     TaskDao taskDao;
     @EJB
     CategoryDao categoryDao;
+
+    @Inject
+    UserBean userBean;
 
     public CategoryBean(){
     }
@@ -85,6 +89,27 @@ public class CategoryBean {
         return status;
     }
 
+    public ArrayList<Category> getAllCategories(String token) {
+        UserEntity userEntity = userDao.findUserByToken(token);
+
+        ArrayList<CategoryEntity> categories = categoryDao.findAllCategories();
+
+        if (userEntity != null && userEntity.getTypeOfUser().equals("product_owner")) {
+            if(categories != null){
+                ArrayList<Category> categoriesDTO = new ArrayList<>();
+                for (CategoryEntity categoryEntity : categories) {
+                    Category category = convertCategoryEntityToCategoryForGetAll(categoryEntity);
+                    categoriesDTO.add(category);
+                }
+                return categoriesDTO;
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
     public boolean isCategoryInUse(String id) {
 
         CategoryEntity categoryToDelete = categoryDao.findCategoryById(Long.parseLong(id));
@@ -127,4 +152,16 @@ public class CategoryBean {
 
         return categoryEntity;
     }
+
+    private Category convertCategoryEntityToCategoryForGetAll(CategoryEntity categoryEntity){
+        Category category = new Category();
+
+        category.setTitle(categoryEntity.getTitle());
+        category.setIdCategory(categoryEntity.getIdCategory());
+        category.setDescription(categoryEntity.getDescription());
+        category.setAuthor(userBean.convertUserEntityToDtoForTask(categoryEntity.getOwner()));
+        return category;
+    }
+
+
 }

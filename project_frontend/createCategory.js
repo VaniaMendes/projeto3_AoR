@@ -5,6 +5,8 @@ window.onload = function() {
     const firstName_txt = document.querySelector("#user");
     const user_img = document.querySelector("#user_img");
 
+    getAllCategories(token);
+
     getUserByToken(token).then((result) => {
        user = result;
        if (user == null) {
@@ -94,6 +96,7 @@ async function getUserByToken(token) {
           createCategory.textContent = 'Create Category';
           createCategory.addEventListener('click', function() {
             document.getElementById('categoryModal').style.display = 'block';
+            document.getElementById('error_creating_category').textContent = '';
             document.getElementById('overlay-modal-category').style.display = 'block';
              
           });
@@ -101,7 +104,16 @@ async function getUserByToken(token) {
           document.getElementById('cancel').addEventListener('click', function() {
             document.getElementById('categoryModal').style.display = 'none';
             document.getElementById('overlay-modal-category').style.display = 'none';
+            document.getElementById('title').value = '';
+            document.getElementById('description').value = '';
         });
+
+         document.getElementById('category_delete').addEventListener('click', function() {
+         document.getElementById('categoryModal').style.display = 'none';
+         document.getElementById('overlay-modal-category').style.display = 'none';
+         document.getElementById('title').value = '';
+         document.getElementById('description').value = '';
+      });
 
     
  
@@ -117,3 +129,166 @@ async function getUserByToken(token) {
         
     }
  }
+
+   document.getElementById('category_save').addEventListener('click', function() {
+      const title = document.getElementById('title').value.trim();
+      const description = document.getElementById('description').value.trim();
+      const token = sessionStorage.getItem("token");
+      
+      createCategory(title, description, token);
+   });
+
+   async function createCategory(title, description, token) {
+
+      let createCategoryRequest = "http://localhost:8080/project_backend/rest/categories/createCategory";
+
+      try {
+          const response = await fetch(createCategoryRequest, {
+              method: "POST",
+              headers: {
+                  'Accept': '*/*',
+                  "Content-Type": "application/json",
+                  token: token
+              },
+              body: JSON.stringify({
+                  title: title,
+                  description: description
+              })
+          });
+  
+          if (response.ok) {
+               console.log("Category created successfully");
+              
+              
+              document.getElementById('categoryModal').style.display = 'none';
+              document.getElementById('overlay-modal-category').style.display = 'none';
+              document.getElementById('title').value = '';
+              document.getElementById('description').value = '';
+
+               removeAllRows();
+               getAllCategories(token);
+              
+          } else {
+            const errorMessage = await response.text(); 
+            document.getElementById('error_creating_category').textContent = errorMessage;
+            console.error("Failed to create category:", errorMessage);
+
+            }
+      } catch (error) {
+          console.error("Error creating category:", error);
+          return null;
+      }
+   }
+
+   //função para listar todas as categorias
+   async function getAllCategories(token) {
+      console.log("am i here");
+      const categoriesRequest = "http://localhost:8080/project_backend/rest/categories/getAllCategories";
+      try {
+          const response = await fetch(categoriesRequest, {
+              method: "GET",
+              headers: {
+                  Accept: "*/*",
+                  "Content-Type": "application/json",
+                  token: token
+              }
+          });
+  
+          if (response.ok) {
+               const categories = await response.json();
+              
+              listCategories(categories);
+          } else {
+
+            const errorMessage = await response.text(); 
+            console.error("Failed to fetch categories: " + errorMessage);
+          }
+      } catch (error) {
+          console.error("Error fetching categories:", error);
+      }
+   }
+
+   async function deleteCategory(categoryId, token) {
+
+      console.log("delete category");
+
+      let deleteCategoryRequest = `http://localhost:8080/project_backend/rest/categories/delete/${categoryId}`;
+      try {
+          const response = await fetch(deleteCategoryRequest, {
+              method: "DELETE",
+              headers: {
+                  'Accept': '*/*',
+                  "Content-Type": "application/json",
+                  token: token
+              }
+            });
+
+            if (response.ok) {
+               console.log("Category deleted successfully");
+               removeAllRows();
+               getAllCategories(token);
+            } else {
+               console.error("Failed to delete category");
+            }
+      } catch (error) {
+            console.error("Error deleting category:", error);
+         }
+   }
+
+
+   //função para listar todas as categorias
+   function listCategories(categories) {
+      const categoryTable = document.getElementById('category_table');
+
+      categories.forEach(category => {
+         const row = document.createElement('tr');
+         row.classList.add('category_table_row');
+
+         const titleCell = document.createElement('td');
+         titleCell.textContent = category.title;
+
+         const descriptionCell = document.createElement('td');
+         descriptionCell.textContent = category.description;
+
+         const authorCell = document.createElement('td');
+         authorCell.textContent = category.author.username;
+
+         const editCell = document.createElement('td');
+         editCell.innerHTML = `
+            <div style="display: flex; justify-content: center;">
+               <button id="editBttn_category" class="no-hover" style="height: 40px; margin-right: 10px;">Edit</button>
+               <button id="deleteBttn_category" class="no-hover" style="height: 40px; margin-left: 10px;">Delete</button>
+            </div>
+         `;
+            console.log("estou aqui1");
+
+            
+         //document.getElementById('editBttn_category').addEventListener('click', function() {
+            
+         //});
+
+         document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('deleteBttn_category').addEventListener('click', function() {
+               console.log("estou aqui");
+                deleteCategory(category.id, sessionStorage.getItem("token"));
+            });
+        });
+         
+
+         row.appendChild(titleCell);
+         row.appendChild(descriptionCell);
+         row.appendChild(authorCell);
+         row.appendChild(editCell);
+
+         categoryTable.appendChild(row);
+      });
+   }
+
+   function removeAllRows() {
+      const table = document.getElementById('category_table');
+      while (table.rows.length > 1) {
+         table.deleteRow(1);
+      }
+   }
+
+  
