@@ -50,7 +50,7 @@ getUserByToken(token).then((result) => {
    } else {
       firstName_txt.textContent = user.firstName;
       const role = user.typeOfUser;
-      sessionStorage.setItem('role', role);
+      sessionStorage.setItem('userType', role);
      
 
       if(user.imgURL){

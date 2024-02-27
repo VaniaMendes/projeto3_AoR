@@ -1,3 +1,28 @@
+
+window.onload = function() {
+
+   getUserByToken(token).then((result) => {
+      user = result;
+      if (user == null) {
+         window.location.href = "login.html";
+      } else {
+         firstName_txt.textContent = user.firstName;
+         const role = user.typeOfUSer;
+         sessionStorage.setItem('userType', role);
+        
+   
+         if(user.imgURL){
+            user_img.src = user.imgURL;
+         }else{user_img.src = 'user.png';
+      }
+      addButtonsForUserType(role);
+         
+      }
+   });
+
+}
+
+
 const title_txt = document.querySelector("#title");
 const description_txt = document.querySelector("#description");
 const initial_date = document.querySelector("#initial_date");
@@ -8,20 +33,90 @@ const username = sessionStorage.getItem("username");
 const pass = sessionStorage.getItem("pass");
 let priority_checked = 100;
 
+const token = sessionStorage.getItem("token");
+const firstName_txt = document.querySelector("#user");
+const user_img = document.querySelector("#user_img");
+
 writeDate();
 
 // Executa a função em intervalos de 1 segundo para atualizar a data
 setInterval(writeDate, 1000);
 
-getUser(username, pass).then((result) => {
-   if (result == null) {
-      window.location.href = "login.html";
-   } else {
-      document.querySelector("#user").textContent = result.firstName;
-      document.querySelector("#body_color").style.backgroundColor = result.background_color;
-      document.querySelector("#user_img").src = result.imgURL;
+
+async function getUserByToken(token) {
+   try {
+       const response = await fetch("http://localhost:8080/project_backend/rest/users", {
+           method: "GET",
+           headers: {
+               Accept: "application/json",
+               "Content-Type": "application/json",
+               token:token
+           }
+       });
+
+       if (response.ok) {
+           const user = await response.json();
+           return user;
+       } else {
+           console.error("Failed to fetch user data");
+           return null;
+       }
+   } catch (error) {
+       console.error("Error fetching user data:", error);
+       return null;
    }
-});
+}
+
+function addButtonsForUserType(userType) {
+   const menu = document.getElementById('menu'); //  elemento com o ID 'menu' onde os botões serão adicionados
+
+   if (userType === 'ProductOwner') {
+       
+       // Adicionar botão para consultar lista de todos os usuários
+       const listButton = document.createElement('button'); listButton.id = "listButton";
+       listButton.classList.add("menu_item"); listButton.innerHTML = ".";
+       listButton.textContent = 'All Users';
+       listButton.addEventListener('click', function() {
+         window.location.href = "productOwner.html";
+           
+       });
+       menu.appendChild(listButton);
+       
+      
+   } else if (userType === 'ScrumMaster') {
+    
+
+   } else if (userType === 'Developer') {
+       
+   }
+}
+
+
+
+function addButtonsForUserType(userType) {
+   const menu = document.getElementById('menu'); //  elemento com o ID 'menu' onde os botões serão adicionados
+
+   if (userType === 'ProductOwner') {
+       
+       // Adicionar botão para consultar lista de todos os usuários
+       const listButton = document.createElement('button'); listButton.id = "listButton";
+       listButton.classList.add("menu_item"); listButton.innerHTML = ".";
+       listButton.textContent = 'All Users';
+       listButton.addEventListener('click', function() {
+         window.location.href = "productOwner.html";
+           
+       });
+       menu.appendChild(listButton);
+       
+      
+   } else if (userType === 'ScrumMaster') {
+    
+
+   } else if (userType === 'Developer') {
+       
+   }
+}
+
 
 /*Se o título da tarefa for diferente de "" siginifica que esta existe e são impressos o título e descrição desta, 
 é mostrado o botão de delete e o título da form é Task Edit, caso contrário os campos são deixados sem nada, o botão 

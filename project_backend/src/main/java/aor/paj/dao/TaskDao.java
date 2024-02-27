@@ -58,4 +58,13 @@ public class TaskDao extends AbstractDao<TaskEntity> {
 			return null;
 		}
 	}
+
+	public ArrayList<TaskEntity> findSoftDeletedTasks() {
+		try {
+			ArrayList<TaskEntity> softDeletedTasks= (ArrayList<TaskEntity>) em.createNamedQuery("Task.findSoftDeletedTasks").getResultList();
+			return softDeletedTasks;
+		} catch (Exception e) {
+			return null;
+		}
+	}
 }
