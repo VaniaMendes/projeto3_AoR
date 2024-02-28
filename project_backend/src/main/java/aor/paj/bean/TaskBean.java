@@ -30,10 +30,10 @@ public class TaskBean {
 
     public TaskBean(){
     }
-    public boolean addTask(String token, Task task) {
+    public boolean addTask(String token, Task task, String categoryId) {
         UserEntity userEntity = userDao.findUserByToken(token);
 
-        CategoryEntity categoryEntity = categoryDao.findCategoryById(task.getCategory().getIdCategory());
+        CategoryEntity categoryEntity = categoryDao.findCategoryById(Long.parseLong(categoryId));
 
         if(userEntity != null){
             TaskEntity taskEntity = convertTaskToTaskEntity(task);
@@ -278,4 +278,23 @@ public class TaskBean {
         return taskEntity;
     }
 
+
+    public ArrayList<Task> getAllTasks(String token) {
+
+            UserEntity userEntity = userDao.findUserByToken(token);
+            ArrayList<TaskEntity> allTasksEntities = taskDao.findAllTasks();
+
+            ArrayList<Task> allTasks = new ArrayList<>();
+
+            if (userEntity != null) {
+                if (allTasksEntities != null) {
+                    for (TaskEntity taskEntity : allTasksEntities) {
+                        Task task = convertTaskEntityToTask(taskEntity);
+                        allTasks.add(task);
+                    }
+                }
+            }
+
+            return allTasks;
+    }
 }

@@ -16,6 +16,7 @@ import java.time.LocalDate;
 @NamedQuery(name = "Task.findActiveTasks", query = "SELECT a FROM TaskEntity a WHERE a.isActive = true")
 @NamedQuery(name = "Task.findSoftDeletedTasks", query = "SELECT a FROM TaskEntity a WHERE a.isActive = false")
 @NamedQuery(name = "Task.findTasksByCategory", query = "SELECT t FROM TaskEntity t WHERE t.category = :category")
+@NamedQuery(name = "Task.findAllTasks", query = "SELECT t FROM TaskEntity t")
 
 
 public class TaskEntity implements Serializable{

@@ -29,8 +29,15 @@
          <div class="descricaoTarefa">
             <btn class="modal_exit" id="cancel">&times;</btn>
             <h2 id="task_creationTitle"></h2>
+            <label for="opcoes" class="descriptioLabelTask">Title:</label>
             <input type="text" placeholder="Task Title" id="title" required />
-            <textarea cols="30" rows="14" placeholder="Task Description" id="description"></textarea>
+            <div>
+               <label for="opcoes" class="descriptioLabelTask">Category:</label>
+               <select id="category_element" name="opcoes">
+               </select>
+           </div>
+           <label for="opcoes" class="descriptioLabelTask">Description:</label>
+            <textarea cols="30" rows="14" placeholder="Task Description" id="description-task"></textarea>
 
             <div id="date_section">
                <div>
@@ -64,6 +71,8 @@
                <button class="btns_task" id="task_save">Save</button>
                <button class="btns_task" id="task_delete">Delete</button>
             </div>
+
+            <div id="error_creating_task"></div>
          </div>
       </main>
 
