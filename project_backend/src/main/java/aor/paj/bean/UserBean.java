@@ -117,9 +117,7 @@ public class UserBean implements Serializable {
         }
         if(updatedUser.getTypeOfUser() != null){
             userEntity.setTypeOfUser(updatedUser.getTypeOfUser());
-        }
-        if(updatedUser.getTypeOfUser()!= null){
-            userEntity.setTypeOfUser(updatedUser.getTypeOfUser());
+
         }
         return userDao.update(userEntity);
 

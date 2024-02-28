@@ -1,19 +1,18 @@
-const token = sessionStorage.getItem(token);
+const token = sessionStorage.getItem('token');
 //Carregar no logo para voltar à página inicial 
 document.querySelector("header h1").addEventListener("click", function () {
     window.location.href = "login.html";
  });
 
- document.getElementById("register_submit").addEventListener("click", function () {
-    registerByPO(token);
- });
+console.log("chegou aqui");
 
- async function registerByPO(token) {
+ document.getElementById("registerPO_submit").addEventListener('click', async function (event) {
+    event.preventDefault();
     let newUser = createUserData();
     console.log(newUser)
 
     try {
-        const response = await fetch("http://localhost:8080/project_backend/rest/users/updateProfilePO", {
+        const response = await fetch("http://localhost:8080/project_backend/rest/users/addUserByPO", {
             method: "PUT",
             headers: {
                 Accept: "application/json",
@@ -24,10 +23,10 @@ document.querySelector("header h1").addEventListener("click", function () {
         });
  
         if (response.ok) {
+        
            
             alert("Account registered successfully!")
             window.location.href = 'productOwner.html';
-            
              
         } else {
             switch (response.status) {
@@ -62,18 +61,19 @@ document.querySelector("header h1").addEventListener("click", function () {
         console.error('Error:', error);
         alert("Something went wrong");
     }
- }
+ });
+
 
  
  function createUserData() {
     
-        let username = document.getElementById('register_username').value.trim();
-        let password = document.getElementById('register_password').value.trim();
-        let email = document.getElementById('register_email').value.trim();
-        let firstName = document.getElementById('register_firstName').value.trim();
-        let lastName = document.getElementById('register_lastName').value.trim();
-        let phone = document.getElementById('register_phone').value.trim();
-        let photoURL = document.getElementById('register_photo_main').value.trim();
+        let username = document.getElementById('register_usernamePO').value.trim();
+        let password = document.getElementById('register_passwordPO').value.trim();
+        let email = document.getElementById('register_emailPO').value.trim();
+        let firstName = document.getElementById('register_firstNamePO').value.trim();
+        let lastName = document.getElementById('register_lastNamePO').value.trim();
+        let phone = document.getElementById('register_phonePO').value.trim();
+        let photoURL = document.getElementById('register_photo_mainPO').value.trim();
         let typeOfUSer = document.getElementById('register_typeOfUser').value.trim();
  
         return {

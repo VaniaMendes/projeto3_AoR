@@ -6,7 +6,10 @@ const token = sessionStorage.getItem("token");
 const username = sessionStorage.getItem("username");
 const role = sessionStorage.getItem("userType");
 
-console.log(username)
+console.log(token);
+
+console.log(username);
+console.log(role);
 
 let user = null;
 
@@ -202,8 +205,9 @@ function writeDate() {
       let photoEdited = false;
       let editField = false;
 
-   const updatedUserData = {};
+   
 async function saveChanges(token, username) {
+   const updatedUserData = {};
   
     //Objeto para armazenar os dados atualizados do user
 
@@ -260,7 +264,7 @@ async function saveChanges(token, username) {
 console.log(updatedUserData);
 
    try {
-      const responseStatus = await updateProfileByPO(token, updatedUserData);
+      const responseStatus = await updateProfile(token, username, updatedUserData);
       console.log(responseStatus);
       return responseStatus; 
    } catch (error) {
@@ -272,46 +276,44 @@ console.log(updatedUserData);
 
 const bntSave = document.getElementById("btn-save");
 bntSave.addEventListener("click", async function () {
-   const result = await saveChanges();
-   console.log(result);
+    
 
-   if(result == 200 && Object.keys(updatedUserData).length !== 0){
+   if(await saveChanges(token, username)){
       alert("Your valid changes have been saved");
       sessionStorage.removeItem('username');
       window.location.href = "productOwner.html";
    }
-   else if(result == 422){
-      alert("Invalid data");
+   else{
+      alert("Failed to update user");
   
-   }else{}
+   }
 
 });
 
-async function updateProfileByPO(token, username, updatedUserData) {
+async function updateProfile(token,username, updatedUserData) {
 
    try {
-       const response = await fetch('http://localhost:8080/project_backend/rest/users/updateProfilePO', {
+       const response = await fetch("http://localhost:8080/project_backend/rest/users/updateProfilePO", {
            method: 'PUT',
            headers: {
             'Content-Type': 'application/json',
-            'Accept':   'application/json',
+            'Accept': '*/*',
             token:token,
-            username: username
+            username:username
            },
            body: JSON.stringify(updatedUserData)
        });
 
        if (response.ok) {
            const data = await response.json();
+           console.log(data);
+           return data;
        }else{
          const errorMessage = await response.text();
-           if (response.status === 401) {
-           } else if (response.status === 422) {
-         
-           } else {   
-       }
+         console.log(errorMessage);
+         return errorMessage;
       }
-      return response.status;
+    
    }catch(error){
       alert("Something went wrong");
    }

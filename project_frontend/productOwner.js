@@ -187,37 +187,37 @@ async function getAllUsers(token) {
     // Limpa o conteúdo existente da tabela
     tbody.innerHTML = '';
 
-    // Preenche a tabela com os dados dos usuários
+    // Preenche a tabela com os dados dos user
     for(const user of users) {
         if(user.active){
         const row = document.createElement('tr');
         row.dataset.username = user.username;
 
-        // Adiciona a imagem do usuário
+        // Adiciona a imagem do user
         const imagemCell = document.createElement('td');
         const imagem = document.createElement('img');
-        imagem.src = user.imgURL; // Supondo que cada usuário tenha uma propriedade "imagemUrl" com a URL da imagem
+        imagem.src = user.imgURL;
         imagem.alt = 'user.png';
         imagem.classList.add('imagem_user');
         imagemCell.appendChild(imagem);
         row.appendChild(imagemCell);
 
-        // Adiciona o nome do usuário
+        // Adiciona o nome do user
         const nomeCell = document.createElement('td');
         nomeCell.textContent = user.firstName + " " + user.lastName;
         row.appendChild(nomeCell);
 
-        // Adiciona o email do usuário
+        // Adiciona o email do user
         const emailCell = document.createElement('td');
         emailCell.textContent = user.email;
         row.appendChild(emailCell);
 
-        // Adiciona o número de telefone do usuário
+        // Adiciona o número de telefone do user
         const telefoneCell = document.createElement('td');
         telefoneCell.textContent = user.phoneNumber;
         row.appendChild(telefoneCell);
 
-        // Adiciona a função do usuário
+        // Adiciona a função do user
         const funcaoCell = document.createElement('td');
         funcaoCell.textContent = user.typeOfUser;
         row.appendChild(funcaoCell);
@@ -263,7 +263,7 @@ async function getAllUsers(token) {
         // Adiciona a linha à tabela
         tbody.appendChild(row);
     }else{
-        console.log("chegou aqui");
+        
 
     }
 }
@@ -271,7 +271,7 @@ async function getAllUsers(token) {
 // Adiciona uma linha vazia para o botão 'btn_task'
 const blankRow = document.createElement('tr');
 const blankCell = document.createElement('td');
-blankCell.colSpan = 5; // Colspan deve ser igual ao número de colunas na tabela
+blankCell.colSpan = 0; // Fica localizado na primeira coluna
 blankRow.appendChild(blankCell);
 tbody.appendChild(blankRow);
 
@@ -279,7 +279,8 @@ tbody.appendChild(blankRow);
 const btnTaskCell = document.createElement('td');
 const btnTaskButton = document.createElement('button');
 btnTaskButton.textContent = '+ New User'; 
-btnTaskButton.classList.add('btn_task'); // Adicione classes CSS conforme necessário
+btnTaskButton.classList.add('btn_task');
+btnTaskButton.id = 'btn_task'; 
 btnTaskButton.addEventListener('click', function() {
    
     window.location.href = 'registerProductOwner.html';
@@ -288,13 +289,6 @@ btnTaskCell.appendChild(btnTaskButton);
 blankRow.appendChild(btnTaskCell);
 }
 
-
-
-   
-    //Botao para criar novo user
-  document.getElementById("btn_task").addEventListener("click", async function () {
-    window.location.href = "registerProductOwner.html";
-  });
 
   async function listInativeUsers() {
     const users = await getAllUsers(token);
