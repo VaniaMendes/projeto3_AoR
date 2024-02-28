@@ -17,6 +17,7 @@ import jakarta.ws.rs.core.Response;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.List;
 
 @Path("/tasks")
 public class TaskService {
@@ -158,7 +159,7 @@ public class TaskService {
      * fazer nada
      * @param token
      * @param taskId
-     * @param newStatus
+     * @param
      * @return
      */
     @PUT
@@ -251,6 +252,31 @@ public class TaskService {
         }
 
         return response;
+    }
+
+
+    //Método para filtrar tasks por categoria
+    @GET
+    @Path("/userTasks")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserTasksByCategory(@HeaderParam("token") String token, @QueryParam("categoryName") String categoryName) {
+        User user = userBean.getUserByToken(token);
+        if (user == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid token").build();
+        }
+        if (!user.getTypeOfUser().equals("product_owner") || !user.getTypeOfUser().equals("scrum_master")) {
+            return Response.status(Response.Status.FORBIDDEN).entity("You don't have permission to access this resource").build();
+        }
+        if (categoryName == null || categoryName.isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Category name is required").build();
+        }
+
+        List<Task> userTasksByCategory = taskBean.getTasksByCategoryName(categoryName);
+        if (userTasksByCategory.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).entity("No tasks found for this user and category").build();
+        }
+
+        return Response.ok(userTasksByCategory).build();
     }
 
 }

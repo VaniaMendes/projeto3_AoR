@@ -221,6 +221,15 @@ public class TaskBean {
         return softDeletedTasks;
 
     }
+    public ArrayList<Task> getTasksByCategoryName( String category){
+        ArrayList<TaskEntity> taskByCategoryEntities = taskDao.findTaskByCategoryName(category);
+        ArrayList<Task> taskByCategory = new ArrayList<>();
+        for(TaskEntity taskEntity: taskByCategoryEntities){
+            Task task = convertTaskEntityToTask(taskEntity);
+            taskByCategory.add(task);
+        }
+        return taskByCategory;
+    }
 
     //passar estes dois métodos para o CategoryBean e chamar categoryBean aqui?
     private CategoryEntity convertCategoryToCategoryEntity(Category category){
