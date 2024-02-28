@@ -74,6 +74,10 @@ window.onload = function() {
 
     async function editCategory(categoryId, token) {
         let title = document.querySelector("#title").value;
+
+        if (title == "") {
+            title = document.querySelector("#title").placeholder;
+        }
         let description = document.querySelector("#description").value;
 
         let editCategoryRequest = `http://localhost:8080/project_backend/rest/categories/update/${categoryId}`
@@ -88,7 +92,8 @@ window.onload = function() {
                 },
                 body: JSON.stringify({
                     title: title,
-                    description: description
+                    description: description, 
+                    idCategory: categoryId
                 })
             });
 

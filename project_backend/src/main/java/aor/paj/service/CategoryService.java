@@ -68,7 +68,7 @@ public class CategoryService {
         } else if (category.getTitle().trim().isEmpty()) {
             response = Response.status(422).entity("Title is required").build();
 
-        } else if (!categoryBean.isCategoryTitleAvailable(category)) {
+        } else if (!categoryBean.isCategoryTitleAvailableToUpdate(category)) {
             response = Response.status(422).entity("Title not available").build();
 
         } else if (categoryBean.updateCategory(token, id, category)) {

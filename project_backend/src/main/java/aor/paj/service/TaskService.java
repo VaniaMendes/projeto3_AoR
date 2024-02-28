@@ -69,9 +69,9 @@ public class TaskService {
     }
 
     @PUT
-    @Path("/updateTask/{id}")
+    @Path("/updateTask")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateTask(@HeaderParam("token") String token, @PathParam("id") String id, Task task) {
+    public Response updateTask(@HeaderParam("token") String token, @HeaderParam("categoryId") String id, Task task) {
 
         Response response;
 
@@ -290,6 +290,27 @@ public class TaskService {
 
         } else {
             response = Response.status(400).entity("Failed to retrieve tasks").build();
+        }
+
+        return response;
+    }
+
+    @GET
+    @Path("getTaskById/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTaskById(@HeaderParam("token") String token, @PathParam("id") String id) {
+        Response response;
+
+        Task task = taskBean.getTaskById(token, id);
+
+        if (userBean.getUserByToken(token) == null) {
+            response = Response.status(403).entity("Invalid token").build();
+
+        } else if (task != null) {
+            response = Response.status(200).entity(task).build();
+
+        } else {
+            response = Response.status(400).entity("Failed to retrieve task").build();
         }
 
         return response;

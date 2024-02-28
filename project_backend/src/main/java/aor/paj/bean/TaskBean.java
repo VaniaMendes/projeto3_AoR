@@ -317,4 +317,20 @@ public class TaskBean {
 
             return activeTasks;
     }
+
+    public Task getTaskById(String token, String id) {
+
+            UserEntity userEntity = userDao.findUserByToken(token);
+            TaskEntity taskEntity = taskDao.findTaskById(Long.parseLong(id));
+
+            Task task = new Task();
+
+            if (userEntity != null) {
+                if (taskEntity != null) {
+                    task = convertTaskEntityToTask(taskEntity);
+                }
+            }
+
+            return task;
+    }
 }

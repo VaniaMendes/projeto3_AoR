@@ -150,7 +150,7 @@ if (task_type == "edit") {
    let task_id = sessionStorage.getItem("task_id");
    document.querySelector("#task_creationTitle").textContent = "Task Edit";
    document.querySelector("#task_delete").style.display = "inline-block";
-   getTask(username, pass, task_id).then((result) => {
+   getTask(token, task_id).then((result) => {
       title_txt.value = result.title;
       description_txt.value = result.description;
       initial_date.value = result.initialDate;
@@ -387,6 +387,35 @@ async function addTask(title, description, initialDate, endDate, priority, idCat
    });
 }
 
+async function updateTask(title, description, initialDate, endDate, priority, idCategory) {
+
+   const token = sessionStorage.getItem("token");
+   let task = {
+      title: title,
+      description: description,
+      initialDate: initialDate,
+      endDate: endDate,
+      priority: priority
+   };
+   await fetch("http://localhost:8080/project_backend/rest/tasks/updateTask", {
+      method: "PUT",
+      headers: {
+         Accept: "*/*",
+         "Content-Type": "application/json",
+         token: token,
+         categoryId: idCategory
+         
+      },
+      body: JSON.stringify(task),
+   }).then(function (response) {
+      if (response.status == 200) {
+         alert("task is added successfully :)");
+      } else {
+         alert("something went wrong :(");
+      }
+   });
+}
+
 async function getUser(username, pass) {
    let response = await fetch(
       "http://localhost:8080/project_backend/rest/users",
@@ -409,23 +438,29 @@ async function getUser(username, pass) {
    }
 }
 
-async function getTask(username, pass, id) {
-   let response = await fetch(
-      "http://localhost:8080/project_backend/rest/tasks/" + id,
+async function getTask(token, id) {
 
-      {
+   let getTaskRequest = `http://localhost:8080/project_backend/rest/tasks/getTaskById/${id}`
+
+   let response = await fetch(getTaskRequest, {
+
          method: "GET",
          headers: {
             Accept: "*/*",
             "Content-Type": "application/json",
-            username: username,
-            pass: pass,
+            token, token
          },
       }
    );
 
-   let task = await response.json();
-   return task;
+   if (response.ok) {
+      let task = await response.json();
+      return task;
+   } else {
+      console.error("Failed to fetch task data");
+      return null;
+   }
+
 }
 
 async function deleteTask(username, pass, task_id) {

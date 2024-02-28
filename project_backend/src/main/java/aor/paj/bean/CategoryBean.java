@@ -141,11 +141,26 @@ public class CategoryBean {
         return status;
     }
 
-    public boolean isCategoryTitleAvailable(Category category) { //No user estou a passar diretamento o username, aqui passo o objeto todo??
+    public boolean isCategoryTitleAvailable(Category category) {
 
         CategoryEntity categoryEntity = categoryDao.findCategoryByTitle(category.getTitle());
 
+
+
         return categoryEntity == null;
+    }
+
+    public boolean isCategoryTitleAvailableToUpdate(Category category) {
+
+        CategoryEntity categoryEntity = categoryDao.findCategoryByTitle(category.getTitle());
+
+        if(categoryEntity == null){
+            return true;
+        } else if(categoryEntity.getIdCategory() == category.getIdCategory()){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean isUserAllowedToInteractWithCategories(String token) {
