@@ -260,9 +260,9 @@ async function getUserByToken(token) {
         const editButton = document.createElement("button");
         editButton.innerHTML = "&#128214;";
         editButton.classList.add("edit_button");
-        editButton.onclick = function(event) {
-            
-            console.log("teste");
+        editButton.onclick = function() {
+         
+         window.location.href = `edit-category.html?categoryId=${category.idCategory}`;
             
         };
         editCell.appendChild(editButton); // Adiciona o botão de edição à célula
