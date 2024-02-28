@@ -837,6 +837,37 @@ th {
    border-radius: 5px;
    height: 220px;
 }
+
+#description-task {
+   padding: 8px;
+   margin-bottom: 12px;
+   box-sizing: border-box;
+   background-color: var(--white_active);
+   border-radius: 5px;
+   outline: none;
+   border: none;
+   box-shadow: 0px 0px 2px 0px black;
+   width: 95%;
+   margin-left: 10px;
+   margin-bottom: 0px;
+   border-radius: 5px;
+   height: 200px;
+}
+
+.descriptioLabelTask {
+   font-size: 10px;
+   margin-bottom: -5px;
+   font-weight: bold;
+   margin-left: 10px;
+}
+
+#category_element {
+   width: 95%;
+   margin-left: 10px;
+   margin-bottom: 0px;
+}
+
+
 #task_creationTitle {
    color: var(--black);
    margin-bottom: 6px;
@@ -867,7 +898,7 @@ th {
    margin: 40px auto;
    background-color: var(--white);
    border-radius: 12px;
-   height: 32.6em;
+   height: 37.8em;
    width: 24em;
    padding: 10px 1em 1.8em 1em;
    box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.5);
@@ -1576,7 +1607,8 @@ th {
 }
 
 #error_creating_category, 
-#error_editing_category {
+#error_editing_category,
+#error_creating_task {
 
    color: red;
    text-align: center;

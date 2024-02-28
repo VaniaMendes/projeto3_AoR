@@ -15,6 +15,7 @@ window.onload = function() {
             user_img.src = user.imgURL;
          }else{user_img.src = 'user.png';
       }
+      getAllCategories(token);
       addButtonsForUserType(role);
          
       }
@@ -24,7 +25,7 @@ window.onload = function() {
 
 
 const title_txt = document.querySelector("#title");
-const description_txt = document.querySelector("#description");
+const description_txt = document.querySelector("#description-task");
 const initial_date = document.querySelector("#initial_date");
 const end_date = document.querySelector("#end_dates");
 const priority_array = document.querySelectorAll("#color_section input");
@@ -83,7 +84,7 @@ function addButtonsForUserType(userType) {
 
        const createCategoryButton = document.createElement('button'); createCategoryButton.id = "listButton";
        createCategoryButton.classList.add("menu_item"); createCategoryButton.innerHTML = ".";
-       createCategoryButton.textContent = 'Create Category';
+       createCategoryButton.textContent = 'Categories';
          createCategoryButton.addEventListener('click', function() {
             window.location.href = "createCategory.html";
             
@@ -98,6 +99,44 @@ function addButtonsForUserType(userType) {
 
    } else if (userType === 'Developer') {
        
+   }
+}
+
+async function getAllCategories(token) {
+  
+   const categoriesRequest = "http://localhost:8080/project_backend/rest/categories/getAllCategories";
+   try {
+       const response = await fetch(categoriesRequest, {
+           method: "GET",
+           headers: {
+               Accept: "*/*",
+               "Content-Type": "application/json",
+               token: token
+           }
+       });
+
+       if (response.ok) {
+            const categories = await response.json();
+           
+            let selectElement = document.getElementById("category_element");
+
+            categories.forEach(category => {
+               
+               let option = document.createElement("option");
+               
+               option.value = category.idCategory;
+               
+               option.text = category.title;
+               selectElement.appendChild(option);
+            });
+
+       } else {
+
+         const errorMessage = await response.text(); 
+         console.error("Failed to fetch categories: " + errorMessage);
+       }
+   } catch (error) {
+       console.error("Error fetching categories:", error);
    }
 }
 
@@ -143,7 +182,7 @@ if (task_type == "edit") {
 /*Só é possível gravar a tarefa se esta contiver algum título. Caso o campo do título tenha algo escrito
 vai haver uma verificação se esta tarefa está a ser criada ou editada. Caso esteja a ser criada, esta tarefa
 é adicionada no fim da array de tarefas, caso esteja a ser editada é apenas mudado os valores dos atributos desta*/
-document.querySelector("#task_save").addEventListener("click", function () {
+document.querySelector("#task_save").addEventListener("click", async function () {
    if (title_txt.value != "") {
       if (!initial_date.value == "") {
          let current_date = new Date();
@@ -161,18 +200,18 @@ document.querySelector("#task_save").addEventListener("click", function () {
                if (task_type == "create") {
                   for (let i = 0; i < priority_array.length; i++) {
                      if (priority_array[i].checked) {
+                        console.log("prioridade: " + priority_array[i].value);
                         priority_checked = parseInt(priority_array[i].value);
                      }
                   }
 
-                  addTask(
-                     username,
-                     pass,
+                  await addTask(
                      title_txt.value,
                      description_txt.value,
                      initial_date.value,
                      end_date.value,
-                     priority_checked
+                     priority_checked,
+                     category_element.value
                   );
 
                   window.location.href = "scrum.html";
@@ -203,7 +242,7 @@ document.querySelector("#task_save").addEventListener("click", function () {
             } else {
                alert("The end date must be greater than the initial date.");
             }
-         } else {
+         }   else {
             alert("The initial date must be greater than the current date.");
          }
       } else {
@@ -213,6 +252,8 @@ document.querySelector("#task_save").addEventListener("click", function () {
       alert("Need to put a task title.");
    }
 });
+
+
 
 for (let i = 0; i < priority_array.length; i++) {
    if (i == 0) {
@@ -317,21 +358,24 @@ async function updateTask(username, pass, id, title, description, initialDate, e
    });
 }
 
-async function addTask(username_value, pass, title, description, initialDate, endDate, priority) {
+async function addTask(title, description, initialDate, endDate, priority, idCategory) {
+
+   const token = sessionStorage.getItem("token");
    let task = {
       title: title,
       description: description,
       initialDate: initialDate,
       endDate: endDate,
-      priority: priority,
+      priority: priority
    };
-   await fetch("http://localhost:8080/project_backend/rest/tasks/create", {
+   await fetch("http://localhost:8080/project_backend/rest/tasks/createTask", {
       method: "POST",
       headers: {
          Accept: "*/*",
          "Content-Type": "application/json",
-         username: username_value,
-         pass: pass,
+         token: token,
+         categoryId: idCategory
+         
       },
       body: JSON.stringify(task),
    }).then(function (response) {
