@@ -241,6 +241,7 @@ async function getUserByToken(token) {
       const categoryTable = document.getElementById('category_table');
 
       categories.forEach(category => {
+         
          const row = document.createElement('tr');
          row.classList.add('category_table_row');
 
@@ -254,31 +255,36 @@ async function getUserByToken(token) {
          authorCell.textContent = category.author.username;
 
          const editCell = document.createElement('td');
-         editCell.innerHTML = `
-            <div style="display: flex; justify-content: center;">
-               <button id="editBttn_category" class="no-hover" style="height: 40px; margin-right: 10px;">Edit</button>
-               <button id="deleteBttn_category" class="no-hover" style="height: 40px; margin-left: 10px;">Delete</button>
-            </div>
-         `;
-            console.log("estou aqui1");
-
+         editCell.style.textAlign = "center";
+         
+        const editButton = document.createElement("button");
+        editButton.innerHTML = "&#128214;";
+        editButton.classList.add("edit_button");
+        editButton.onclick = function(event) {
             
-         //document.getElementById('editBttn_category').addEventListener('click', function() {
+            console.log("teste");
             
-         //});
+        };
+        editCell.appendChild(editButton); // Adiciona o botão de edição à célula
 
-         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('deleteBttn_category').addEventListener('click', function() {
-               console.log("estou aqui");
-                deleteCategory(category.id, sessionStorage.getItem("token"));
-            });
-        });
+
+        const deleteButton = document.createElement("button");
+        deleteButton.innerHTML = "&#128465;";
+        deleteButton.classList.add("delete_button");
+        deleteButton.onclick = function(event) {
+            
+         deleteCategory(category.idCategory, sessionStorage.getItem("token"));
+        };
+        editCell.appendChild(deleteButton); // Adiciona o botão de exclusão à célula
+        
+      
          
 
          row.appendChild(titleCell);
          row.appendChild(descriptionCell);
          row.appendChild(authorCell);
          row.appendChild(editCell);
+         
 
          categoryTable.appendChild(row);
       });

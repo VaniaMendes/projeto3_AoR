@@ -15,8 +15,6 @@ const HIGH = 300;
 
 const token = sessionStorage.getItem("token");
 const userType = sessionStorage.getItem('role');
-alert(userType);
-alert(token);
 
 
 

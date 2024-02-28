@@ -117,7 +117,7 @@ public class CategoryBean {
         boolean status;
         ArrayList<TaskEntity> findTasksByCategory = taskDao.findTasksByCategory(categoryToDelete);
 
-        if (findTasksByCategory == null) {
+        if (findTasksByCategory.isEmpty()) {
             status = false;
         } else {
             status = true;
