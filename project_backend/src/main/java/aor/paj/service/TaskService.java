@@ -273,4 +273,26 @@ public class TaskService {
         return response;
     }
 
+
+    @GET
+    @Path("getActiveTasks")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getActiveTasks(@HeaderParam("token") String token) {
+        Response response;
+
+        ArrayList<Task> tasks = taskBean.getActiveTasks(token);
+
+        if (userBean.getUserByToken(token) == null) {
+            response = Response.status(403).entity("Invalid token").build();
+
+        } else if (tasks != null) {
+            response = Response.status(200).entity(tasks).build();
+
+        } else {
+            response = Response.status(400).entity("Failed to retrieve tasks").build();
+        }
+
+        return response;
+    }
+
 }

@@ -182,7 +182,7 @@ if (task_type == "edit") {
 /*Só é possível gravar a tarefa se esta contiver algum título. Caso o campo do título tenha algo escrito
 vai haver uma verificação se esta tarefa está a ser criada ou editada. Caso esteja a ser criada, esta tarefa
 é adicionada no fim da array de tarefas, caso esteja a ser editada é apenas mudado os valores dos atributos desta*/
-document.querySelector("#task_save").addEventListener("click", function () {
+document.querySelector("#task_save").addEventListener("click", async function () {
    if (title_txt.value != "") {
       if (!initial_date.value == "") {
          let current_date = new Date();
@@ -200,11 +200,12 @@ document.querySelector("#task_save").addEventListener("click", function () {
                if (task_type == "create") {
                   for (let i = 0; i < priority_array.length; i++) {
                      if (priority_array[i].checked) {
+                        console.log("prioridade: " + priority_array[i].value);
                         priority_checked = parseInt(priority_array[i].value);
                      }
                   }
 
-                  addTask(
+                  await addTask(
                      title_txt.value,
                      description_txt.value,
                      initial_date.value,
@@ -241,7 +242,7 @@ document.querySelector("#task_save").addEventListener("click", function () {
             } else {
                alert("The end date must be greater than the initial date.");
             }
-         } else {
+         }   else {
             alert("The initial date must be greater than the current date.");
          }
       } else {

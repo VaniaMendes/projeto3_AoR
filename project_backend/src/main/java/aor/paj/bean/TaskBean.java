@@ -274,7 +274,7 @@ public class TaskBean {
         taskEntity.setEndDate(task.getEndDate());
         taskEntity.setActive(task.isActive());
         taskEntity.setState("toDo");
-        taskEntity.setPriority(100);
+        taskEntity.setPriority(task.getPriority());
         return taskEntity;
     }
 
@@ -296,5 +296,25 @@ public class TaskBean {
             }
 
             return allTasks;
+    }
+
+
+    public ArrayList<Task> getActiveTasks(String token) {
+
+            UserEntity userEntity = userDao.findUserByToken(token);
+            ArrayList<TaskEntity> activeTasksEntities = taskDao.findActiveTasks();
+
+            ArrayList<Task> activeTasks = new ArrayList<>();
+
+            if (userEntity != null) {
+                if (activeTasksEntities != null) {
+                    for (TaskEntity taskEntity : activeTasksEntities) {
+                        Task task = convertTaskEntityToTask(taskEntity);
+                        activeTasks.add(task);
+                    }
+                }
+            }
+
+            return activeTasks;
     }
 }
