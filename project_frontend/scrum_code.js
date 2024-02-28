@@ -17,7 +17,6 @@ const token = sessionStorage.getItem("token");
 const userType = sessionStorage.getItem('role');
 
 
-
 async function getUserByToken(token) {
    try {
        const response = await fetch("http://localhost:8080/project_backend/rest/users", {
