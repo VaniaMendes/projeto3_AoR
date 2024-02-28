@@ -1288,7 +1288,7 @@ label {
    border-radius: 50px;
    
 }
-.edit_profile input[type="text"] {
+.edit_profile input[type="text"], #edit_element{
    margin-bottom: 5px;
    box-sizing: border-box;
    width: calc(100% - 30px);
@@ -1350,7 +1350,7 @@ label {
 
 }
 
-.edit_button, .delete_button {
+.edit_button, .delete_button, .restore_user {
    background-color: none; 
    border: none; 
    margin-left: 5px; 
@@ -1414,7 +1414,7 @@ label {
    background-color: var(--white);
    border-radius: 12px;
    width: 60em;
-   max-height: 50em;
+   max-height: 40em;
    transform: translate(-50%, -50%);
    top: 50%;
    left: 850px;

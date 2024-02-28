@@ -117,10 +117,10 @@ async function getUserByUsername(token, username) {
          document.getElementById("edit_lastName").disabled = true;
          document.getElementById("edit_email").disabled = true;
          document.getElementById("edit_phone").disabled = true;
-         userTypeSelect.disabled = true;
+         document.getElementById("edit_element").disabled = true;
+       
 
          document.getElementById("btn-save").style.visibility="hidden";
-
       }
    }
 

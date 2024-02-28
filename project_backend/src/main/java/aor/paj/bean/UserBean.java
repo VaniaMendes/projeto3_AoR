@@ -122,6 +122,8 @@ public class UserBean implements Serializable {
         return userDao.update(userEntity);
 
     }
+
+
     public boolean updateUser(String token, User updatedUser) {
         if (token == null || token.isEmpty()) {
             return false;
@@ -238,8 +240,7 @@ public class UserBean implements Serializable {
         userEntity.setFirstName(user.getFirstName());
         userEntity.setLastName(user.getLastName());
         userEntity.setIsActive(true);
-        userEntity.setTypeOfUser("developer");
-
+        userEntity.setTypeOfUser(user.getTypeOfUser());
         return userEntity;
     }
 
@@ -342,6 +343,15 @@ public class UserBean implements Serializable {
         boolean wasRemoved=false;
         if (userEntity != null) {
             userEntity.setIsActive(false);
+            wasRemoved =  userDao.update(userEntity);
+        }
+        return wasRemoved;
+    }
+    public boolean restoreUser(String username){
+        UserEntity userEntity = userDao.findUserByUsername(username);
+        boolean wasRemoved=false;
+        if (userEntity != null) {
+            userEntity.setIsActive(true);
             wasRemoved =  userDao.update(userEntity);
         }
         return wasRemoved;

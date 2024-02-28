@@ -37,7 +37,7 @@ public class User{
         this.phoneNumber = phoneNumber;
         this.imgURL = imgURL;
         this.token = token;
-        this.typeOfUser = "developer";
+        this.typeOfUser = getTypeOfUser();
         this.isActive = true;
     }
 
