@@ -110,6 +110,22 @@ public class CategoryBean {
         }
     }
 
+    public Category getCategoryById(String token, String id) {
+
+        UserEntity userEntity = userDao.findUserByToken(token);
+        CategoryEntity categoryEntity = categoryDao.findCategoryById(Long.parseLong(id));
+
+        if (userEntity != null && userEntity.getTypeOfUser().equals("product_owner")) {
+            if(categoryEntity != null){
+                return convertCategoryEntityToCategoryForGetAll(categoryEntity);
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
     public boolean isCategoryInUse(String id) {
 
         CategoryEntity categoryToDelete = categoryDao.findCategoryById(Long.parseLong(id));

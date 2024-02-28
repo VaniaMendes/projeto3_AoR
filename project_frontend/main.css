@@ -1507,6 +1507,63 @@ th {
    position: relative;
 }
 
+.modal-edit-category {
+   display: none;
+   z-index: 1000;
+   position: relative;
+   display: grid;
+}
+
+
+.descricaoCategoriaEdit {
+   margin: 40px auto;
+   background-color: var(--white);
+   border-radius: 12px;
+   width: 24em;
+   padding: 10px 1em 1.8em 1em;
+   box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.5);
+   transform: translate(-50%, -50%);
+   top: 25%;
+   left: 850px;
+   position: absolute;
+}
+
+.modalEdit_exit {
+   color: black;
+   border-radius: 50%;
+   font-size: 17.5px;
+   font-weight: bold;
+   border: none;
+   background-color: transparent;
+   padding: 0px 0px 10px 0px;
+   height: 17px;
+   width: 25px;
+   margin: 5px 12px 0px 370px;
+   text-align: center;
+   cursor: pointer;
+}
+
+.modalEdit_exit:hover {
+   background-color: var(--white_hover);
+}
+
+.modalEdit_exit:active {
+   background-color: var(--white_active);
+}
+
+
+#task_editionTitle {
+   color: var(--black);
+   margin-bottom: 6px;
+   margin-left: 10px;
+}
+
+
+#category_edit_save, #category_edit_delete {
+   margin-top: 20px; 
+}
+
+
 #overlay-modal-category {
    position: fixed; 
    top: 0;
@@ -1518,8 +1575,11 @@ th {
    
 }
 
-#error_creating_category {
+#error_creating_category, 
+#error_editing_category {
 
    color: red;
    text-align: center;
+   bottom: -14px;
+  position: relative;
 }

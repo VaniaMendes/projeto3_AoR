@@ -63,7 +63,10 @@ public class CategoryService {
             response = Response.status(403).entity("Invalid token").build();
 
         } else if (!categoryBean.isUserAllowedToInteractWithCategories(token)) {
-            response = Response.status(422).entity("You dont have enough permissions").build();
+            response = Response.status(403).entity("You dont have enough permissions").build();
+
+        } else if (category.getTitle().trim().isEmpty()) {
+            response = Response.status(422).entity("Title is required").build();
 
         } else if (!categoryBean.isCategoryTitleAvailable(category)) {
             response = Response.status(422).entity("Title not available").build();
@@ -122,6 +125,28 @@ public class CategoryService {
 
         } else {
             response = Response.status(200).entity(categoryBean.getAllCategories(token)).build();
+        }
+
+        return response;
+    }
+
+    @GET
+    @Path("/getCategoryById/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCategoryById(@HeaderParam("token") String token, @PathParam("id") String id) {
+        Response response;
+
+        if (userBean.getUserByToken(token) == null) {
+            response = Response.status(403).entity("Invalid token").build();
+
+        } else if (!categoryBean.isUserAllowedToInteractWithCategories(token)) {
+            response = Response.status(422).entity("You dont have enough permissions").build();
+
+        } else if (categoryBean.getCategoryById(token, id) == null) {
+            response = Response.status(400).entity("Failed to retrieve category").build();
+
+        } else {
+            response = Response.status(200).entity(categoryBean.getCategoryById(token, id)).build();
         }
 
         return response;
