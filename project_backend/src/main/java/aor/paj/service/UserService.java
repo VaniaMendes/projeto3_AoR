@@ -242,52 +242,52 @@ public class UserService {
     @Path("/updateProfilePO")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateUser(@HeaderParam("token") String token, @HeaderParam("username") String username, User updatedUser) {
-        User user = userBean.getUserByUsername(username);
-        User typeOfUser = userBean.getUserByToken(token);
+    public Response updateUserByPO(@HeaderParam("token") String token, @HeaderParam("username") String username, User updatedUser) {
+        User userRequest = userBean.getUserByToken(token);
+        User beModified = userBean.getUserByUsername(username);
 
 
-        if (typeOfUser != null && (typeOfUser.getTypeOfUser()).equals("product_owner")) {
-            if (updatedUser.getEmail() != null) {
+        if (userRequest != null && (userRequest.getTypeOfUser()).equals("product_owner")) {
+            if (updatedUser.getEmail() != null ) {
                 if (!userBean.isEmailValid(updatedUser.getEmail())) {
                     return Response.status(422).entity("Invalid email").build();
                 } else if(!userBean.emailAvailable(updatedUser.getEmail())) {
                     return Response.status(422).entity("Email allready exists").build();
                 }else {
-                    user.setEmail(updatedUser.getEmail());
+                    beModified.setEmail(updatedUser.getEmail());
                 }
             }
             if (updatedUser.getFirstName() != null) {
-                user.setFirstName(updatedUser.getFirstName());
+                beModified.setFirstName(updatedUser.getFirstName());
             }
             if (updatedUser.getLastName() != null) {
-                user.setLastName(updatedUser.getLastName());
+                beModified.setLastName(updatedUser.getLastName());
             }
             if (updatedUser.getPhoneNumber() != null) {
                 if (!userBean.isPhoneNumberValid(updatedUser.getPhoneNumber())) {
                     return Response.status(422).entity("Invalid phone number").build();
                 } else {
-                    user.setPhoneNumber(updatedUser.getPhoneNumber());
+                    beModified.setPhoneNumber(updatedUser.getPhoneNumber());
                 }
             }
             if (updatedUser.getImgURL() != null) {
                 if (!userBean.isImageUrlValid(updatedUser.getImgURL())) {
                     return Response.status(422).entity("Image URL invalid").build();
                 } else {
-                    user.setImgURL(updatedUser.getImgURL());
+                    beModified.setImgURL(updatedUser.getImgURL());
                 }
             }
 
             if(updatedUser.getTypeOfUser() != null){
-                user.setTypeOfUser(updatedUser.getTypeOfUser());
+                beModified.setTypeOfUser(updatedUser.getTypeOfUser());
             }
 
 
-            boolean updatedUSer = userBean.updateUserByPO(token, username, user);
+            boolean updatedUSer = userBean.updateUserByPO(token, username, beModified);
             if (updatedUSer) {
-                return Response.status(Response.Status.OK).entity(user).build();
+                return Response.status(200).entity(beModified).build();
             } else {
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to update user").build();
+                return Response.status(406).entity("Failed to update user").build();
             }
         }else{
             return Response.status(401).entity("Invalid credentials").build();
