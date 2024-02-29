@@ -185,7 +185,7 @@ async function getUserByToken(token) {
       if (sessionStorage.getItem('userType') === 'product_owner') {
             editCell.appendChild(deleteButton);
             editCell.appendChild(restoreButton);
-      } else if (sessionStorage.getItem('userType') === 'ScrumMaster') {
+      } else if (sessionStorage.getItem('userType') === 'scrum_master') {
             editCell.appendChild(restoreButton);
       }
       

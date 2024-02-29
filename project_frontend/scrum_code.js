@@ -116,7 +116,16 @@ function addButtonsForUserType(userType) {
          window.location.href = "productOwner.html";
            
        });
+
+
+       const inactiveTasksButton = document.createElement('button'); inactiveTasksButton.id = "inactiveTasksButton";
+      inactiveTasksButton.classList.add("menu_item"); inactiveTasksButton.innerHTML = ".";
+      inactiveTasksButton.textContent = 'Inactive Tasks';
+      inactiveTasksButton.addEventListener('click', function() {
+         window.location.href = "inactive-tasks.html";
+      });
        menu.appendChild(listButton);
+       menu.appendChild(inactiveTasksButton);
 
        getActiveTasks(token).then((result) => {
          tasks = result;
