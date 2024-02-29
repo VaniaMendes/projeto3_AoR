@@ -281,7 +281,7 @@ public class TaskService {
         return Response.ok(userTasksByCategory).build();
     }
 
-}
+
 
     @GET
     @Path("/getAllTasks")
