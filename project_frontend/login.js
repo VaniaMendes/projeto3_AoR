@@ -2,9 +2,6 @@ sessionStorage.clear();
 
 document.querySelector("#login_form").addEventListener("submit", function (e) {
    e.preventDefault();
-
-   let username_txt = document.querySelector("#username").value;
-   let pass_txt = document.querySelector("#password").value;
    validateUser(username_txt, pass_txt);
 });
 async function validateUser(username, password) {

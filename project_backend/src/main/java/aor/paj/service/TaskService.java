@@ -257,7 +257,7 @@ public class TaskService {
 
     //Método para filtrar tasks por categoria
     @GET
-    @Path("/userTasks")
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserTasksByCategory(@HeaderParam("token") String token, @QueryParam("categoryName") String categoryName) {
         User user = userBean.getUserByToken(token);
@@ -275,7 +275,6 @@ public class TaskService {
         if (userTasksByCategory.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).entity("No tasks found for this user and category").build();
         }
-
         return Response.ok(userTasksByCategory).build();
     }
 
