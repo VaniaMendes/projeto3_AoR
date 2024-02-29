@@ -15,6 +15,7 @@ window.onload = function() {
             user_img.src = user.imgURL;
          }else{user_img.src = 'user.png';
       }
+      getAllCategories(token);
       addButtonsForUserType(role);
          
       }
@@ -24,7 +25,8 @@ window.onload = function() {
 
 
 const title_txt = document.querySelector("#title");
-const description_txt = document.querySelector("#description");
+const description_txt = document.querySelector("#description-task");
+const category_element = document.querySelector("#category_element");
 const initial_date = document.querySelector("#initial_date");
 const end_date = document.querySelector("#end_dates");
 const priority_array = document.querySelectorAll("#color_section input");
@@ -83,7 +85,7 @@ function addButtonsForUserType(userType) {
 
        const createCategoryButton = document.createElement('button'); createCategoryButton.id = "listButton";
        createCategoryButton.classList.add("menu_item"); createCategoryButton.innerHTML = ".";
-       createCategoryButton.textContent = 'Create Category';
+       createCategoryButton.textContent = 'Categories';
          createCategoryButton.addEventListener('click', function() {
             window.location.href = "createCategory.html";
             
@@ -101,6 +103,44 @@ function addButtonsForUserType(userType) {
    }
 }
 
+async function getAllCategories(token) {
+  
+   const categoriesRequest = "http://localhost:8080/project_backend/rest/categories/getAllCategories";
+   try {
+       const response = await fetch(categoriesRequest, {
+           method: "GET",
+           headers: {
+               Accept: "*/*",
+               "Content-Type": "application/json",
+               token: token
+           }
+       });
+
+       if (response.ok) {
+            const categories = await response.json();
+           
+            let selectElement = document.getElementById("category_element");
+
+            categories.forEach(category => {
+               
+               let option = document.createElement("option");
+               
+               option.value = category.idCategory;
+               
+               option.text = category.title;
+               selectElement.appendChild(option);
+            });
+
+       } else {
+
+         const errorMessage = await response.text(); 
+         console.error("Failed to fetch categories: " + errorMessage);
+       }
+   } catch (error) {
+       console.error("Error fetching categories:", error);
+   }
+}
+
 
 
 
@@ -111,10 +151,12 @@ if (task_type == "edit") {
    let task_id = sessionStorage.getItem("task_id");
    document.querySelector("#task_creationTitle").textContent = "Task Edit";
    document.querySelector("#task_delete").style.display = "inline-block";
-   getTask(username, pass, task_id).then((result) => {
+   getTask(token, task_id).then((result) => {
       title_txt.value = result.title;
       description_txt.value = result.description;
       initial_date.value = result.initialDate;
+      category_element.value = result.category.title; //NAO ESTA A FUNCIONAR
+      console.log("category: " + result.category.title);
       if (result.endDate != "9999-12-31") {
          end_date.value = result.endDate;
       }
@@ -143,7 +185,7 @@ if (task_type == "edit") {
 /*Só é possível gravar a tarefa se esta contiver algum título. Caso o campo do título tenha algo escrito
 vai haver uma verificação se esta tarefa está a ser criada ou editada. Caso esteja a ser criada, esta tarefa
 é adicionada no fim da array de tarefas, caso esteja a ser editada é apenas mudado os valores dos atributos desta*/
-document.querySelector("#task_save").addEventListener("click", function () {
+document.querySelector("#task_save").addEventListener("click", async function () {
    if (title_txt.value != "") {
       if (!initial_date.value == "") {
          let current_date = new Date();
@@ -161,18 +203,18 @@ document.querySelector("#task_save").addEventListener("click", function () {
                if (task_type == "create") {
                   for (let i = 0; i < priority_array.length; i++) {
                      if (priority_array[i].checked) {
+                        console.log("prioridade: " + priority_array[i].value);
                         priority_checked = parseInt(priority_array[i].value);
                      }
                   }
 
-                  addTask(
-                     username,
-                     pass,
+                  await addTask(
                      title_txt.value,
                      description_txt.value,
                      initial_date.value,
                      end_date.value,
-                     priority_checked
+                     priority_checked,
+                     category_element.value
                   );
 
                   window.location.href = "scrum.html";
@@ -184,17 +226,15 @@ document.querySelector("#task_save").addEventListener("click", function () {
                            priority_checked = priority_array[i].value;
                         }
                      }
-                     let task_id = sessionStorage.getItem("task_id");
+                     //let task_id = sessionStorage.getItem("task_id");
 
-                     updateTask(
-                        username,
-                        pass,
-                        task_id,
+                     await updateTask(
                         title_txt.value,
                         description_txt.value,
                         initial_date.value,
                         end_date.value,
-                        priority_checked
+                        priority_checked,
+                        category_element.value
                      );
 
                      window.location.href = "scrum.html";
@@ -203,7 +243,7 @@ document.querySelector("#task_save").addEventListener("click", function () {
             } else {
                alert("The end date must be greater than the initial date.");
             }
-         } else {
+         }   else {
             alert("The initial date must be greater than the current date.");
          }
       } else {
@@ -213,6 +253,8 @@ document.querySelector("#task_save").addEventListener("click", function () {
       alert("Need to put a task title.");
    }
 });
+
+
 
 for (let i = 0; i < priority_array.length; i++) {
    if (i == 0) {
@@ -293,45 +335,24 @@ function writeDate() {
    document.getElementById("date").innerHTML = dateTimeString;
 }
 
-async function updateTask(username, pass, id, title, description, initialDate, endDate, priority) {
-   await fetch("http://localhost:8080/project_backend/rest/tasks/update", {
-      method: "PUT",
-      headers: {
-         Accept: "*/*",
-         "Content-Type": "application/json",
-         username: username,
-         pass: pass,
-         id: id,
-         title: title,
-         description: description,
-         initialDate: initialDate,
-         endDate: endDate,
-         priority: priority,
-      },
-   }).then(function (response) {
-      if (response.status == 200) {
-         alert("Task was updated successfully.");
-      } else {
-         alert("Something went wrong.");
-      }
-   });
-}
+async function addTask(title, description, initialDate, endDate, priority, idCategory) {
 
-async function addTask(username_value, pass, title, description, initialDate, endDate, priority) {
+   const token = sessionStorage.getItem("token");
    let task = {
       title: title,
       description: description,
       initialDate: initialDate,
       endDate: endDate,
-      priority: priority,
+      priority: priority
    };
-   await fetch("http://localhost:8080/project_backend/rest/tasks/create", {
+   await fetch("http://localhost:8080/project_backend/rest/tasks/createTask", {
       method: "POST",
       headers: {
          Accept: "*/*",
          "Content-Type": "application/json",
-         username: username_value,
-         pass: pass,
+         token: token,
+         categoryId: idCategory
+         
       },
       body: JSON.stringify(task),
    }).then(function (response) {
@@ -341,6 +362,44 @@ async function addTask(username_value, pass, title, description, initialDate, en
          alert("something went wrong :(");
       }
    });
+}
+
+async function updateTask(title, description, initialDate, endDate, priority, idCategory) {
+
+   const token = sessionStorage.getItem("token");
+   const task_id = sessionStorage.getItem("task_id");
+   let task = {
+      title: title,
+      description: description,
+      initialDate: initialDate,
+      endDate: endDate,
+      priority: priority
+   };
+   try {
+      const response = await fetch("http://localhost:8080/project_backend/rest/tasks/updateTask", {
+      method: "PUT",
+      headers: {
+         Accept: "*/*",
+         "Content-Type": "application/json",
+         token: token,
+         categoryId: idCategory,
+         taskId: task_id
+         
+      },
+      body: JSON.stringify(task)
+
+   });
+   if (response.ok) {
+      alert("task is updated successfully :)");
+
+   } else {
+      const errorMessage = await response.text(); 
+      console.error("Failed to update: " + errorMessage);
+   }
+   } catch (error) {
+      console.error("Error updating task:", error);
+   }
+
 }
 
 async function getUser(username, pass) {
@@ -365,23 +424,29 @@ async function getUser(username, pass) {
    }
 }
 
-async function getTask(username, pass, id) {
-   let response = await fetch(
-      "http://localhost:8080/project_backend/rest/tasks/" + id,
+async function getTask(token, id) {
 
-      {
+   let getTaskRequest = `http://localhost:8080/project_backend/rest/tasks/getTaskById/${id}`
+
+   let response = await fetch(getTaskRequest, {
+
          method: "GET",
          headers: {
             Accept: "*/*",
             "Content-Type": "application/json",
-            username: username,
-            pass: pass,
+            token, token
          },
       }
    );
 
-   let task = await response.json();
-   return task;
+   if (response.ok) {
+      let task = await response.json();
+      return task;
+   } else {
+      console.error("Failed to fetch task data");
+      return null;
+   }
+
 }
 
 async function deleteTask(username, pass, task_id) {

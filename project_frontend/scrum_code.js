@@ -16,6 +16,11 @@ const HIGH = 300;
 const token = sessionStorage.getItem("token");
 const userType = sessionStorage.getItem('role');
 
+window.onload = function () {
+
+}
+
+
 
 async function getUserByToken(token) {
    try {
@@ -82,8 +87,23 @@ function addButtonsForUserType(userType) {
             
          });
 
+      const inactiveTasksButton = document.createElement('button'); inactiveTasksButton.id = "inactiveTasksButton";
+      inactiveTasksButton.classList.add("menu_item"); inactiveTasksButton.innerHTML = ".";
+      inactiveTasksButton.textContent = 'Inactive Tasks';
+      inactiveTasksButton.addEventListener('click', function() {
+         window.location.href = "inactive-tasks.html";
+      });
+
+
       menu.appendChild(listButton);
       menu.appendChild(createCategoryButton);
+      menu.appendChild(inactiveTasksButton);
+      
+
+      getActiveTasks(token).then((result) => {
+         tasks = result;
+         printTasks(tasks);
+      });
       
        
    } else if (userType === 'scrum_master') {
@@ -96,9 +116,28 @@ function addButtonsForUserType(userType) {
          window.location.href = "productOwner.html";
            
        });
+
+
+       const inactiveTasksButton = document.createElement('button'); inactiveTasksButton.id = "inactiveTasksButton";
+      inactiveTasksButton.classList.add("menu_item"); inactiveTasksButton.innerHTML = ".";
+      inactiveTasksButton.textContent = 'Inactive Tasks';
+      inactiveTasksButton.addEventListener('click', function() {
+         window.location.href = "inactive-tasks.html";
+      });
        menu.appendChild(listButton);
+       menu.appendChild(inactiveTasksButton);
+
+       getActiveTasks(token).then((result) => {
+         tasks = result;
+         printTasks(tasks);
+      });
 
    } else if (userType === 'developer') {
+
+      getActiveTasks(token).then((result) => {
+         tasks = result;
+         printTasks(tasks);
+      });
        
    }
 }
@@ -140,9 +179,11 @@ na coluna em que estavam anteriormente*/
 
 /*Sempre que a página é fechada ou quando o utilizador muda de página a array das tarefas é guardada em localStorage */
 
+/*
 window.addEventListener("beforeunload", function () {
    localStorage.setItem("tasks", JSON.stringify(tasks));
 });
+*/
 
 document.querySelector("#modal_cancel").addEventListener("click", function () {
    document.querySelector("#modal").style.visibility = "hidden";
@@ -161,7 +202,7 @@ document.querySelector("#background").addEventListener("click", function () {
 nas colunas em que estavam anteriormente a partir do atributo column do objeto task. Também são adicionados todos 
 os eventos dos botões de delete e dos botões de edição das tarefas */
 function printTasks(tasks) {
-   console.log(tasks);
+   
    document.querySelector("#toDo").innerHTML = "";
    document.querySelector("#doing").innerHTML = "";
    document.querySelector("#done").innerHTML = "";
@@ -188,7 +229,7 @@ function printTasks(tasks) {
       task_title.textContent = tasks[i].title;
       task_div.appendChild(task_title);
 
-      console.log(tasks[i].endDate);
+      
 
       let date_now = new Date();
       date_now = date_now.getTime();
@@ -250,7 +291,7 @@ function printTasks(tasks) {
          if (confirm("Are you sure you want to delete this task?")) {
             for (let i = 0; i < tasks.length; i++) {
                if (tasks[i].id == this.parentNode.id) {
-                  deleteTask(username, pass, tasks[i].id);
+                  softDeleteTask(token, tasks[i].id);
                   this.parentNode.remove();
                }
             }
@@ -291,7 +332,7 @@ function taskCreationAddEvents(task_div, tasks) {
    Também é removida a class drag da div as cores desta voltam às originais antes dela começar a ser arrastada */
    task_div.addEventListener("dragend", function () {
       task_div.classList.remove("drag");
-      getTasks(username, pass).then((result) => {
+      getActiveTasks(token).then((result) => {
          tasks = result;
          printTasks(tasks);
       });
@@ -342,19 +383,57 @@ function writeDate() {
    document.getElementById("date").innerHTML = dateTimeString;
 }
 
-async function getTasks(username, pass) {
-   let response = await fetch("http://localhost:8080/project_backend/rest/tasks", {
-      method: "GET",
-      headers: {
-         Accept: "*/*",
-         "Content-Type": "application/json",
-         username: username,
-         pass: pass,
-      },
-   });
+// get all tasks, inactives too
+async function getTasks(token) {
+   let getTasksRequest = "http://localhost:8080/project_backend/rest/tasks/getAllTasks";
 
-   let tasks = await response.json();
-   return tasks;
+   try {
+
+      const response = await fetch(getTasksRequest, {
+         method: "GET",
+         headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            token: token
+         }
+      });
+
+      if (response.ok) {
+         const tasks = await response.json();
+         return tasks;
+      } else {
+         console.error("Failed to fetch tasks");
+      }
+   
+   } catch (error) {
+      console.error("Error fetching tasks:", error);
+   }
+}
+
+async function getActiveTasks(token) {
+   let getTasksRequest = "http://localhost:8080/project_backend/rest/tasks/getActiveTasks";
+
+   try {
+
+      const response = await fetch(getTasksRequest, {
+         method: "GET",
+         headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            token: token
+         }
+      });
+
+      if (response.ok) {
+         const tasks = await response.json();
+         return tasks;
+      } else {
+         console.error("Failed to fetch tasks");
+      }
+   
+   } catch (error) {
+      console.error("Error fetching tasks:", error);
+   }
 }
 
 async function getUser(username, pass) {
@@ -393,16 +472,27 @@ async function updateTaskState(username, pass, id, state) {
       },
    });
 }
-async function deleteTask(username, pass, task_id) {
-   await fetch("http://localhost:8080/project_backend/rest/tasks/" + task_id, {
-      method: "DELETE",
-      headers: {
-         Accept: "*/*",
-         "Content-Type": "application/json",
-         username: username,
-         pass: pass,
-      },
-   });
+async function softDeleteTask(token, taskId) {
+   let deleteTaskRequest = `http://localhost:8080/project_backend/rest/tasks/${taskId}/softDelete`;
+   try {
+      const response = await fetch(deleteTaskRequest, {
+         method: "PUT",
+         headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            token: token
+         }
+      });
+
+      if (response.ok) {
+         console.log("Task deleted");
+      } else {
+         console.error("Failed to delete task");
+      }
+   
+   } catch (error) {
+      console.error("Error deleting task:", error);
+   }
 }
 
 function orderTasks(tasks) {

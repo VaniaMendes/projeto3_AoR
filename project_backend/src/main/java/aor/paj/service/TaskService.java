@@ -37,18 +37,18 @@ public class TaskService {
     @Path("/createTask")
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response addTask(@HeaderParam("token") String token, Task task) {
+    public Response addTask(@HeaderParam("token") String token, @HeaderParam("categoryId") String categoryId, Task task) {
 
         Response response;
 
         if (userBean.getUserByToken(token) == null) {
             response = Response.status(403).entity("Invalid token").build();
 
-        } else if (task.getCategory() == null || categoryDao.findCategoryById(task.getCategory().getIdCategory()) == null) {
+        } else if (categoryId == null || categoryDao.findCategoryById(Long.parseLong(categoryId)) == null) {
             response = Response.status(422).entity("Invalid category").build();
 
-        } else if (!taskBean.isTaskTitleAvailable(task)) {
-            response = Response.status(422).entity("Title not available").build();
+        } else if (!taskBean.isTaskTitleAvailable(task) || task.getTitle().isEmpty()) {
+            response = Response.status(422).entity("Title's not valid").build();
 
         } else if (task.getInitialDate().isAfter(task.getEndDate())) {
             response = Response.status(422).entity("Initial date cannot be after the end date").build();
@@ -59,7 +59,7 @@ public class TaskService {
         } else if (!task.getState().equals("toDo") && !task.getState().equals("doing") && !task.getState().equals("done")) {
             response = Response.status(422).entity("State can only be toDo, doing or done").build();
 
-        } else if (taskBean.addTask(token,task)) {
+        } else if (taskBean.addTask(token,task, categoryId)) {
             response = Response.status(200).entity("A new task is created").build();
 
         } else {
@@ -70,9 +70,10 @@ public class TaskService {
     }
 
     @PUT
-    @Path("/updateTask/{id}")
+    @Path("/updateTask")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateTask(@HeaderParam("token") String token, @PathParam("id") String id, Task task) {
+    public Response updateTask(@HeaderParam("token") String token, @HeaderParam("categoryId") String categoryId,
+                               @HeaderParam("taskId") String taskId, Task task) {
 
         Response response;
 
@@ -83,10 +84,10 @@ public class TaskService {
         if (userBean.getUserByToken(token) == null) {
             response = Response.status(403).entity("Invalid token").build();
 
-        } else if (task.getCategory() == null || categoryDao.findCategoryById(task.getCategory().getIdCategory()) == null) {
+        } else if (categoryDao.findCategoryById(Long.parseLong(categoryId)) == null) {
             response = Response.status(422).entity("Invalid category").build();
 
-        } else if (!taskBean.isTaskTitleAvailable(task)) {
+        } else if (!taskBean.isTaskTitleAvailableToUpdate(token, taskId)) {
             response = Response.status(422).entity("Title not available").build();
 
         } else if (task.getInitialDate().isAfter(task.getEndDate())) {
@@ -98,7 +99,7 @@ public class TaskService {
         } else if (!task.getState().equals("toDo") && !task.getState().equals("doing") && !task.getState().equals("done")) {
             response = Response.status(422).entity("State can only be toDo, doing or done").build();
 
-        } else if (taskBean.updateTask(token, id, task)) {
+        } else if (taskBean.updateTask(token, taskId, task, categoryId)) {
             response = Response.status(200).entity("Task updated sucessfully").build();
 
         } else
@@ -107,6 +108,8 @@ public class TaskService {
         return response;
     }
 
+
+    //INUTIL??????????????????????????
     @PUT
     @Path("/{taskId}/updateCategory")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -159,7 +162,6 @@ public class TaskService {
      * fazer nada
      * @param token
      * @param taskId
-     * @param
      * @return
      */
     @PUT
@@ -255,6 +257,7 @@ public class TaskService {
     }
 
 
+
     //Método para filtrar tasks por categoria
     @GET
     @Path("/")
@@ -279,3 +282,70 @@ public class TaskService {
     }
 
 }
+
+    @GET
+    @Path("/getAllTasks")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllTasks(@HeaderParam("token") String token) {
+        Response response;
+
+        ArrayList<Task> tasks = taskBean.getAllTasks(token);
+
+        if (userBean.getUserByToken(token) == null) {
+            response = Response.status(403).entity("Invalid token").build();
+
+        } else if (tasks != null) {
+            response = Response.status(200).entity(tasks).build();
+
+        } else {
+            response = Response.status(400).entity("Failed to retrieve tasks").build();
+        }
+
+        return response;
+    }
+
+
+    @GET
+    @Path("getActiveTasks")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getActiveTasks(@HeaderParam("token") String token) {
+        Response response;
+
+        ArrayList<Task> tasks = taskBean.getActiveTasks(token);
+
+        if (userBean.getUserByToken(token) == null) {
+            response = Response.status(403).entity("Invalid token").build();
+
+        } else if (tasks != null) {
+            response = Response.status(200).entity(tasks).build();
+
+        } else {
+            response = Response.status(400).entity("Failed to retrieve tasks").build();
+        }
+
+        return response;
+    }
+
+    @GET
+    @Path("getTaskById/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTaskById(@HeaderParam("token") String token, @PathParam("id") String id) {
+        Response response;
+
+        Task task = taskBean.getTaskById(token, id);
+
+        if (userBean.getUserByToken(token) == null) {
+            response = Response.status(403).entity("Invalid token").build();
+
+        } else if (task != null) {
+            response = Response.status(200).entity(task).build();
+
+        } else {
+            response = Response.status(400).entity("Failed to retrieve task").build();
+        }
+
+        return response;
+    }
+
+}
+

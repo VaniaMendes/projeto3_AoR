@@ -68,7 +68,7 @@ public class CategoryService {
         } else if (category.getTitle().trim().isEmpty()) {
             response = Response.status(422).entity("Title is required").build();
 
-        } else if (!categoryBean.isCategoryTitleAvailable(category)) {
+        } else if (!categoryBean.isCategoryTitleAvailableToUpdate(category)) {
             response = Response.status(422).entity("Title not available").build();
 
         } else if (categoryBean.updateCategory(token, id, category)) {
@@ -116,9 +116,6 @@ public class CategoryService {
 
         if (userBean.getUserByToken(token) == null) {
             response = Response.status(403).entity("Invalid token").build();
-
-        } else if (!categoryBean.isUserAllowedToInteractWithCategories(token)) {
-            response = Response.status(422).entity("You dont have enough permissions").build();
 
         } else if (categoryBean.getAllCategories(token) == null) {
             response = Response.status(400).entity("Failed to retrieve categories").build();

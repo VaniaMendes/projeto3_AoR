@@ -26,26 +26,45 @@
                <button class="menu_item" id="logout">&#x2B24; &nbsp; Logout</button>
             </div>
 
-                
-            <div id="editCategoryModal" class="modal-edit-category">
-                
-                <div class="descricaoCategoriaEdit">
-                    
-                    <h2 id="task_editionTitle"></h2>
+            <div id="categoryModal" class="modal-category">
+                <div id="overlay-modal-category"></div>
+                <div class="descricaoCategoria">
+                    <btn class="modal_exit" id="cancel">&times;</btn>
+                    <h2 id="task_creationTitle"></h2>
                     <label for="title">Category Title:</label>
-                    <input type="text" placeholder="Category Title" id="title" />
+                    <input type="text" placeholder="Category Title" id="title" required />
                     <label for="title">Description:</label>
                     <textarea cols="30" rows="14" placeholder="Category Description" id="description"></textarea>
                      
+
                     <div class="buttons">
-                    <button class="btns_task" id="category_edit_save">Edit</button>
-                    <button class="btns_task" id="category_edit_delete">Cancel</button>
+                    <button class="btns_task" id="category_save">Save</button>
+                    <button class="btns_task" id="category_delete">Cancel</button>
                     </div>
                     
-                    <div id="error_editing_category"></div>
+                    <div id="error_creating_category"></div>
                 </div>
+              </div>
          </aside>
 
+         <table id="category_table">
+            <thead>
+                <tr>
+                    <th id="th-head-left-corner">Title</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Inital Date</th>
+                    <th>End Date</th>
+                    <th>Author</th>
+                    <th id="th-head-right-corner">Task Edition</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="category_table_row">
+                </tr>
+                <!-- Add more rows as needed -->
+            </tbody>
+        </table>
          
          
       </main>
@@ -60,6 +79,6 @@
          <br />
          <p>© Acertar o Rumo 2024</p>
       </footer>
-      <script src="edit-category.js"></script>
+      <script src="inactive-tasks.js"></script>
    </body>
 </html>

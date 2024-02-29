@@ -182,7 +182,7 @@ async function getUserByToken(token) {
 
    //função para listar todas as categorias
    async function getAllCategories(token) {
-      console.log("am i here");
+      
       const categoriesRequest = "http://localhost:8080/project_backend/rest/categories/getAllCategories";
       try {
           const response = await fetch(categoriesRequest, {
@@ -247,12 +247,15 @@ async function getUserByToken(token) {
 
          const titleCell = document.createElement('td');
          titleCell.textContent = category.title;
+         titleCell.style.textAlign = "center";
 
          const descriptionCell = document.createElement('td');
          descriptionCell.textContent = category.description;
+         descriptionCell.style.textAlign = "center";
 
          const authorCell = document.createElement('td');
          authorCell.textContent = category.author.username;
+         authorCell.style.textAlign = "center";
 
          const editCell = document.createElement('td');
          editCell.style.textAlign = "center";
