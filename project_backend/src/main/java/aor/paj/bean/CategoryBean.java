@@ -125,13 +125,13 @@ public class CategoryBean {
         }
     }
 
-    public CategoryEntity getCategoryByTitle( String token, String title){
+    public Long getCategoryIdByTitle( String token, String title){
         UserEntity userEntity = userDao.findUserByToken(token);
         CategoryEntity categoryEntity = categoryDao.findCategoryByTitle(title);
 
         if(userEntity != null && userEntity.getTypeOfUser().equals("product_owner") || userEntity.getTypeOfUser().equals("scrum_master")){
             if(categoryEntity != null){
-                return categoryEntity;
+                return categoryEntity.getIdCategory();
             }else{
                 return null;
             }

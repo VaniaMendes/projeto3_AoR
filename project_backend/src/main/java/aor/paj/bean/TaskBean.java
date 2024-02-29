@@ -7,6 +7,7 @@ import aor.paj.dao.TaskDao;
 import aor.paj.dao.UserDao;
 import aor.paj.dto.Category;
 import aor.paj.dto.Task;
+import aor.paj.dto.User;
 import aor.paj.entity.CategoryEntity;
 import aor.paj.entity.TaskEntity;
 import aor.paj.entity.UserEntity;
@@ -243,16 +244,6 @@ public class TaskBean {
 
         return softDeletedTasks;
     }
-    public ArrayList<Task> getTasksByCategory(String token, String title){
-        CategoryEntity categoryEntity = categoryBean.getCategoryByTitle(token, title);
-        ArrayList<TaskEntity> taskByCategoryEntities = taskDao.findTasksByCategory(categoryEntity);
-        ArrayList<Task> taskByCategory = new ArrayList<>();
-        for(TaskEntity taskEntity: taskByCategoryEntities){
-            Task task = convertTaskEntityToTask(taskEntity);
-            taskByCategory.add(task);
-        }
-        return taskByCategory;
-    }
 
 
     //passar estes dois métodos para o CategoryBean e chamar categoryBean aqui?
@@ -365,5 +356,30 @@ public class TaskBean {
             }
 
             return task;
+    }
+
+    public ArrayList<Task> getFilterTasks(String token, String username, long categoryId) {
+
+        ArrayList<Task> allTasks = new ArrayList<>();
+
+        UserEntity userEntity = userDao.findUserByToken(token);
+        if(userEntity.getTypeOfUser().equals("product_owner") || userEntity.getTypeOfUser().equals("scrum_master")) {
+            UserEntity userEntity1 = userDao.findUserByUsername(username);
+            CategoryEntity categoryEntity = categoryDao.findCategoryById(categoryId);
+            ArrayList<TaskEntity> allTasksEntities = taskDao.findFilterTasks(userEntity1, categoryEntity);
+
+            if (userEntity != null) {
+                if (allTasksEntities != null) {
+                    for (TaskEntity taskEntity : allTasksEntities) {
+                        Task task = convertTaskEntityToTask(taskEntity);
+                        allTasks.add(task);
+                    }
+                }
+            }
+        }else{
+            return null;
+        }
+
+        return allTasks;
     }
 }
