@@ -71,7 +71,8 @@ public class TaskService {
     @PUT
     @Path("/updateTask")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateTask(@HeaderParam("token") String token, @HeaderParam("categoryId") String id, Task task) {
+    public Response updateTask(@HeaderParam("token") String token, @HeaderParam("categoryId") String categoryId,
+                               @HeaderParam("taskId") String taskId, Task task) {
 
         Response response;
 
@@ -82,10 +83,10 @@ public class TaskService {
         if (userBean.getUserByToken(token) == null) {
             response = Response.status(403).entity("Invalid token").build();
 
-        } else if (task.getCategory() == null || categoryDao.findCategoryById(task.getCategory().getIdCategory()) == null) {
+        } else if (categoryDao.findCategoryById(Long.parseLong(categoryId)) == null) {
             response = Response.status(422).entity("Invalid category").build();
 
-        } else if (!taskBean.isTaskTitleAvailable(task)) {
+        } else if (!taskBean.isTaskTitleAvailableToUpdate(token, taskId)) {
             response = Response.status(422).entity("Title not available").build();
 
         } else if (task.getInitialDate().isAfter(task.getEndDate())) {
@@ -97,7 +98,7 @@ public class TaskService {
         } else if (!task.getState().equals("toDo") && !task.getState().equals("doing") && !task.getState().equals("done")) {
             response = Response.status(422).entity("State can only be toDo, doing or done").build();
 
-        } else if (taskBean.updateTask(token, id, task)) {
+        } else if (taskBean.updateTask(token, taskId, task, categoryId)) {
             response = Response.status(200).entity("Task updated sucessfully").build();
 
         } else
@@ -106,6 +107,8 @@ public class TaskService {
         return response;
     }
 
+
+    //INUTIL??????????????????????????
     @PUT
     @Path("/{taskId}/updateCategory")
     @Consumes(MediaType.APPLICATION_JSON)

@@ -87,8 +87,18 @@ function addButtonsForUserType(userType) {
             
          });
 
+      const inactiveTasksButton = document.createElement('button'); inactiveTasksButton.id = "inactiveTasksButton";
+      inactiveTasksButton.classList.add("menu_item"); inactiveTasksButton.innerHTML = ".";
+      inactiveTasksButton.textContent = 'Inactive Tasks';
+      inactiveTasksButton.addEventListener('click', function() {
+         window.location.href = "inactive-tasks.html";
+      });
+
+
       menu.appendChild(listButton);
       menu.appendChild(createCategoryButton);
+      menu.appendChild(inactiveTasksButton);
+      
 
       getActiveTasks(token).then((result) => {
          tasks = result;
@@ -272,7 +282,7 @@ function printTasks(tasks) {
          if (confirm("Are you sure you want to delete this task?")) {
             for (let i = 0; i < tasks.length; i++) {
                if (tasks[i].id == this.parentNode.id) {
-                  deleteTask(username, pass, tasks[i].id);
+                  softDeleteTask(token, tasks[i].id);
                   this.parentNode.remove();
                }
             }
@@ -453,16 +463,27 @@ async function updateTaskState(username, pass, id, state) {
       },
    });
 }
-async function deleteTask(username, pass, task_id) {
-   await fetch("http://localhost:8080/project_backend/rest/tasks/" + task_id, {
-      method: "DELETE",
-      headers: {
-         Accept: "*/*",
-         "Content-Type": "application/json",
-         username: username,
-         pass: pass,
-      },
-   });
+async function softDeleteTask(token, taskId) {
+   let deleteTaskRequest = `http://localhost:8080/project_backend/rest/tasks/${taskId}/softDelete`;
+   try {
+      const response = await fetch(deleteTaskRequest, {
+         method: "PUT",
+         headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            token: token
+         }
+      });
+
+      if (response.ok) {
+         console.log("Task deleted");
+      } else {
+         console.error("Failed to delete task");
+      }
+   
+   } catch (error) {
+      console.error("Error deleting task:", error);
+   }
 }
 
 function orderTasks(tasks) {

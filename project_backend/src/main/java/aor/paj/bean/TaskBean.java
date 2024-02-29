@@ -52,30 +52,52 @@ public class TaskBean {
         return taskEntity == null;
     }
 
-    public boolean updateTask(String token, String id, Task task) {
+    public boolean isTaskTitleAvailableToUpdate(String token, String taskId) {
+
+        UserEntity userEntity = userDao.findUserByToken(token);
+        TaskEntity taskEntity = taskDao.findTaskByTitle(taskId);
+
+        if (userEntity != null) {
+            if (taskEntity != null) {
+                return taskEntity.getOwner().equals(userEntity);
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public boolean updateTask(String token, String taskId, Task task, String categoryId) {
 
         boolean status;
 
         UserEntity confirmUser = userDao.findUserByToken(token);
-        TaskEntity taskToUpdate = taskDao.findTaskById(Long.parseLong(id));
+        TaskEntity taskToUpdate = taskDao.findTaskById(Long.parseLong(taskId));
+        CategoryEntity newCategory = categoryDao.findCategoryById(Long.parseLong(categoryId));
 
         if (confirmUser != null) {
             if (taskToUpdate != null) {
+                if (newCategory != null) {
 
-                //verifica a função do user e se tem permissão para editar a tarefa
-                if (confirmUser.getTypeOfUser().equals("developer") && taskToUpdate.getOwner().equals(confirmUser)
-                        || confirmUser.getTypeOfUser().equals("scrum_master")
-                        || confirmUser.getTypeOfUser().equals("product_owner")) {
+                    //verifica a função do user e se tem permissão para editar a tarefa
+                    if (confirmUser.getTypeOfUser().equals("developer") && taskToUpdate.getOwner().equals(confirmUser)
+                            || confirmUser.getTypeOfUser().equals("scrum_master")
+                            || confirmUser.getTypeOfUser().equals("product_owner")) {
 
-                    taskToUpdate.setTitle(task.getTitle());
-                    taskToUpdate.setDescription(task.getDescription());
-                    taskToUpdate.setState(task.getState());
-                    taskToUpdate.setPriority(task.getPriority());
-                    taskToUpdate.setInitialDate(task.getInitialDate());
-                    taskToUpdate.setEndDate(task.getEndDate());
+                        taskToUpdate.setTitle(task.getTitle());
+                        taskToUpdate.setDescription(task.getDescription());
+                        taskToUpdate.setState(task.getState());
+                        taskToUpdate.setPriority(task.getPriority());
+                        taskToUpdate.setInitialDate(task.getInitialDate());
+                        taskToUpdate.setEndDate(task.getEndDate());
+                        taskToUpdate.setCategory(newCategory);
 
-                    taskDao.merge(taskToUpdate);
-                    status = true;
+                        taskDao.merge(taskToUpdate);
+                        status = true;
+                    } else {
+                        status = false;
+                    }
                 } else {
                     status = false;
                 }
@@ -85,7 +107,6 @@ public class TaskBean {
         } else {
             status = false;
         }
-
         return status;
     }
 
