@@ -20,6 +20,7 @@ import java.time.LocalDate;
 @NamedQuery(name = "Task.findAllTasks", query = "SELECT t FROM TaskEntity t")
 
 
+
 public class TaskEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;

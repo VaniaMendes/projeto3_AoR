@@ -27,6 +27,8 @@ public class TaskBean {
 
     @Inject
     UserBean userBean;
+    @Inject
+    CategoryBean categoryBean;
 
     public TaskBean(){
     }
@@ -240,10 +242,10 @@ public class TaskBean {
         }
 
         return softDeletedTasks;
-
     }
-    public ArrayList<Task> getTasksByCategoryName( String category){
-        ArrayList<TaskEntity> taskByCategoryEntities = taskDao.findTaskByCategoryName(category);
+    public ArrayList<Task> getTasksByCategory(String token, String title){
+        CategoryEntity categoryEntity = categoryBean.getCategoryByTitle(token, title);
+        ArrayList<TaskEntity> taskByCategoryEntities = taskDao.findTasksByCategory(categoryEntity);
         ArrayList<Task> taskByCategory = new ArrayList<>();
         for(TaskEntity taskEntity: taskByCategoryEntities){
             Task task = convertTaskEntityToTask(taskEntity);
@@ -251,6 +253,7 @@ public class TaskBean {
         }
         return taskByCategory;
     }
+
 
     //passar estes dois métodos para o CategoryBean e chamar categoryBean aqui?
     private CategoryEntity convertCategoryToCategoryEntity(Category category){

@@ -29,14 +29,6 @@ public class TaskDao extends AbstractDao<TaskEntity> {
 		}
 
 	}
-	public ArrayList<TaskEntity> findTaskByCategoryName(String category){
-		try {
-
-			return (ArrayList<TaskEntity>) em.createNamedQuery("Task.findTaskByCategoryName").setParameter("categoryName", category).getResultList();
-		} catch (Exception e) {
-			return null;
-		}
-	}
 
 	public TaskEntity findTaskByTitle(String title) {
 		try {

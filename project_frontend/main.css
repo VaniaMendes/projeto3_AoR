@@ -1348,6 +1348,16 @@ label {
    margin-top: 70px;
 }
  /* Página product Owner */
+
+ .tableTitle{
+   background: var(--blue);
+   color: var(--white);
+   font-size: 20px;
+   align-items: center;
+   border: none;
+   
+ }
+
 #users_container{
    position: absolute;
    top:35%;

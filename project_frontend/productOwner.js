@@ -55,9 +55,8 @@ function addButtonsForUserType(role) {
         listButton.classList.add("menu_item"); listButton.innerHTML = ".";
         listButton.textContent = 'Active Users';
         listButton.addEventListener('click', function() {
+            document.getElementById("ativeUsers").style.visibility = 'visible';
             listUsers();
-        
-            
         });
         menu.appendChild(listButton);
 
@@ -66,7 +65,8 @@ function addButtonsForUserType(role) {
          listButton1.textContent = 'Inactive Users';
          listButton1.addEventListener('click', function() {
          listInativeUsers();
-     
+         inativeUsers.style.visibility = 'visible';
+    
             
         });
        
@@ -292,19 +292,12 @@ blankCell.colSpan = 0; // Fica localizado na primeira coluna
 blankRow.appendChild(blankCell);
 tbody.appendChild(blankRow);
 
-// Adiciona o botão criar user na célula
-const btnTaskCell = document.createElement('td');
-const btnTaskButton = document.createElement('button');
-btnTaskButton.textContent = '+ New User'; 
-btnTaskButton.classList.add('btn_task');
-btnTaskButton.id = 'btn_task'; 
-btnTaskButton.addEventListener('click', function() {
-   
-    window.location.href = 'registerProductOwner.html';
-});
-btnTaskCell.appendChild(btnTaskButton);
 blankRow.appendChild(btnTaskCell);
 }
+ 
+document.getElementById("btn_task").addEventListener('click', function() {
+    window.location.href = 'registerProductOwner.html';
+});
 
 
 async function listUsersForScrum() {
@@ -484,7 +477,6 @@ async function listUsersForScrum() {
         tbody.appendChild(row);
     }else{
         
-
     }
 }
 }

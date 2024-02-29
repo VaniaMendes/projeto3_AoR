@@ -65,7 +65,6 @@ public class CategoryBean {
         } else {
             status = false;
         }
-
         return status;
     }
 
@@ -126,6 +125,22 @@ public class CategoryBean {
         }
     }
 
+    public CategoryEntity getCategoryByTitle( String token, String title){
+        UserEntity userEntity = userDao.findUserByToken(token);
+        CategoryEntity categoryEntity = categoryDao.findCategoryByTitle(title);
+
+        if(userEntity != null && userEntity.getTypeOfUser().equals("product_owner") || userEntity.getTypeOfUser().equals("scrum_master")){
+            if(categoryEntity != null){
+                return categoryEntity;
+            }else{
+                return null;
+            }
+        }else{
+            return null;
+        }
+
+    }
+
     public boolean isCategoryInUse(String id) {
 
         CategoryEntity categoryToDelete = categoryDao.findCategoryById(Long.parseLong(id));
@@ -144,9 +159,6 @@ public class CategoryBean {
     public boolean isCategoryTitleAvailable(Category category) {
 
         CategoryEntity categoryEntity = categoryDao.findCategoryByTitle(category.getTitle());
-
-
-
         return categoryEntity == null;
     }
 
@@ -193,6 +205,5 @@ public class CategoryBean {
         category.setAuthor(userBean.convertUserEntityToDtoForTask(categoryEntity.getOwner()));
         return category;
     }
-
 
 }

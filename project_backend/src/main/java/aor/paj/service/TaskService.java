@@ -257,7 +257,6 @@ public class TaskService {
     }
 
 
-
     //Método para filtrar tasks por categoria
     @GET
     @Path("/")
@@ -274,14 +273,12 @@ public class TaskService {
             return Response.status(Response.Status.BAD_REQUEST).entity("Category name is required").build();
         }
 
-        List<Task> userTasksByCategory = taskBean.getTasksByCategoryName(categoryName);
+        List<Task> userTasksByCategory = taskBean.getTasksByCategory(token, categoryName);
         if (userTasksByCategory.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).entity("No tasks found for this user and category").build();
         }
         return Response.ok(userTasksByCategory).build();
     }
-
-
 
     @GET
     @Path("/getAllTasks")
@@ -303,7 +300,6 @@ public class TaskService {
 
         return response;
     }
-
 
     @GET
     @Path("getActiveTasks")
@@ -343,7 +339,6 @@ public class TaskService {
         } else {
             response = Response.status(400).entity("Failed to retrieve task").build();
         }
-
         return response;
     }
 
