@@ -39,7 +39,6 @@ getUserByToken(token).then((result) => {
       user_photo.src = user.imgURL;
       document.getElementById("user").textContent = user.firstName;  
       addButtonsForUserType(role);
-      listUsers();
        
    }
     
@@ -72,18 +71,11 @@ function addButtonsForUserType(role) {
         });
        
         menu.appendChild(listButton1);
-        btn_task.style.visibility="visible";
+       
        
     } else if (role === 'scrum_master') {
-       
-        const listButton = document.createElement('button'); listButton.id = "listButton";
-        listButton.classList.add("menu_item"); listButton.innerHTML = ".";
-        listButton.textContent = 'Active Users';
-        listButton.addEventListener('click', function() {
-            
-        });
-        menu.appendChild(listButton);
-        btn_task.style.visibility="hidden";
+        listUsersForScrum();
+        
     }
  }
 
@@ -130,7 +122,7 @@ async function getAllUsers(token) {
 
     try {
         const response = await fetch("http://localhost:8080/project_backend/rest/users/deleteUser", {
-            method: "DELETE",
+            method: "PUT",
             headers: {
                 'Content-Type': 'application/json',
                 'Accept':   'application/json',
@@ -151,6 +143,27 @@ async function getAllUsers(token) {
     }
  }
 
+ async function restoreUser(token, username) {
+    try {
+        const response = await fetch(`http://localhost:8080/project_backend/rest/users/restoreUser/${username}`, {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                "token": token
+            }
+        });
+
+        if (response.ok) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        console.error("Error restoring user:", error);
+        return false;
+    }
+}
 
  async function deleteUserForever(token, username) {
 
@@ -180,7 +193,7 @@ async function getAllUsers(token) {
 
 
  async function listUsers() {
-    const users = await getAllUsers(token);
+    const users = await getAllUsers(token, role);
     console.log(users);
     const tbody = document.querySelector('#users_table tbody');
 
@@ -219,24 +232,28 @@ async function getAllUsers(token) {
 
         // Adiciona a função do user
         const funcaoCell = document.createElement('td');
-        funcaoCell.textContent = user.typeOfUser;
+        funcaoCell.textContent = getUserRole(user.typeOfUser);
         row.appendChild(funcaoCell);
+        
+        
 
         // Adiciona os botões de edição e exclusão na última coluna
         const acoesCell = document.createElement('td');
         const editButton = document.createElement("button");
-        editButton.innerHTML = "&#128214;";
+        editButton.innerHTML = "&#9998;";
         editButton.classList.add("edit_button");
         editButton.onclick = function(event) {
             const userUsername = event.currentTarget.closest("[data-username]").dataset.username;
-            console.log(userUsername);
             sessionStorage.setItem("username", userUsername);
             window.location.href = 'edit_Profile_ProductOwner.html';
         };
         acoesCell.appendChild(editButton); // Adiciona o botão de edição à célula
+
+
         const deleteButton = document.createElement("button");
         deleteButton.innerHTML = "&#128465;";
         deleteButton.classList.add("delete_button");
+        deleteButton.id="delete_button";
         deleteButton.onclick = function(event) {
             const userUsername = event.currentTarget.closest("[data-username]").dataset.username;
 
@@ -290,6 +307,75 @@ blankRow.appendChild(btnTaskCell);
 }
 
 
+async function listUsersForScrum() {
+    try {
+        const users = await getAllUsers(token, role);
+        console.log(users); // Verifica se os dados dos usuários estão sendo recebidos corretamente
+
+        const tbody = document.querySelector('#users_table tbody');
+        // Limpa o conteúdo existente da tabela
+        tbody.innerHTML = '';
+
+        // Preenche a tabela com os dados dos usuários
+        for(const user of users) {
+            if(user.active){
+                const row = document.createElement('tr');
+                row.dataset.username = user.username;
+
+                // Adiciona a imagem do usuário
+                const imagemCell = document.createElement('td');
+                const imagem = document.createElement('img');
+                imagem.src = user.imgURL;
+                imagem.alt = 'user.png';
+                imagem.classList.add('imagem_user');
+                imagemCell.appendChild(imagem);
+                row.appendChild(imagemCell);
+
+                // Adiciona o nome do usuário
+                const nomeCell = document.createElement('td');
+                nomeCell.textContent = user.firstName + " " + user.lastName;
+                row.appendChild(nomeCell);
+
+                // Adiciona o email do usuário
+                const emailCell = document.createElement('td');
+                emailCell.textContent = user.email;
+                row.appendChild(emailCell);
+
+                // Adiciona o número de telefone do usuário
+                const telefoneCell = document.createElement('td');
+                telefoneCell.textContent = user.phoneNumber;
+                row.appendChild(telefoneCell);
+
+                // Adiciona a função do usuário
+                const funcaoCell = document.createElement('td');
+                funcaoCell.textContent = getUserRole(user.typeOfUser);
+                row.appendChild(funcaoCell);
+
+                // Adiciona os botões de edição na última coluna
+                const acoesCell = document.createElement('td');
+                const editButton = document.createElement("button");
+                editButton.innerHTML = "&#x1F4D6;";
+                editButton.classList.add("edit_button");
+                editButton.onclick = function(event) {
+                    const userUsername = event.currentTarget.closest("[data-username]").dataset.username;
+                    console.log(userUsername);
+                    sessionStorage.setItem("username", userUsername);
+                    window.location.href = 'edit_Profile_ProductOwner.html';
+                };
+                acoesCell.appendChild(editButton);
+                
+                row.appendChild(acoesCell);
+
+                // Adiciona a linha à tabela
+                tbody.appendChild(row);
+            }
+        }
+    } catch (error) {
+        console.error("Error listing users for scrum:", error);
+    }
+}
+
+
   async function listInativeUsers() {
     const users = await getAllUsers(token);
     console.log(users);
@@ -330,13 +416,15 @@ blankRow.appendChild(btnTaskCell);
 
         // Adiciona a função do usuário
         const funcaoCell = document.createElement('td');
-        funcaoCell.textContent = user.typeOfUser;
+        funcaoCell.textContent = getUserRole(user.typeOfUser);
         row.appendChild(funcaoCell);
+
+        
 
         // Adiciona os botões de edição e exclusão na última coluna
         const acoesCell = document.createElement('td');
         const editButton = document.createElement("button");
-        editButton.innerHTML = "&#128214;";
+        editButton.innerHTML = "&#9998;";
         editButton.classList.add("edit_button");
         editButton.onclick = function(event) {
             const userUsername = event.currentTarget.closest("[data-username]").dataset.username;
@@ -345,6 +433,29 @@ blankRow.appendChild(btnTaskCell);
             window.location.href = 'edit_Profile_ProductOwner.html';
         };
         acoesCell.appendChild(editButton); // Adiciona o botão de edição à célula
+
+        //Adiconar botão restaurar
+     
+         
+        const cancelDelete = document.createElement("button");
+        cancelDelete.innerHTML = "&#8634;";
+        cancelDelete.classList.add("restore_user");
+        cancelDelete.classList="restore_user";
+        cancelDelete.onclick = function(event) {
+            const userUsername = event.currentTarget.closest("[data-username]").dataset.username;
+            if(confirm("Do you want restore this user?")){
+                restoreUser(token, userUsername).then(result => {
+                    if(result){
+                        alert("Successfully restored user");
+                        listInativeUsers();
+                    }else{
+                        alert("Failed to restore user");
+                    }
+                });
+            }
+          
+        };
+        acoesCell.appendChild(cancelDelete); // Adiciona o botão restaurar
         const deleteButton = document.createElement("button");
         deleteButton.innerHTML = "&#128465;";
         deleteButton.classList.add("delete_button");
@@ -378,6 +489,19 @@ blankRow.appendChild(btnTaskCell);
 }
 }
 
+function getUserRole(role) {
+    switch (role) {
+        case 'developer':
+            return 'Developer';
+        case 'scrum_master':
+            return 'Scrum Master';
+        case 'product_owner':
+            return 'Product Owner';
+        default:
+            return 'Unknown Role';
+    }
+}
+
 
   
   
@@ -390,4 +514,3 @@ blankRow.appendChild(btnTaskCell);
 
 
 
-    

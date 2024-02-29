@@ -129,7 +129,22 @@ public class UserService {
         }
     }
 
-    @DELETE
+    @PUT
+    @Path("/restoreUser/{username}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response restoreUser(@HeaderParam("token") String token, @PathParam("username") String username) {
+        User user = userBean.getUserByToken(token);
+        if (user != null && (user.getTypeOfUser().equals("product_owner"))) {
+            boolean restored = userBean.restoreUser(username);
+            if (restored) {
+                return Response.status(Response.Status.OK).entity("User restored successfully").build();
+            }
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to restore user").build();
+        }
+        return Response.status(Response.Status.FORBIDDEN).entity("Forbidden").build();
+    }
+
+    @PUT
     @Path("/deleteUser")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response deleteUser(@HeaderParam("token") String token, @HeaderParam("username") String username) {

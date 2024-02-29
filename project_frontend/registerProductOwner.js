@@ -24,7 +24,7 @@ console.log("chegou aqui");
  
         if (response.ok) {
         
-           
+            console.log(newUser)
             alert("Account registered successfully!")
             window.location.href = 'productOwner.html';
              
@@ -74,7 +74,8 @@ console.log("chegou aqui");
         let lastName = document.getElementById('register_lastNamePO').value.trim();
         let phone = document.getElementById('register_phonePO').value.trim();
         let photoURL = document.getElementById('register_photo_mainPO').value.trim();
-        let typeOfUSer = document.getElementById('register_typeOfUser').value.trim();
+        let typeOfUser = document.getElementById('register_typeOfUser').value.trim();
+        console.log(typeOfUser);
  
         return {
             username: username,
@@ -84,7 +85,7 @@ console.log("chegou aqui");
             lastName: lastName,
             phoneNumber: phone,
             imgURL: photoURL,
-            typeOfUser: typeOfUSer
+            typeOfUser: typeOfUser
         };
     
  }
