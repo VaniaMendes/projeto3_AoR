@@ -98,12 +98,8 @@ function addButtonsForUserType(userType) {
       menu.appendChild(listButton);
       menu.appendChild(createCategoryButton);
       menu.appendChild(inactiveTasksButton);
-      
 
-      getActiveTasks(token).then((result) => {
-         tasks = result;
-         printTasks(tasks);
-      });
+      handleActiveTasks(token, taskLists);
       
        
    } else if (userType === 'scrum_master') {
@@ -127,20 +123,38 @@ function addButtonsForUserType(userType) {
        menu.appendChild(listButton);
        menu.appendChild(inactiveTasksButton);
 
-       getActiveTasks(token).then((result) => {
-         tasks = result;
-         printTasks(tasks);
-      });
+      handleActiveTasks(token, taskLists);
 
    } else if (userType === 'developer') {
 
-      getActiveTasks(token).then((result) => {
-         tasks = result;
-         printTasks(tasks);
-      });
+      handleActiveTasks(token, taskLists);
        
    }
 }
+
+/*Metodo que vai adicionar as tasks com isActive true para as colunas correspondentes
+Este metodo vai buscar as tasks ativas e vai adicionar os eventos de drag and drop a cada task
+*/
+function handleActiveTasks(token, taskLists) {
+   getActiveTasks(token).then((result) => {
+     let tasks = result;
+     printTasks(tasks);
+     for (let taskList of taskLists) {
+       taskList.addEventListener("dragover", function (e) {
+         e.preventDefault();
+         const draggable = document.querySelector(".drag");
+         taskList.appendChild(draggable);
+ 
+         for (let task of tasks) {
+           if (draggable.id == task.id) {
+             task.state = this.id;
+             updateTaskState(token, task.id, this.id);
+           }
+         }
+       });
+     }
+   });
+ }
 
 writeDate();
 
@@ -331,8 +345,11 @@ function taskCreationAddEvents(task_div, tasks) {
    /*Quando a div deixa de ser arrastada é tirada da array das tasks e voltada a ser adicionada no fim desta array. 
    Assim quando a página é atualizada as tarefas são mostradas exatamente pela mesma ordem que o utilizador deixou. 
    Também é removida a class drag da div as cores desta voltam às originais antes dela começar a ser arrastada */
-   task_div.addEventListener("dragend", function () {
+   task_div.addEventListener("dragend", function (e) {
+      
       task_div.classList.remove("drag");
+      
+      
       getActiveTasks(token).then((result) => {
          tasks = result;
          printTasks(tasks);
@@ -460,19 +477,31 @@ async function getUser(username, pass) {
    }
 }
 
-async function updateTaskState(username, pass, id, state) {
-   await fetch("http://localhost:8080/project_backend/rest/tasks/state", {
-      method: "PUT",
-      headers: {
-         Accept: "*/*",
-         "Content-Type": "application/json",
-         username: username,
-         pass: pass,
-         id: id,
-         state: state,
-      },
-   });
+async function updateTaskState(token, taskId, state) {
+   let updateTaskRequest = `http://localhost:8080/project_backend/rest/tasks/${taskId}/status`;
+   try {
+      const response = await fetch(updateTaskRequest, {
+         method: "PUT",
+         headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            token: token,
+            newState: state
+         }
+      });
+
+      if (response.ok) {
+         console.log("Task state updated");
+      } else {
+         console.error("Failed to update task state");
+      }
+   
+   } catch (error) {
+      console.error("Error updating task state:", error);
+   }
 }
+
+
 async function softDeleteTask(token, taskId, callback) {
    let deleteTaskRequest = `http://localhost:8080/project_backend/rest/tasks/${taskId}/softDelete`;
    try {

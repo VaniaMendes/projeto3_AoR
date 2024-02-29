@@ -135,19 +135,19 @@ public class TaskService {
     @PUT
     @Path("/{taskId}/status")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateTaskStatus(@HeaderParam("token") String token, @PathParam("taskId") String taskId, String newStatus) {
+    public Response updateTaskStatus(@HeaderParam("token") String token, @PathParam("taskId") String taskId, @HeaderParam("newState") String state) {
         Response response;
 
-        JsonObject jsonObject = Json.createReader(new StringReader(newStatus)).readObject();
-        String newStatusConverted = jsonObject.getString("state");
+        //JsonObject jsonObject = Json.createReader(new StringReader(state)).readObject();
+        //String newStatusConverted = jsonObject.getString("state");
 
         if (userBean.getUserByToken(token) == null) {
             response = Response.status(403).entity("Invalid token").build();
 
-        } else if (!newStatusConverted.equalsIgnoreCase("toDo") && !newStatusConverted.equalsIgnoreCase("doing") && !newStatusConverted.equalsIgnoreCase("done")) {
+        } else if (!state.equals("toDo") && !state.equals("doing") && !state.equals("done")) {
             response = Response.status(422).entity("State can only be toDo, doing or done").build();
 
-        } else if (taskBean.updateTaskState(token, taskId, newStatusConverted)) {
+        } else if (taskBean.updateTaskState(token, taskId, state)) {
             response = Response.status(200).entity("Task state updated successfully").build();
 
         } else
