@@ -20,8 +20,6 @@ window.onload = function () {
 
 }
 
-
-
 async function getUserByToken(token) {
    try {
        const response = await fetch("http://localhost:8080/project_backend/rest/users", {
@@ -711,3 +709,60 @@ function rgbStringToHex(rgbString) {
    return `#${redHex}${greenHex}${blueHex}`;
 }
 
+
+
+//Métodos para os filtros de pesquisa
+
+
+async function getAllUsers(token) {
+   try {
+       const response = await fetch("http://localhost:8080/project_backend/rest/users/all", {
+           method: "GET",
+           headers: {
+               Accept: "application/json",
+               "Content-Type": "application/json",
+               token:token
+           }
+       });
+
+       if (response.ok) {
+           const users = await response.json();
+           return users;
+           
+           
+       } else {
+           console.error("Failed to fetch user data");
+           return null;
+       }
+   } catch (error) {
+       console.error("Error fetching user data:", error);
+       return null;
+   }
+}
+async function fillUsers(){
+   try{
+
+   const users = await getAllUsers(token);
+   const dropddown = document.getElementById("users");
+   dropddown.innerHTML = "";
+
+   const allUsers = document.createElement("option");
+   allUsers.text = "Users";
+   allUsers.value = "Users";
+
+   for(const user of users){
+      if(user.ative){
+      const option = document.createElement("option");
+      option.text = user.username;
+      option.value = user.username;
+      dropddown.appendChild(option);
+   }
+   }
+}catch(error){
+   console.error(error);
+}
+}
+
+document.getElementById("users").addEventListener('click', function(){
+fillUsers();
+});

@@ -205,7 +205,7 @@ img {
 }
 
 .column {
-   margin: 80px 10px 0px 10px;
+   margin: 130px 10px 0px 10px;
    flex-shrink: 0;
    width: 330px;
    height: 552px;
@@ -213,6 +213,8 @@ img {
    border-radius: 12px;
    border-width: 2px;
    padding-top: 12px;
+  
+
 }
 
 #column1 {
@@ -1635,4 +1637,30 @@ th {
    text-align: center;
    bottom: -14px;
   position: relative;
+}
+
+
+/* Painel de pesquisa*/
+.search-icon {
+   margin-right: 10px;
+   font-size: 20px;
+   align-items: center;
+}
+
+.filter {
+   position: absolute; 
+   top: 70px; 
+   left: 1020px;
+   width: 600px;
+   display: inline;
+   display: flex;
+   align-items: center;
+
+}
+#category, #users{
+   flex:1;
+   margin-right: 10px;
+   width: 165px;
+
+
 }
