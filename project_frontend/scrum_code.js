@@ -288,11 +288,12 @@ function printTasks(tasks) {
 
    for (let btn of delete_btns) {
       btn.addEventListener("click", function () {
+         
          if (confirm("Are you sure you want to delete this task?")) {
             for (let i = 0; i < tasks.length; i++) {
                if (tasks[i].id == this.parentNode.id) {
-                  softDeleteTask(token, tasks[i].id);
-                  this.parentNode.remove();
+
+                     softDeleteTask(token, tasks[i].id, this.parentNode.remove.bind(this.parentNode));
                }
             }
          }
@@ -472,7 +473,7 @@ async function updateTaskState(username, pass, id, state) {
       },
    });
 }
-async function softDeleteTask(token, taskId) {
+async function softDeleteTask(token, taskId, callback) {
    let deleteTaskRequest = `http://localhost:8080/project_backend/rest/tasks/${taskId}/softDelete`;
    try {
       const response = await fetch(deleteTaskRequest, {
@@ -485,6 +486,9 @@ async function softDeleteTask(token, taskId) {
       });
 
       if (response.ok) {
+         if (callback) {
+            callback();
+          }
          console.log("Task deleted");
       } else {
          console.error("Failed to delete task");

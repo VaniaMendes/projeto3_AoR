@@ -210,7 +210,6 @@ async function getUserByToken(token) {
 
    async function deleteCategory(categoryId, token) {
 
-      console.log("delete category");
 
       let deleteCategoryRequest = `http://localhost:8080/project_backend/rest/categories/delete/${categoryId}`;
       try {
@@ -228,7 +227,8 @@ async function getUserByToken(token) {
                removeAllRows();
                getAllCategories(token);
             } else {
-               console.error("Failed to delete category");
+               const errorMessage = await response.text();
+               alert(errorMessage);
             }
       } catch (error) {
             console.error("Error deleting category:", error);

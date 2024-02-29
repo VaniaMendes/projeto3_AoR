@@ -213,7 +213,7 @@ public class TaskService {
     }
 
     @DELETE
-    @Path("/{username}/deleteTasksByUsername")
+    @Path("/deleteTasksByUsername/{username}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteAllTasksByUsername(@HeaderParam("token") String token, @PathParam("username") String username) {
         Response response;

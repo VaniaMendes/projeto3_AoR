@@ -94,7 +94,7 @@ public class CategoryBean {
 
         ArrayList<CategoryEntity> categories = categoryDao.findAllCategories();
 
-        if (userEntity != null && userEntity.getTypeOfUser().equals("product_owner")) {
+        if (userEntity != null) {
             if(categories != null){
                 ArrayList<Category> categoriesDTO = new ArrayList<>();
                 for (CategoryEntity categoryEntity : categories) {
