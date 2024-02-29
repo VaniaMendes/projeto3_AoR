@@ -1381,7 +1381,7 @@ label {
 
 }
 
-.edit_button, .delete_button {
+.edit_button, .delete_button, .restore_button {
    background-color: none; 
    border: none; 
    margin-left: 5px; 
@@ -1507,6 +1507,7 @@ td {
 th {
    
    color: black;
+   text-align: center;
   
 }
 

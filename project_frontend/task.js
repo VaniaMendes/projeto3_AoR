@@ -26,6 +26,7 @@ window.onload = function() {
 
 const title_txt = document.querySelector("#title");
 const description_txt = document.querySelector("#description-task");
+const category_element = document.querySelector("#category_element");
 const initial_date = document.querySelector("#initial_date");
 const end_date = document.querySelector("#end_dates");
 const priority_array = document.querySelectorAll("#color_section input");
@@ -154,6 +155,8 @@ if (task_type == "edit") {
       title_txt.value = result.title;
       description_txt.value = result.description;
       initial_date.value = result.initialDate;
+      category_element.value = result.category.title; //NAO ESTA A FUNCIONAR
+      console.log("category: " + result.category.title);
       if (result.endDate != "9999-12-31") {
          end_date.value = result.endDate;
       }
@@ -223,17 +226,15 @@ document.querySelector("#task_save").addEventListener("click", async function ()
                            priority_checked = priority_array[i].value;
                         }
                      }
-                     let task_id = sessionStorage.getItem("task_id");
+                     //let task_id = sessionStorage.getItem("task_id");
 
-                     updateTask(
-                        username,
-                        pass,
-                        task_id,
+                     await updateTask(
                         title_txt.value,
                         description_txt.value,
                         initial_date.value,
                         end_date.value,
-                        priority_checked
+                        priority_checked,
+                        category_element.value
                      );
 
                      window.location.href = "scrum.html";
@@ -334,30 +335,6 @@ function writeDate() {
    document.getElementById("date").innerHTML = dateTimeString;
 }
 
-async function updateTask(username, pass, id, title, description, initialDate, endDate, priority) {
-   await fetch("http://localhost:8080/project_backend/rest/tasks/update", {
-      method: "PUT",
-      headers: {
-         Accept: "*/*",
-         "Content-Type": "application/json",
-         username: username,
-         pass: pass,
-         id: id,
-         title: title,
-         description: description,
-         initialDate: initialDate,
-         endDate: endDate,
-         priority: priority,
-      },
-   }).then(function (response) {
-      if (response.status == 200) {
-         alert("Task was updated successfully.");
-      } else {
-         alert("Something went wrong.");
-      }
-   });
-}
-
 async function addTask(title, description, initialDate, endDate, priority, idCategory) {
 
    const token = sessionStorage.getItem("token");
@@ -390,6 +367,7 @@ async function addTask(title, description, initialDate, endDate, priority, idCat
 async function updateTask(title, description, initialDate, endDate, priority, idCategory) {
 
    const token = sessionStorage.getItem("token");
+   const task_id = sessionStorage.getItem("task_id");
    let task = {
       title: title,
       description: description,
@@ -397,23 +375,31 @@ async function updateTask(title, description, initialDate, endDate, priority, id
       endDate: endDate,
       priority: priority
    };
-   await fetch("http://localhost:8080/project_backend/rest/tasks/updateTask", {
+   try {
+      const response = await fetch("http://localhost:8080/project_backend/rest/tasks/updateTask", {
       method: "PUT",
       headers: {
          Accept: "*/*",
          "Content-Type": "application/json",
          token: token,
-         categoryId: idCategory
+         categoryId: idCategory,
+         taskId: task_id
          
       },
-      body: JSON.stringify(task),
-   }).then(function (response) {
-      if (response.status == 200) {
-         alert("task is added successfully :)");
-      } else {
-         alert("something went wrong :(");
-      }
+      body: JSON.stringify(task)
+
    });
+   if (response.ok) {
+      alert("task is updated successfully :)");
+
+   } else {
+      const errorMessage = await response.text(); 
+      console.error("Failed to update: " + errorMessage);
+   }
+   } catch (error) {
+      console.error("Error updating task:", error);
+   }
+
 }
 
 async function getUser(username, pass) {
