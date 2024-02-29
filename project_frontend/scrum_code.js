@@ -739,30 +739,127 @@ async function getAllUsers(token) {
        return null;
    }
 }
-async function fillUsers(){
-   try{
 
+let selectedUsername; 
+let selectedCategoryId;
+document.addEventListener("DOMContentLoaded", async function() {
    const users = await getAllUsers(token);
-   const dropddown = document.getElementById("users");
-   dropddown.innerHTML = "";
+   const categories = await getAllCategories(token);
+   console.log(users);
+   console.log(categories);
+  
+   // Obtém o elemento select de usuários
+   const usersSelect = document.getElementById("users");
+   const categoriesSelect = document.getElementById("category");
 
-   const allUsers = document.createElement("option");
-   allUsers.text = "Users";
-   allUsers.value = "Users";
-
-   for(const user of users){
-      if(user.ative){
-      const option = document.createElement("option");
-      option.text = user.username;
-      option.value = user.username;
-      dropddown.appendChild(option);
+   // Adiciona as opções de usuário ao select
+   for(const user of users) {
+       if(user.active) {
+           var option = document.createElement("option");
+           option.text = user.firstName + "  " + user.lastName;
+           option.value = user.username;
+           usersSelect.add(option);
+       }
    }
-   }
-}catch(error){
-   console.error(error);
-}
-}
 
-document.getElementById("users").addEventListener('click', function(){
-fillUsers();
+   // Adiciona opções de categorias ao select
+   for(const category of categories) {
+       var option = document.createElement("option");
+       option.text = category.title;
+       option.value = category.idCategory;
+       categoriesSelect.add(option);
+   }
+
+   // Adiciona um evento para o elemento select de usuários
+   usersSelect.addEventListener("change", function() {
+      selectedUsername = this.value;
+      console.log("User selecionado: ", selectedUsername);
+  });
+
+  // Adiciona um evento para o elemento select de categorias
+  categoriesSelect.addEventListener("change", function(event) {
+      selectedCategoryId = this.value;
+      console.log("Categoria selecionada: ", selectedCategoryId);
+  });
+
+ 
+   // Adiciona um evento para o botão de pesquisa
+   document.querySelector(".search_icon").addEventListener("click", function(){
+      
+      console.log("User selecionado: ", selectedUsername);
+      console.log("Categoria selecionada: ", selectedCategoryId);
+      
+
+      //    NÃO ESQUECER DE COLCOCAR MÉTODO DE IMPRIMIR TASKS
+      
+  });
+   
 });
+
+
+
+document.querySelector(".search_icon").addEventListener("click", function(){
+   
+   const filterList = getFilteredTasks(token, selectedUsername, selectedCategoryId);
+   console.log(filterList);
+   
+});
+
+
+  async function getAllCategories(token) {
+      
+   const categoriesRequest = "http://localhost:8080/project_backend/rest/categories/getAllCategories";
+   try {
+       const response = await fetch(categoriesRequest, {
+           method: "GET",
+           headers: {
+               Accept: "*/*",
+               "Content-Type": "application/json",
+               'token': token
+           }
+       });
+
+       if (response.ok) {
+            const categories = await response.json();
+            return categories;
+       } else {
+
+         const errorMessage = await response.text(); 
+         console.error("Failed to fetch categories: " + errorMessage);
+       }
+   } catch (error) {
+       console.error("Error fetching categories:", error);
+   }
+}
+
+
+async function getFilteredTasks(token, selectedUsername, selectedCategoryId) {
+ 
+
+   const url = `/project_backend/rest/tasks/getFilterTasks?username=${selectedUsername}&category=${selectedCategoryId}`;
+
+   try {
+       const response = await fetch(url, {
+           method: 'GET',
+           headers: {
+               'Content-Type': 'application/json',
+               'token': token
+           }
+       });
+
+       if (!response.ok) {
+         const errorMessage = await response.text(); 
+         console.error("Failed to fetch categories: " + errorMessage);
+       }
+
+       const data = await response.json();
+       console.log(data); 
+       return data;
+       
+
+   } catch (error) {
+       console.error('Fetch Error:', error);
+   }
+}
+
+    

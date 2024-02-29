@@ -359,27 +359,32 @@ public class TaskBean {
     }
 
     public ArrayList<Task> getFilterTasks(String token, String username, long categoryId) {
-
         ArrayList<Task> allTasks = new ArrayList<>();
-
         UserEntity userEntity = userDao.findUserByToken(token);
-        if(userEntity.getTypeOfUser().equals("product_owner") || userEntity.getTypeOfUser().equals("scrum_master")) {
-            UserEntity userEntity1 = userDao.findUserByUsername(username);
+
+        if (userEntity == null || (!userEntity.getTypeOfUser().equals("product_owner") && !userEntity.getTypeOfUser().equals("scrum_master"))) {
+            return null;
+        }
+
+
+
+        if (username != null || categoryId != 0) {
+           UserEntity userEntity1 = userDao.findUserByUsername(username);
             CategoryEntity categoryEntity = categoryDao.findCategoryById(categoryId);
+
             ArrayList<TaskEntity> allTasksEntities = taskDao.findFilterTasks(userEntity1, categoryEntity);
 
-            if (userEntity != null) {
-                if (allTasksEntities != null) {
-                    for (TaskEntity taskEntity : allTasksEntities) {
+            if (allTasksEntities != null) {
+                for (TaskEntity taskEntity : allTasksEntities) {
+                    //Filtro para selecionar os users ativos
+                    if(taskEntity.getOwner().getIsActive()) {
                         Task task = convertTaskEntityToTask(taskEntity);
                         allTasks.add(task);
                     }
                 }
             }
-        }else{
-            return null;
+        }
+            return allTasks;
         }
 
-        return allTasks;
-    }
 }

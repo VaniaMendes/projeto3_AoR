@@ -272,13 +272,14 @@ public class TaskService {
         }
 
         List<Task> userTasksByCategory = new ArrayList<>();
-        if(username != null){
+        if(username != null || category != 0){
             userTasksByCategory = taskBean.getFilterTasks(token, username, category);
-        }else {
-            userTasksByCategory = taskBean.getFilterTasks(token, username, category);
+
             if (userTasksByCategory.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).entity("No tasks found for this user or category").build();
             }
+        }else {
+            return Response.ok(userTasksByCategory).build();
         }
         return Response.ok(userTasksByCategory).build();
     }

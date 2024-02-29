@@ -1642,15 +1642,17 @@ th {
 
 /* Painel de pesquisa*/
 .search-icon {
-   margin-right: 10px;
-   font-size: 20px;
-   align-items: center;
+   margin-left: auto;
+   font-size: 30px;
+   margin-top: -20px;
+   cursor: pointer;
+   
 }
 
 .filter {
    position: absolute; 
    top: 70px; 
-   left: 1020px;
+   left: 1000px;
    width: 600px;
    display: inline;
    display: flex;
@@ -1663,4 +1665,14 @@ th {
    width: 165px;
 
 
+}
+.searchFields {
+   display: flex;
+   align-items: center;
+   justify-content: space-between; 
+}
+
+.search-icon:hover {
+   transform: scale(1.5); 
+   color: var(--white_active); 
 }

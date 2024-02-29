@@ -51,16 +51,24 @@ public class TaskDao extends AbstractDao<TaskEntity> {
 	}
 	public ArrayList<TaskEntity> findFilterTasks(UserEntity userEntity, CategoryEntity categoryEntity) {
 		try {
-			ArrayList<TaskEntity> taskEntities = (ArrayList<TaskEntity>) em.createNamedQuery("Task.findFilterTasks")
-					.setParameter("username", userEntity.getUsername())
-					.setParameter("category", categoryEntity.getIdCategory())
-					.getResultList();
-			return taskEntities;
+			if (userEntity == null && categoryEntity != null) {
+				return (ArrayList<TaskEntity>) em.createNamedQuery("Task.findTasksByCategoryFilter")
+						.setParameter("category", categoryEntity.getIdCategory())
+						.getResultList();
+			} else if (userEntity != null && categoryEntity == null) {
+				return (ArrayList<TaskEntity>) em.createNamedQuery("Task.findTaskByUserNameFilter")
+						.setParameter("username", userEntity.getUsername())
+						.getResultList();
+			} else {
+				return (ArrayList<TaskEntity>) em.createNamedQuery("Task.findFilterTasks")
+						.setParameter("username", userEntity.getUsername())
+						.setParameter("category", categoryEntity.getIdCategory())
+						.getResultList();
+			}
 		} catch (Exception e) {
 			return null;
 		}
 	}
-
 
 
 	public ArrayList<TaskEntity> findTasksByUser(UserEntity userEntity) {
