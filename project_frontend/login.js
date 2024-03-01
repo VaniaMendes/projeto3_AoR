@@ -2,10 +2,13 @@ sessionStorage.clear();
 
 document.querySelector("#login_form").addEventListener("submit", function (e) {
    e.preventDefault();
-   let username_txt = document.querySelector("#username").value; 
-   let pass_txt = document.querySelector("#password").value; 
+
+   let username_txt = document.querySelector("#username").value;
+   let pass_txt = document.querySelector("#password").value;
+
    validateUser(username_txt, pass_txt);
 });
+
 async function validateUser(username, password) {
    const user = {username: username, password: password};
    try{
@@ -26,8 +29,7 @@ async function validateUser(username, password) {
          const data = await response.json();
          const token = data.token;
          sessionStorage.setItem("token", token);
-         sessionStorage.setItem("username", username);
-         sessionStorage.setItem("pass", password);
+         
          window.location.href = "scrum.html";
          
         
