@@ -203,7 +203,7 @@ public class UserBean implements Serializable {
         return base64Encoder.encodeToString(randomBytes);
     }
 
-    private User convertUserEntityToDto(UserEntity userEntity) {
+    public User convertUserEntityToDto(UserEntity userEntity) {
         if(userEntity != null) {
             User userDto = new User();
             userDto.setUsername(userEntity.getUsername());
@@ -362,7 +362,7 @@ public class UserBean implements Serializable {
     public boolean deletePermanentlyUser(String username){
         UserEntity userEntity = userDao.findUserByUsername(username);
         boolean wasRemoved=false;
-        if (userEntity != null) {
+        if (userEntity != null && !userEntity.getUsername().equals("deletedUser") && !userEntity.getUsername().equals("admin")) {
             userEntity.setIsActive(false);
             wasRemoved =  userDao.removed(userEntity);
         }
@@ -616,4 +616,36 @@ public class UserBean implements Serializable {
     }
 
 
+    public void createDefaultUsersIfNotExistent() {
+        UserEntity userEntity = userDao.findUserByUsername("admin");
+        if (userEntity == null) {
+            User admin = new User();
+            admin.setUsername("admin");
+            admin.setPassword(encryptHelper.encryptPassword("admin"));
+            admin.setEmail("admin@admin.com");
+            admin.setFirstName("admin");
+            admin.setLastName("admin");
+            admin.setPhoneNumber("123456789");
+            admin.setImgURL("https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png");
+            admin.setTypeOfUser("product_owner");
+
+            register(admin);
+        }
+
+        UserEntity userEntity2 = userDao.findUserByUsername("deletedUser");
+        if (userEntity2 == null) {
+            User deletedUser = new User();
+            deletedUser.setUsername("deletedUser");
+            deletedUser.setPassword(encryptHelper.encryptPassword("123"));
+            deletedUser.setEmail("deleted@user.com");
+            deletedUser.setFirstName("Deleted");
+            deletedUser.setLastName("User");
+            deletedUser.setPhoneNumber("123456789");
+            deletedUser.setImgURL("https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png");
+            deletedUser.setTypeOfUser("developer");
+            deletedUser.setActive(false);
+
+            register(deletedUser);
+        }
+    }
 }
