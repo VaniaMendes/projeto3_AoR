@@ -7,6 +7,7 @@ import aor.paj.dao.TaskDao;
 import aor.paj.dao.UserDao;
 import aor.paj.dto.Category;
 import aor.paj.dto.Task;
+import aor.paj.dto.User;
 import aor.paj.entity.CategoryEntity;
 import aor.paj.entity.TaskEntity;
 import aor.paj.entity.UserEntity;
@@ -27,6 +28,8 @@ public class TaskBean {
 
     @Inject
     UserBean userBean;
+    @Inject
+    CategoryBean categoryBean;
 
     public TaskBean(){
     }
@@ -240,17 +243,8 @@ public class TaskBean {
         }
 
         return softDeletedTasks;
+    }
 
-    }
-    public ArrayList<Task> getTasksByCategoryName( String category){
-        ArrayList<TaskEntity> taskByCategoryEntities = taskDao.findTaskByCategoryName(category);
-        ArrayList<Task> taskByCategory = new ArrayList<>();
-        for(TaskEntity taskEntity: taskByCategoryEntities){
-            Task task = convertTaskEntityToTask(taskEntity);
-            taskByCategory.add(task);
-        }
-        return taskByCategory;
-    }
 
     //passar estes dois métodos para o CategoryBean e chamar categoryBean aqui?
     private CategoryEntity convertCategoryToCategoryEntity(Category category){
@@ -364,6 +358,37 @@ public class TaskBean {
             return task;
     }
 
+
+    public ArrayList<Task> getFilterTasks(String token, String username, long categoryId) {
+        ArrayList<Task> allTasks = new ArrayList<>();
+        UserEntity userEntity = userDao.findUserByToken(token);
+
+        if (userEntity == null || (!userEntity.getTypeOfUser().equals("product_owner") && !userEntity.getTypeOfUser().equals("scrum_master"))) {
+            return null;
+        }
+
+
+
+        if (username != null || categoryId != 0) {
+           UserEntity userEntity1 = userDao.findUserByUsername(username);
+            CategoryEntity categoryEntity = categoryDao.findCategoryById(categoryId);
+
+            ArrayList<TaskEntity> allTasksEntities = taskDao.findFilterTasks(userEntity1, categoryEntity);
+
+            if (allTasksEntities != null) {
+                for (TaskEntity taskEntity : allTasksEntities) {
+                    //Filtro para selecionar os users ativos
+                    if(taskEntity.getOwner().getIsActive()) {
+                        Task task = convertTaskEntityToTask(taskEntity);
+                        allTasks.add(task);
+                    }
+                }
+            }
+        }
+            return allTasks;
+        }
+
+
     public ArrayList<Task> getTasksByUsername(String token, String username) {
 
         UserEntity userEntity = userDao.findUserByToken(token);
@@ -384,4 +409,5 @@ public class TaskBean {
             }
         return tasksByUsername;
     }
+
 }

@@ -257,31 +257,32 @@ public class TaskService {
     }
 
 
-
     //Método para filtrar tasks por categoria
     @GET
-    @Path("/")
+    @Path("/getFilterTasks")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserTasksByCategory(@HeaderParam("token") String token, @QueryParam("categoryName") String categoryName) {
+    public Response getUserTasksByCategory(@HeaderParam("token") String token, @QueryParam("username") String username,@QueryParam("category") long category) {
         User user = userBean.getUserByToken(token);
         if (user == null) {
             return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid token").build();
         }
-        if (!user.getTypeOfUser().equals("product_owner") || !user.getTypeOfUser().equals("scrum_master")) {
+
+        if (!user.getTypeOfUser().equals("product_owner") && !user.getTypeOfUser().equals("scrum_master")) {
             return Response.status(Response.Status.FORBIDDEN).entity("You don't have permission to access this resource").build();
         }
-        if (categoryName == null || categoryName.isEmpty()) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Category name is required").build();
-        }
 
-        List<Task> userTasksByCategory = taskBean.getTasksByCategoryName(categoryName);
-        if (userTasksByCategory.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).entity("No tasks found for this user and category").build();
+        List<Task> userTasksByCategory = new ArrayList<>();
+        if(username != null || category != 0){
+            userTasksByCategory = taskBean.getFilterTasks(token, username, category);
+
+            if (userTasksByCategory.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No tasks found for this user or category").build();
+            }
+        }else {
+            return Response.ok(userTasksByCategory).build();
         }
         return Response.ok(userTasksByCategory).build();
     }
-
-
 
     @GET
     @Path("/getAllTasks")
@@ -303,7 +304,6 @@ public class TaskService {
 
         return response;
     }
-
 
     @GET
     @Path("getActiveTasks")
@@ -343,7 +343,6 @@ public class TaskService {
         } else {
             response = Response.status(400).entity("Failed to retrieve task").build();
         }
-
         return response;
     }
 

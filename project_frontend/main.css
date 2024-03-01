@@ -205,7 +205,7 @@ img {
 }
 
 .column {
-   margin: 80px 10px 0px 10px;
+   margin: 130px 10px 0px 10px;
    flex-shrink: 0;
    width: 330px;
    height: 552px;
@@ -213,6 +213,8 @@ img {
    border-radius: 12px;
    border-width: 2px;
    padding-top: 12px;
+  
+
 }
 
 #column1 {
@@ -1348,11 +1350,31 @@ label {
    margin-top: 70px;
 }
  /* Página product Owner */
-#users_container{
-   position: absolute;
-   top:35%;
-   left: 58%;
+
+ .tableTitle{
+   background: var(--blue);
+   color: var(--white);
+   font-size: 20px;
+   align-items: center;
+   border: none;
+   
+ }
+
+ .users_container {
+   position: relative;
+   top: 50%;
+   left: 50%;
    transform: translate(-50%, -50%);
+   width: 80%; 
+   height: auto; 
+   max-height: 300px;
+   
+}
+
+.users_table {
+   width: 100%; 
+   height: auto;
+   overflow: auto; 
 }
 #btn_user{
   outline:none !important;
@@ -1360,8 +1382,8 @@ label {
 }
 
 .user_list{
-   height: 455px;
-   max-width:310px;
+   height: 300px;
+   max-width:250px;
    display:flex;
    flex-direction: column;
    align-items: left;
@@ -1431,22 +1453,12 @@ label {
    margin: 5px;
 }
 
-.column_PO {
-   margin: 80px 10px 0px 10px;
-   flex-shrink: 0;
-   width: 550px;
-   height: 552px;
-   background-color: var(--white);
-   border-radius: 12px;
-   border-width: 2px;
-   padding-top: 12px;
-}
 
 .users_container {
    background-color: var(--white);
    border-radius: 12px;
    width: 60em;
-   max-height: 40em;
+   max-height: 30em;
    transform: translate(-50%, -50%);
    top: 50%;
    left: 850px;
@@ -1616,4 +1628,42 @@ th {
    text-align: center;
    bottom: -14px;
   position: relative;
+}
+
+
+/* Painel de pesquisa*/
+.search-icon {
+   margin-left: auto;
+   font-size: 30px;
+   margin-top: -20px;
+   cursor: pointer;
+   
+}
+
+.filter {
+   position: absolute; 
+   top: 70px; 
+   left: 1000px;
+   width: 600px;
+   display: inline;
+   display: flex;
+   align-items: center;
+
+}
+#category, #users{
+   flex:1;
+   margin-right: 10px;
+   width: 165px;
+
+
+}
+.searchFields {
+   display: flex;
+   align-items: center;
+   justify-content: space-between; 
+}
+
+.search-icon:hover {
+   transform: scale(1.5); 
+   color: var(--white_active); 
 }

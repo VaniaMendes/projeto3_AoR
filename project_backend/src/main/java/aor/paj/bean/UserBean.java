@@ -5,6 +5,7 @@ import aor.paj.dto.LoginDto;
 import aor.paj.dto.Task;
 import aor.paj.dto.User;
 import aor.paj.dto.UserDetails;
+import aor.paj.entity.CategoryEntity;
 import aor.paj.entity.UserEntity;
 import aor.paj.utils.EncryptHelper;
 import jakarta.ejb.EJB;
@@ -193,6 +194,7 @@ public class UserBean implements Serializable {
         return u;
     }
 
+
     private String generateNewToken() {
         SecureRandom secureRandom = new SecureRandom();
         Base64.Encoder base64Encoder = Base64.getUrlEncoder();
@@ -366,6 +368,8 @@ public class UserBean implements Serializable {
         }
         return wasRemoved;
     }
+
+
 
     ///////////////////////METODOS ANTIGOS\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 /*

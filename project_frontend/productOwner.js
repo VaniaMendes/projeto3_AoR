@@ -55,9 +55,8 @@ function addButtonsForUserType(role) {
         listButton.classList.add("menu_item"); listButton.innerHTML = ".";
         listButton.textContent = 'Active Users';
         listButton.addEventListener('click', function() {
+           
             listUsers();
-        
-            
         });
         menu.appendChild(listButton);
 
@@ -66,7 +65,8 @@ function addButtonsForUserType(role) {
          listButton1.textContent = 'Inactive Users';
          listButton1.addEventListener('click', function() {
          listInativeUsers();
-     
+         
+    
             
         });
        
@@ -333,26 +333,11 @@ async function getAllUsers(token) {
     }
 }
 
-// Adiciona uma linha vazia para o botão 'btn_task'
-const blankRow = document.createElement('tr');
-const blankCell = document.createElement('td');
-blankCell.colSpan = 0; // Fica localizado na primeira coluna
-blankRow.appendChild(blankCell);
-tbody.appendChild(blankRow);
-
-// Adiciona o botão criar user na célula
-const btnTaskCell = document.createElement('td');
-const btnTaskButton = document.createElement('button');
-btnTaskButton.textContent = '+ New User'; 
-btnTaskButton.classList.add('btn_task');
-btnTaskButton.id = 'btn_task'; 
-btnTaskButton.addEventListener('click', function() {
-   
+}
+ 
+document.getElementById("btn_task").addEventListener('click', function() {
     window.location.href = 'registerProductOwner.html';
 });
-btnTaskCell.appendChild(btnTaskButton);
-blankRow.appendChild(btnTaskCell);
-}
 
 
 async function listUsersForScrum() {
@@ -423,8 +408,7 @@ async function listUsersForScrum() {
     }
 }
 
-
-  async function listInativeUsers() {
+async function listInativeUsers() {
     const users = await getAllUsers(token);
     console.log(users);
     const tbody = document.querySelector('#users_table tbody');
@@ -435,107 +419,88 @@ async function listUsersForScrum() {
     // Preenche a tabela com os dados dos usuários
     for(const user of users) {
         if(!user.active){
-        const row = document.createElement('tr');
-        row.dataset.username = user.username;
+            const row = document.createElement('tr');
+            row.dataset.username = user.username;
 
-        // Adiciona a imagem do usuário
-        const imagemCell = document.createElement('td');
-        const imagem = document.createElement('img');
-        imagem.src = user.imgURL; // Supondo que cada usuário tenha uma propriedade "imagemUrl" com a URL da imagem
-        imagem.alt = 'user.png';
-        imagem.classList.add('imagem_user');
-        imagemCell.appendChild(imagem);
-        row.appendChild(imagemCell);
+            // Adiciona a imagem do usuário
+            const imagemCell = document.createElement('td');
+            const imagem = document.createElement('img');
+            imagem.src = user.imgURL; // Supondo que cada usuário tenha uma propriedade "imagemUrl" com a URL da imagem
+            imagem.alt = 'user.png';
+            imagem.classList.add('imagem_user');
+            imagemCell.appendChild(imagem);
+            row.appendChild(imagemCell);
 
-        // Adiciona o nome do usuário
-        const nomeCell = document.createElement('td');
-        nomeCell.textContent = user.firstName + " " + user.lastName;
-        row.appendChild(nomeCell);
+            // Adiciona o nome do usuário
+            const nomeCell = document.createElement('td');
+            nomeCell.textContent = user.firstName + " " + user.lastName;
+            row.appendChild(nomeCell);
 
-        // Adiciona o email do usuário
-        const emailCell = document.createElement('td');
-        emailCell.textContent = user.email;
-        row.appendChild(emailCell);
+            // Adiciona o email do usuário
+            const emailCell = document.createElement('td');
+            emailCell.textContent = user.email;
+            row.appendChild(emailCell);
 
-        // Adiciona o número de telefone do usuário
-        const telefoneCell = document.createElement('td');
-        telefoneCell.textContent = user.phoneNumber;
-        row.appendChild(telefoneCell);
+            // Adiciona o número de telefone do usuário
+            const telefoneCell = document.createElement('td');
+            telefoneCell.textContent = user.phoneNumber;
+            row.appendChild(telefoneCell);
 
-        // Adiciona a função do usuário
-        const funcaoCell = document.createElement('td');
-        funcaoCell.textContent = getUserRole(user.typeOfUser);
-        row.appendChild(funcaoCell);
+            // Adiciona a função do usuário
+            const funcaoCell = document.createElement('td');
+            funcaoCell.textContent = getUserRole(user.typeOfUser);
+            row.appendChild(funcaoCell);
 
-        
-
-        // Adiciona os botões de edição e exclusão na última coluna
-        const acoesCell = document.createElement('td');
-        const editButton = document.createElement("button");
-        editButton.innerHTML = "&#9998;";
-        editButton.classList.add("edit_button");
-        editButton.onclick = function(event) {
-            const userUsername = event.currentTarget.closest("[data-username]").dataset.username;
-            console.log(userUsername);
-            sessionStorage.setItem("username", userUsername);
-            window.location.href = 'edit_Profile_ProductOwner.html';
-        };
-        acoesCell.appendChild(editButton); // Adiciona o botão de edição à célula
-
-        //Adiconar botão restaurar
-     
-         
-        const cancelDelete = document.createElement("button");
-        cancelDelete.innerHTML = "&#8634;";
-        cancelDelete.classList.add("restore_user");
-        cancelDelete.classList="restore_user";
-        cancelDelete.onclick = function(event) {
-            const userUsername = event.currentTarget.closest("[data-username]").dataset.username;
-            if(confirm("Do you want restore this user?")){
-                restoreUser(token, userUsername).then(result => {
-                    if(result){
-                        alert("Successfully restored user");
-                        listInativeUsers();
-                    }else{
-                        alert("Failed to restore user");
-                    }
-                });
-            }
-          
-        };
-        acoesCell.appendChild(cancelDelete); // Adiciona o botão restaurar
-        const deleteButton = document.createElement("button");
-        deleteButton.innerHTML = "&#128465;";
-        deleteButton.classList.add("delete_button");
-        deleteButton.onclick = function(event) {
-            const userUsername = event.currentTarget.closest("[data-username]").dataset.username;
-            if(confirm("Do you want to delete this user permanently?")){
-            deleteUserForever(token, userUsername).then(result => {
-                console.log(userUsername);
-                if (result) {
-                    alert("Successfully deleted user");
-                    listInativeUsers();
-                } else {
-                    console.log("Failed to delete user");
+            // Adiciona os botões de restaurar e excluir na última coluna
+            const acoesCell = document.createElement('td');
+            const restoreButton = document.createElement("button");
+            restoreButton.innerHTML = "&#8634;";
+            restoreButton.classList.add("restore_user");
+            restoreButton.onclick = function(event) {
+                const userUsername = event.currentTarget.closest("[data-username]").dataset.username;
+                if(confirm("Do you want restore this user?")){
+                    restoreUser(token, userUsername).then(result => {
+                        if(result){
+                            alert("Successfully restored user");
+                            listInativeUsers();
+                        }else{
+                            alert("Failed to restore user");
+                        }
+                    });
                 }
-            }).catch(error => {
-                console.error("Error deleting user:", error);
-            });
-    
+            };
+            acoesCell.appendChild(restoreButton); // Adiciona o botão de restaurar à célula
+            
+            const deleteButton = document.createElement("button");
+            deleteButton.innerHTML = "&#128465;";
+            deleteButton.classList.add("delete_button");
+            deleteButton.onclick = function(event) {
+                const userUsername = event.currentTarget.closest("[data-username]").dataset.username;
+                if(confirm("Do you want to delete this user permanently?")){
+                    deleteUserForever(token, userUsername).then(result => {
+                        console.log(userUsername);
+                        if (result) {
+                            alert("Successfully deleted user");
+                            listInativeUsers();
+                        } else {
+                            console.log("Failed to delete user");
+                        }
+                    }).catch(error => {
+                        console.error("Error deleting user:", error);
+                    });
+                }
             }
+            acoesCell.appendChild(deleteButton); // Adiciona o botão de exclusão à célula
+            
+            row.appendChild(acoesCell);
+
+            // Adiciona a linha à tabela
+            tbody.appendChild(row);
         }
-        
-        acoesCell.appendChild(deleteButton); // Adiciona o botão de exclusão à célula
-        row.appendChild(acoesCell);
-
-        // Adiciona a linha à tabela
-        tbody.appendChild(row);
-    }else{
-        
-
     }
 }
-}
+
+  
 
 function getUserRole(role) {
     switch (role) {
