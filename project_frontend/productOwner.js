@@ -351,7 +351,7 @@ async function listUsersForScrum() {
 
         // Preenche a tabela com os dados dos usuários
         for(const user of users) {
-            if(user.active){
+            if(user.active && user.username !== "admin" && user.username !== "deletedUser"){
                 const row = document.createElement('tr');
                 row.dataset.username = user.username;
 
@@ -418,7 +418,7 @@ async function listInativeUsers() {
 
     // Preenche a tabela com os dados dos usuários
     for(const user of users) {
-        if(!user.active){
+        if(!user.active && user.username !== "admin" && user.username !== "deletedUser"){
             const row = document.createElement('tr');
             row.dataset.username = user.username;
 
