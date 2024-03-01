@@ -297,7 +297,6 @@ public class UserService {
                 beModified.setTypeOfUser(updatedUser.getTypeOfUser());
             }
 
-
             boolean updatedUSer = userBean.updateUserByPO(token, username, beModified);
             if (updatedUSer) {
                 return Response.status(200).entity(beModified).build();
@@ -379,7 +378,6 @@ public class UserService {
 
         return response;
     }
-
 
 
     /////////////////////REQUESTS ANTIGOS\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
