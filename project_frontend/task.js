@@ -299,13 +299,6 @@ document.querySelector("header h1").addEventListener("click", function () {
    }
 });
 
-//Botão para direcionar o utlizador para a página de login
-document.querySelector("#logout").addEventListener("click", function () {
-   if (confirm("Are you sure you want to logout?")) {
-      sessionStorage.clear();
-      window.location.href = "login.html";
-   }
-});
 
 //Função para confirmar delete
 function confirmDelete() {

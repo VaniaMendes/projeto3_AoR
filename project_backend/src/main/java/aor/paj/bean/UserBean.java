@@ -19,6 +19,12 @@ import jakarta.ejb.Singleton;
 import jakarta.inject.Inject;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
+import jakarta.ws.rs.HeaderParam;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -367,6 +373,15 @@ public class UserBean implements Serializable {
             wasRemoved =  userDao.removed(userEntity);
         }
         return wasRemoved;
+    }
+    public boolean logoutUser(String token){
+        UserEntity userEntity = userDao.findUserByToken(token);
+        boolean wasRemovedToken = false;
+        if(userEntity != null){
+            wasRemovedToken = userDao.removedToken(userEntity);
+        }
+
+        return wasRemovedToken;
     }
 
 

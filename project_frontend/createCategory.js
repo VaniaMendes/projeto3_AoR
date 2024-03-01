@@ -27,13 +27,6 @@ window.onload = function() {
     });
  
  }
- document.querySelector("#logout").addEventListener("click", function () {
-    if (confirm("Are you sure you want to logout?")) {
-       sessionStorage.clear();
-       window.location.href = "login.html";
-    }
- });
-
 
  document.querySelector("#btn_scrumBoard").addEventListener("click", function () {
     

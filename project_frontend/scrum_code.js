@@ -156,13 +156,7 @@ writeDate();
 
 //Executa a função em intervalos de 1 segundo para atualizar a data
 setInterval(writeDate, 1000);
-
-document.querySelector("#logout").addEventListener("click", function () {
-   if (confirm("Are you sure you want to logout?")) {
-      sessionStorage.clear();
-      window.location.href = "login.html";
-   }
-});   
+   
 
 //Event Listenner para o botao EditProfile
 
@@ -894,3 +888,5 @@ async function getFilteredTasks(token, selectedUsername, selectedCategoryId) {
 }
 
     
+
+

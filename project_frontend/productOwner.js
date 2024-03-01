@@ -84,12 +84,6 @@ document.getElementById("btn_scrumBoard").addEventListener("click", async functi
     window.location.href = "scrum.html";
 });
 
-document.getElementById("logout").addEventListener("click", function () {
-    if (confirm("Are you sure you want to logout?")) {
-        sessionStorage.clear();
-        window.location.href = "login.html";
-     }
-});
 
 async function getAllUsers(token) {
     try {

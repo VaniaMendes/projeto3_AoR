@@ -379,6 +379,21 @@ public class UserService {
         return response;
     }
 
+    @POST
+    @Path("/logout")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response logoutValidate(@HeaderParam("token") String token){
+        User userRequest=userBean.getUserByToken(token);
+
+        if (userRequest==null){
+            return Response.status(401).entity("Failed").build();
+        }
+
+        userBean.logoutUser(token);
+
+        return Response.status(200).entity("Success").build();
+    }
+
 
     /////////////////////REQUESTS ANTIGOS\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -400,15 +415,6 @@ public class UserService {
 
 
 
-    @POST
-    @Path("/logout")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response logoutValidate(@HeaderParam("username") String username, @HeaderParam("password")String pass){
-        User userRequest=userBean.getUser(username,pass);
 
-        if (userRequest==null) return Response.status(401).entity("Failed").build();
-
-        return Response.status(200).entity("Success").build();
-    }
 
 }
