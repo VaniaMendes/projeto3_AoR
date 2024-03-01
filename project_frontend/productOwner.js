@@ -55,7 +55,7 @@ function addButtonsForUserType(role) {
         listButton.classList.add("menu_item"); listButton.innerHTML = ".";
         listButton.textContent = 'Active Users';
         listButton.addEventListener('click', function() {
-            document.getElementById("ativeUsers").style.visibility = 'visible';
+           
             listUsers();
         });
         menu.appendChild(listButton);
@@ -65,7 +65,7 @@ function addButtonsForUserType(role) {
          listButton1.textContent = 'Inactive Users';
          listButton1.addEventListener('click', function() {
          listInativeUsers();
-         inativeUsers.style.visibility = 'visible';
+         
     
             
         });

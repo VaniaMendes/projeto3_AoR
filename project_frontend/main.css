@@ -1367,6 +1367,7 @@ label {
    transform: translate(-50%, -50%);
    width: 80%; 
    height: auto; 
+   max-height: 300px;
    
 }
 
@@ -1381,8 +1382,8 @@ label {
 }
 
 .user_list{
-   height: 455px;
-   max-width:310px;
+   height: 300px;
+   max-width:250px;
    display:flex;
    flex-direction: column;
    align-items: left;
@@ -1452,22 +1453,12 @@ label {
    margin: 5px;
 }
 
-.column_PO {
-   margin: 80px 10px 0px 10px;
-   flex-shrink: 0;
-   width: 550px;
-   height: 552px;
-   background-color: var(--white);
-   border-radius: 12px;
-   border-width: 2px;
-   padding-top: 12px;
-}
 
 .users_container {
    background-color: var(--white);
    border-radius: 12px;
    width: 60em;
-   max-height: 40em;
+   max-height: 30em;
    transform: translate(-50%, -50%);
    top: 50%;
    left: 850px;

@@ -70,16 +70,14 @@ function addButtonsForUserType(userType) {
        
        // Adicionar botão para consultar lista de todos os usuários
        const listButton = document.createElement('button'); listButton.id = "listButton";
-       listButton.classList.add("menu_item"); listButton.innerHTML = ".";
-       listButton.textContent = 'All Users';
+       listButton.classList.add("menu_item"); listButton.innerHTML = "&#x2B24;  Users";
        listButton.addEventListener('click', function() {
          window.location.href = "productOwner.html";
            
        });
 
        const createCategoryButton = document.createElement('button'); createCategoryButton.id = "listButton";
-       createCategoryButton.classList.add("menu_item"); createCategoryButton.innerHTML = ".";
-       createCategoryButton.textContent = 'Categories';
+       createCategoryButton.classList.add("menu_item"); createCategoryButton.innerHTML = "&#x2B24;  Categories";
          createCategoryButton.addEventListener('click', function() {
             window.location.href = "createCategory.html";
             

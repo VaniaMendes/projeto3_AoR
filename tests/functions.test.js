@@ -40,7 +40,6 @@ test("User not validated: invalid phone", ()=> {
 
 });
 
-
 //Veirifica se phone number é valido
 test("Phone number is valid", () => {
    const response=register.isValidPhoneNumber("985678956");
@@ -51,7 +50,6 @@ test("Phone number is not valid", () => {
    const response=register.isValidPhoneNumber("911061");
       expect(response).toBe(false);
    });
-
 
 
 test("photo updated with sucess",  ()=>{
