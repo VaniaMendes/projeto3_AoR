@@ -31,3 +31,17 @@ async function logoutUser(token){
        window.location.href = "login.html";
     }
  });
+
+ 
+function writeDate() {
+    const d = new Date();
+ 
+    // Define o formato a mostrar
+    let dateTimeString = d.toLocaleString("en-GB");
+    dateTimeString = dateTimeString.replace(",", "&nbsp; &nbsp; &nbsp;");
+ 
+    // Insere no HTML
+    document.getElementById("date").innerHTML = dateTimeString;
+ }
+  
+ writeDate();

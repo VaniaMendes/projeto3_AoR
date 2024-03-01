@@ -1,4 +1,58 @@
-const token = sessionStorage.getItem('token');
+
+const firstName_txt = document.querySelector("#user");
+//const retros = JSON.parse(localStorage.getItem("retros")) || [];
+const user_img = document.querySelector("#user_img");
+let user = null;
+
+const token = sessionStorage.getItem("token");
+const userType = sessionStorage.getItem('role');
+
+writeDate();
+
+async function getUserByToken(token) {
+   try {
+       const response = await fetch("http://localhost:8080/project_backend/rest/users", {
+           method: "GET",
+           headers: {
+               Accept: "application/json",
+               "Content-Type": "application/json",
+               token:token
+           }
+       });
+
+       if (response.ok) {
+           const user = await response.json();
+           return user;
+       } else {
+           console.error("Failed to fetch user data");
+           return null;
+       }
+   } catch (error) {
+       console.error("Error fetching user data:", error);
+       return null;
+   }
+}
+getUserByToken(token).then((result) => {
+   user = result;
+   if (user == null) {
+      window.location.href = "login.html";
+   } else {
+      firstName_txt.textContent = user.firstName;
+      const role = user.typeOfUser;
+      sessionStorage.setItem('userType', role);
+     
+
+      if(user.imgURL){
+         user_img.src = user.imgURL;
+      }else{user_img.src = 'user.png';
+   }
+   addButtonsForUserType(role);
+      
+   }
+});
+
+
+
 //Carregar no logo para voltar à página inicial 
 document.querySelector("header h1").addEventListener("click", function () {
     window.location.href = "login.html";
@@ -90,3 +144,18 @@ console.log("chegou aqui");
     
  }
  
+
+ document.querySelector("#btn_scrumBoard").addEventListener("click", function () {
+    window.location.href = "scrum.html";
+ });
+
+ function writeDate() {
+    const d = new Date();
+ 
+    // Define o formato a mostrar
+    let dateTimeString = d.toLocaleString("en-GB");
+    dateTimeString = dateTimeString.replace(",", "&nbsp; &nbsp; &nbsp;");
+ 
+    // Insere no HTML
+    document.getElementById("date").innerHTML = dateTimeString;
+ }

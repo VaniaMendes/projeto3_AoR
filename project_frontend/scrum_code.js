@@ -84,8 +84,7 @@ function addButtonsForUserType(userType) {
          });
 
       const inactiveTasksButton = document.createElement('button'); inactiveTasksButton.id = "inactiveTasksButton";
-      inactiveTasksButton.classList.add("menu_item"); inactiveTasksButton.innerHTML = ".";
-      inactiveTasksButton.textContent = 'Inactive Tasks';
+      inactiveTasksButton.classList.add("menu_item"); inactiveTasksButton.innerHTML = "&#x2B24; Inactive Tasks";
       inactiveTasksButton.addEventListener('click', function() {
          window.location.href = "inactive-tasks.html";
       });
@@ -122,6 +121,12 @@ function addButtonsForUserType(userType) {
       handleActiveTasks(token, taskLists);
 
    } else if (userType === 'developer') {
+
+      //Caso seja developer o menu de pesquisa não está visível
+
+      document.querySelectorAll(".filter").forEach(function(element) {
+         element.style.display = "none";
+     });
 
       handleActiveTasks(token, taskLists);
        
@@ -814,19 +819,9 @@ document.addEventListener("DOMContentLoaded", async function() {
       console.log("User selecionado: ", selectedUsername);
       console.log("Categoria selecionada: ", selectedCategoryId);
       
-
-      //    NÃO ESQUECER DE COLCOCAR MÉTODO DE IMPRIMIR TASKS
+      handleFilterTasks(token, taskLists, selectedUsername, selectedCategoryId)
       
   });
-   
-});
-
-
-
-document.querySelector(".search_icon").addEventListener("click", function(){
-   
-   const filterList = getFilteredTasks(token, selectedUsername, selectedCategoryId);
-   console.log(filterList);
    
 });
 
@@ -875,6 +870,7 @@ async function getFilteredTasks(token, selectedUsername, selectedCategoryId) {
        if (!response.ok) {
          const errorMessage = await response.text(); 
          console.error("Failed to fetch categories: " + errorMessage);
+         return null;
        }
 
        const data = await response.json();
@@ -884,8 +880,36 @@ async function getFilteredTasks(token, selectedUsername, selectedCategoryId) {
 
    } catch (error) {
        console.error('Fetch Error:', error);
+       return null;
    }
 }
+
+function handleFilterTasks(token, taskLists, selectedUsername, selectedCategoryId) {
+   getFilteredTasks(token, selectedUsername,  selectedCategoryId).then((result) => {
+     
+     if (!result || result.length === 0) {
+      alert("There are no tasks available for the selected user or category.");
+      return;
+    }
+
+    let tasks = result;
+     printTasks(tasks);
+     for (let taskList of taskLists) {
+       taskList.addEventListener("dragover", function (e) {
+         e.preventDefault();
+         const draggable = document.querySelector(".drag");
+         taskList.appendChild(draggable);
+ 
+         for (let task of tasks) {
+           if (draggable.id == task.id) {
+             task.state = this.id;
+             updateTaskState(token, task.id, this.id);
+           }
+         }
+       });
+     }
+   });
+ }
 
     
 

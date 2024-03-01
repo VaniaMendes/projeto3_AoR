@@ -1,6 +1,7 @@
 const token = sessionStorage.getItem("token");
 let user = null;
 const user_photo = document.getElementById("user_img");
+writeDate();
 
 const role = sessionStorage.getItem("userType");
 console.log(role);
@@ -84,6 +85,12 @@ document.getElementById("btn_scrumBoard").addEventListener("click", async functi
     window.location.href = "scrum.html";
 });
 
+document.getElementById("logout").addEventListener("click", function () {
+    if (confirm("Are you sure you want to logout?")) {
+        sessionStorage.clear();
+        window.location.href = "login.html";
+     }
+});
 
 async function getAllUsers(token) {
     try {
@@ -510,7 +517,16 @@ function getUserRole(role) {
 }
 
 
-  
+function writeDate() {
+    const d = new Date();
+ 
+    // Define o formato a mostrar
+    let dateTimeString = d.toLocaleString("en-GB");
+    dateTimeString = dateTimeString.replace(",", "&nbsp; &nbsp; &nbsp;");
+ 
+    // Insere no HTML
+    document.getElementById("date").innerHTML = dateTimeString;
+ }
   
 
  
