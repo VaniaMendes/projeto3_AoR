@@ -191,6 +191,28 @@ async function getAllUsers(token) {
     }
  }
 
+ async function deleteUserTasks(token, username) {
+    try {
+        const response = await fetch(`http://localhost:8080/project_backend/rest/tasks/deleteTasksByUsername/${username}`, {
+            method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*',
+                "token": token
+            }
+        });
+
+        if (response.ok) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        console.error("Error deleting user tasks:", error);
+        return false;
+    }
+}
+
 
  async function listUsers() {
     const users = await getAllUsers(token, role);
@@ -260,7 +282,7 @@ async function getAllUsers(token) {
             if(user.active){
                 if (confirm("Do you want to remove this user?")) {
                 deleteUser(token, userUsername).then(result => {
-                    console.log(userUsername);
+                    
                     if (result) {
                         alert("Successfully removed user");
                         listUsers();
@@ -274,7 +296,33 @@ async function getAllUsers(token) {
             }
             }
         };
+
+        const deleteTasksButton = document.createElement("button");
+
+
+        deleteTasksButton.innerHTML = "Delete Tasks"; //que icone usar???
+        deleteTasksButton.style.border = '1px solid black';
+        deleteTasksButton.classList.add("delete_button");
+        deleteTasksButton.id="delete_Alltasks_button";
+        deleteTasksButton.onclick = function(event) {
+            const userUsername = event.currentTarget.closest("[data-username]").dataset.username;
+            if(user.active){
+                if (confirm("Do you want to remove all tasks from this user?")) {
+                    if(deleteUserTasks(token, userUsername)) {
+                        alert("Successfully removed all tasks from user");
+                    } else {
+                        alert("Failed to remove all tasks from user");
+                    
+                    }
+                }
+            }
+        };
+
+
+
+
         acoesCell.appendChild(deleteButton); // Adiciona o botão de exclusão à célula
+        acoesCell.appendChild(deleteTasksButton); // Adiciona o botão de exclusão à célula
         row.appendChild(acoesCell);
 
         // Adiciona a linha à tabela
