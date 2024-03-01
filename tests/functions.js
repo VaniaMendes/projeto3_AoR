@@ -6,6 +6,7 @@ async function addTask(token,title, description, initialDate, endDate, priority,
       endDate: endDate,
       priority: priority
    };
+   try{
    const response = await fetch("http://localhost:8080/project_backend/rest/tasks/createTask", {
       method: "POST",
       headers: {
@@ -17,9 +18,22 @@ async function addTask(token,title, description, initialDate, endDate, priority,
       },
       body: JSON.stringify(task),
    });
-   return response.status;
+   if (!response.ok) {
+      return response.status; 
+   }
+
+   return 200;
+}catch (error) {
+   console.error("Error adding task:", error);
+   return null;
 }
+}
+
+
+
+
 
 module.exports = {
    addTask
+   
 }

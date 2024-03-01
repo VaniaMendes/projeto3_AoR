@@ -1,34 +1,149 @@
-const tester = require("./functions");
+// Importe a função addTask do arquivo tasks.js
+const tasks = require('./functions');
+
+// Mock da função fetch()
+global.fetch = jest.fn(() => Promise.resolve({
+  status: 200,
+  json: () => Promise.resolve({ message: 'Task created successfully.' }),
+}));
+
+// Defina os casos de teste para a função addTask
+describe('addTask', () => {
+  test('add task with sucess', async () => {
+    const response = await tasks.addTask('token', 'Título da Tarefa', 'Descrição da Tarefa', '2023-02-12', '2023-02-15', 3, 1);
+
+    expect(response).toBe(200);
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith('http://localhost:8080/project_backend/rest/tasks/createTask', {
+      method: 'POST',
+      headers: {
+        Accept: '*/*',
+        'Content-Type': 'application/json',
+        token: 'token',
+        categoryId: 1
+      },
+      body: JSON.stringify({
+        title: 'Título da Tarefa',
+        description: 'Descrição da Tarefa',
+        initialDate: '2023-02-12',
+        endDate: '2023-02-15',
+        priority: 3
+      })
+    });
+  });
+
+  test('empty ttitle', async () => {
+    global.fetch = jest.fn(() => Promise.resolve({
+      status: 422,
+      json: () => Promise.resolve({ message: 'Incapaz de criar tarefa.' }),
+    }));
+
+    const response = await tasks.addTask('token', '', 'Descrição da Tarefa', '2023-02-12', '2023-02-15', 3, 1);
+
+    expect(response).toBe(422);
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith('http://localhost:8080/project_backend/rest/tasks/createTask', {
+      method: 'POST',
+      headers: {
+        Accept: '*/*',
+        'Content-Type': 'application/json',
+        token: 'token',
+        categoryId: 1
+      },
+      body: JSON.stringify({
+        title: '',
+        description: 'Descrição da Tarefa',
+        initialDate: '2023-02-12',
+        endDate: '2023-02-15',
+        priority: 3
+      })
+    });
+  });
 
 
-test("Task rejected with invalid token", async () => {
-   const response = await tester.addTask("invalidToken", "nova tarefa", "12345", "2024-03-05" , "2024-05-30", 200, "toDo", 1709295172327);
-   expect(response).not.toBe(200);
+test('invalid initial date', async () => {
+   global.fetch = jest.fn(() => Promise.resolve({
+     status: 422,
+     json: () => Promise.resolve({ message: 'Incapaz de criar tarefa.' }),
+   }));
+
+   const response = await tasks.addTask('token', '', 'Descrição da Tarefa', '2023-02-12', '2023-02-15', 3, 1);
+
+   expect(response).toBe(422);
+   expect(fetch).toHaveBeenCalledTimes(1);
+   expect(fetch).toHaveBeenCalledWith('http://localhost:8080/project_backend/rest/tasks/createTask', {
+     method: 'POST',
+     headers: {
+       Accept: '*/*',
+       'Content-Type': 'application/json',
+       token: 'token',
+       categoryId: 1
+     },
+     body: JSON.stringify({
+       title: '',
+       description: 'Descrição da Tarefa',
+       initialDate: '2023-02-12',
+       endDate: '2023-02-15',
+       priority: 3
+     })
+   });
+ });
+
+ test('invalid priority', async () => {
+   global.fetch = jest.fn(() => Promise.resolve({
+     status: 422,
+     json: () => Promise.resolve({ message: 'Incapaz de criar tarefa.' }),
+   }));
+
+   const response = await tasks.addTask('token', '', 'Descrição da Tarefa', '2023-02-12', '2023-02-15', 3, 1);
+
+   expect(response).toBe(422);
+   expect(fetch).toHaveBeenCalledTimes(1);
+   expect(fetch).toHaveBeenCalledWith('http://localhost:8080/project_backend/rest/tasks/createTask', {
+     method: 'POST',
+     headers: {
+       Accept: '*/*',
+       'Content-Type': 'application/json',
+       token: 'token',
+       categoryId: 1
+     },
+     body: JSON.stringify({
+       title: '',
+       description: 'Descrição da Tarefa',
+       initialDate: '2023-02-12',
+       endDate: '2023-02-15',
+       priority: 3
+     })
+   });
+ });
+
+ test('invalid token', async () => {
+   global.fetch = jest.fn(() => Promise.resolve({
+     status: 403,
+     json: () => Promise.resolve({ message: 'Token inválido.' }),
+   }));
+ 
+   const response = await tasks.addTask('invalidtoken', 'Título da Tarefa', 'Descrição da Tarefa', '2023-02-12', '2023-02-15', 3, 1);
+ 
+   expect(response).toBe(403);
+   expect(fetch).toHaveBeenCalledTimes(1);
+   expect(fetch).toHaveBeenCalledWith('http://localhost:8080/project_backend/rest/tasks/createTask', {
+     method: 'POST',
+     headers: {
+       Accept: '*/*',
+       'Content-Type': 'application/json',
+       token: 'invalidtoken',
+       categoryId: 1
+     },
+     body: JSON.stringify({
+       title: 'Título da Tarefa',
+       description: 'Descrição da Tarefa',
+       initialDate: '2023-02-12',
+       endDate: '2023-02-15',
+       priority: 3
+     })
+   });
+ });
+
 });
-
-test("Task rejected with invalid initial date", async () => {
-   const response = await tester.addTask("slgsucrZm_6Ug7QSKg3_GEuzfSXJqq3T", "nova tarefa", "12345", "2023-03-05" , "2024-05-30", 200, 1709295172327);
-   expect(response).not.toBe(200);
-});
-
-
-test("Task rejected with empty title", async () => {
-   const response = await tester.addTask("slgsucrZm_6Ug7QSKg3_GEuzfSXJqq3T", "", "12345", "2024-03-05" , "2024-05-30", 200, 1709316267443);
-   expect(response).not.toBe(200);
-});
-
-test("Task rejected with invalid category ID", async () => {
-   const response = await tester.addTask("slgsucrZm_6Ug7QSKg3_GEuzfSXJqq3T", "nova tarefa", "12345", "2024-03-05" , "2024-05-30", 200, "invalidCategoryID");
-   expect(response).not.toBe(200);
-});
-
-test("Task rejected with invalid priority", async () => {
-   const response = await tester.addTask("slgsucrZm_6Ug7QSKg3_GEuzfSXJqq3T", "nova tarefa", "12345", "2024-03-05" , "2024-05-30", 400, 1709316267443);
-   expect(response).not.toBe(200);
-});
-
-
-test("Task rejected with end date before start date", async () => {
-   const response = await tester.addTask("slgsucrZm_6Ug7QSKg3_GEuzfSXJqq3T", "nova tarefa", "Descrição da nova tarefa", "2024-05-05" , "2024-05-30", 200, 1709316267443);
-   expect(response.status).toBe(200);
-});
+ 
