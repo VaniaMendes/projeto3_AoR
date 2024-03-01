@@ -29,8 +29,12 @@
          <div class="descricaoTarefa">
             <btn class="modal_exit" id="cancel">&times;</btn>
             <h2 id="task_creationTitle"></h2>
+            
+               <label for = "opcoes" class="descriptioLabelTask" id="current-category-label"></label>
+             
             <label for="opcoes" class="descriptioLabelTask">Title:</label>
             <input type="text" placeholder="Task Title" id="title" required />
+            
             <div>
                <label for="opcoes" class="descriptioLabelTask">Category:</label>
                <select id="category_element" name="opcoes">
@@ -70,7 +74,7 @@
 
             <div class="buttons">
                <button class="btns_task" id="task_save">Save</button>
-               <button class="btns_task" id="task_delete">Delete</button>
+               <button class="btns_task" id="task_cancel">Cancel</button>
             </div>
 
             <div id="error_creating_task"></div>

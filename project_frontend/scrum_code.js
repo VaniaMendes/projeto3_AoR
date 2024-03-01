@@ -196,12 +196,12 @@ window.addEventListener("beforeunload", function () {
 */
 
 document.querySelector("#modal_cancel").addEventListener("click", function () {
-   document.querySelector("#modal").style.visibility = "hidden";
+   document.querySelector("#modal_dblClick").style.visibility = "hidden";
    document.querySelector("#background").style.visibility = "hidden";
 });
 
 document.querySelector("#background").addEventListener("click", function () {
-   document.querySelector("#modal").style.visibility = "hidden";
+   document.querySelector("#modal_dblClick").style.visibility = "hidden";
    document.querySelector("#background").style.visibility = "hidden";
    document.querySelector("#modal_settings").style.visibility = "hidden";
 });
@@ -236,10 +236,13 @@ function printTasks(tasks) {
 
       const task_title = document.createElement("div");
       task_title.classList.add("task_title");
+      task_title.classList.add('text-overflow-task');
       task_title.textContent = tasks[i].title;
       task_div.appendChild(task_title);
 
       
+      
+      /*
 
       let date_now = new Date();
       date_now = date_now.getTime();
@@ -253,23 +256,43 @@ function printTasks(tasks) {
       task_day.classList.add("task_day");
       if (tasks[i].endDate != "9999-12-31") task_day.textContent = daysDiferences;
       task_div.appendChild(task_day);
+      */
+
+      const task_category = document.createElement("div");
+      task_category.classList.add("task_category");
+      task_category.classList.add('text-overflow-task');
+      task_category.textContent = tasks[i].category.title;
+      task_div.appendChild(task_category);
+
 
       const task_btn = document.createElement("button");
-      task_btn.innerHTML = "&#9998;";
+      task_btn.innerHTML = "&#9998;"; //botão para editar a task
       task_btn.classList.add("task_btn");
       task_btn.style.color = fontColorRGB(task_div.style.backgroundColor);
 
       addEventsBeforeDrag(task_btn, task_div);
+      task_div.appendChild(task_btn);
+      
+
+      
 
       const task_btnDelete = document.createElement("button");
-      task_btnDelete.innerHTML = "&#128465;";
+      task_btnDelete.innerHTML = "&#128465;"; //botão para apagar a task
       task_btnDelete.classList.add("delete_btn");
       task_btnDelete.style.color = fontColorRGB(task_div.style.backgroundColor);
+      
 
       addEventsBeforeDrag(task_btnDelete, task_div);
-
       task_div.appendChild(task_btnDelete);
-      task_div.appendChild(task_btn);
+
+      
+
+      
+
+      
+      
+      
+      
 
       if (tasks[i].state == "toDo") {
          document.querySelector("#toDo").appendChild(task_div);
@@ -319,11 +342,13 @@ function taskCreationAddEvents(task_div, tasks) {
          if (tasks[i].id == task_div.id) {
             const task_sel = tasks[i];
             document.querySelector("#modal_title").innerHTML = task_sel.title;
+            document.querySelector("#modal_category").innerHTML = task_sel.category.title;
             document.querySelector("#modal_description").innerHTML = task_sel.description;
             document.querySelector("#modal_startDate").innerHTML = task_sel.initialDate;
             if (task_sel.endDate == "9999-12-31") document.querySelector("#modal_endDate").innerHTML = "";
             else document.querySelector("#modal_endDate").innerHTML = task_sel.endDate;
-            document.querySelector("#modal").style.visibility = "visible";
+            document.querySelector("#modal_author").innerHTML = task_sel.author.username;
+            document.querySelector("#modal_dblClick").style.visibility = "visible";
             document.querySelector("#background").style.visibility = "visible";
          }
       }
@@ -447,29 +472,6 @@ async function getActiveTasks(token) {
    
    } catch (error) {
       console.error("Error fetching tasks:", error);
-   }
-}
-
-async function getUser(username, pass) {
-   let response = await fetch(
-      "http://localhost:8080/project_backend/rest/users",
-
-      {
-         method: "GET",
-         headers: {
-            Accept: "*/*",
-            "Content-Type": "application/json",
-            username: username,
-            pass: pass,
-         },
-      }
-   );
-
-   try {
-      let user1 = await response.json();
-      return user1;
-   } catch (error) {
-      return null;
    }
 }
 
