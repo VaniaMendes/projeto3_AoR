@@ -193,7 +193,7 @@ public class UserService {
             return Response.status(200).entity(jsonResponse).build();
 
         } else {
-            return Response.status(403).entity("{\"error\": \"Wrong Username or Password!\"}").build();
+            return Response.status(403).entity("{\"error\": \"Somethin went wrong\"}").build();
         }
     }
 
@@ -391,7 +391,7 @@ public class UserService {
 
         userBean.logoutUser(token);
 
-        return Response.status(200).entity("Success").build();
+        return Response.status(200).entity(" Logout successful").build();
     }
 
 
