@@ -21,6 +21,12 @@ import jakarta.ejb.Singleton;
 import jakarta.inject.Inject;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
+import jakarta.ws.rs.HeaderParam;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -45,27 +51,14 @@ public class UserBean implements Serializable {
     @EJB
     EncryptHelper encryptHelper;
 
-    ArrayList<User>users;
-
-
     public UserBean(){
-    }
-
-    public User getUser(String username, String password){
-        User userRequested=null;
-        for(int i=0;i<users.size() && userRequested==null;i++){
-            if(users.get(i).getUsername().equals(username) && users.get(i).getPassword().equals(password)){
-                userRequested=users.get(i);
-            }
-        }
-        return userRequested;
     }
 
 
     public String loginDB(LoginDto user){
         UserEntity userEntity = userDao.findUserByUsername(user.getUsername());
         user.setPassword(encryptHelper.encryptPassword(user.getPassword()));
-        if (userEntity != null){
+        if (userEntity != null && userEntity.getIsActive()){
             if (userEntity.getPassword().equals(user.getPassword())){
                 String token = generateNewToken();
                 userEntity.setToken(token);
@@ -87,6 +80,43 @@ public class UserBean implements Serializable {
             }
 
             return users;
+    }
+
+    public List<User> getActiveUsers(){
+
+        List<User> users = new ArrayList<>();
+        List<UserEntity> userEntities = userDao.findAllUsers();
+
+        if(userEntities != null) {
+            for (UserEntity userEntity : userEntities) {
+                if (userEntity.getIsActive() && !userEntity.getUsername().equals("admin") && !userEntity.getUsername().equals("deletedUser")) {
+                    User user = convertUserEntityToDto(userEntity);
+                    users.add(user);
+                }
+            }
+        }
+
+        return users;
+
+    }
+
+
+    public List<User> getInactiveUsers(){
+
+        List<User> users = new ArrayList<>();
+        List<UserEntity> userEntities = userDao.findAllUsers();
+
+        if(userEntities != null) {
+            for (UserEntity userEntity : userEntities) {
+                if (!userEntity.getIsActive() && !userEntity.getUsername().equals("admin") && !userEntity.getUsername().equals("deletedUser")) {
+                    User user = convertUserEntityToDto(userEntity);
+                    users.add(user);
+                }
+            }
+        }
+
+        return users;
+
     }
 
     /**
@@ -383,6 +413,15 @@ public class UserBean implements Serializable {
         }
         return wasRemoved;
     }
+    public boolean logoutUser(String token){
+        UserEntity userEntity = userDao.findUserByToken(token);
+        boolean wasRemovedToken = false;
+        if(userEntity != null){
+            wasRemovedToken = userDao.removedToken(userEntity);
+        }
+
+        return wasRemovedToken;
+    }
 
 
 
@@ -527,107 +566,6 @@ public class UserBean implements Serializable {
         } catch (AddressException e) {
         }
         return isValid;
-    }
-
-
-
-    public User validateLogin(String username, String password) {
-        User user_validate=null;
-        for (User user : users) {
-            if (user.getUsername().equals(username)) {
-                if(user.getPassword().equals(password)) user_validate=user;
-            }
-        }
-        return user_validate;
-    }
-
-
-
-    public User updatePhoto(String username,String pass,String newPhoto){
-        User currentUser = getUser(username,pass);
-        currentUser.setImgURL(newPhoto);
-
-
-        return currentUser;
-    }
-    public boolean updatePassword(String username, String password, String newPassword) {
-        boolean fieldChanged = false;
-            User u = getUser(username, password);
-            if(u!=null) {
-                u.setPassword(newPassword);
-
-                fieldChanged = true;
-            }
-
-        return fieldChanged;
-    }
-    public boolean updateEmail(String username, String password, String email) {
-        boolean fieldChanged = false;
-        boolean validEmail = isValidEmail(email);
-            User u = getUser(username, password);
-            boolean emailAlreadyExists = emailExists(email);
-            if (u !=null && validEmail && !emailAlreadyExists) {
-                    u.setEmail(email);
-
-                    fieldChanged = true;
-        }
-        return fieldChanged;
-    }
-
-    public boolean emailExists(String email){
-        boolean emailExists = false;
-            for (User u : users) {
-                String userEmail = u.getEmail();
-                if (userEmail != null && userEmail.equals(email)) {
-                    emailExists = true;
-                }
-            }
-        return emailExists;
-    }
-
-    public boolean updateFirstName(String username, String password, String firstName) {
-        boolean fieldChanged = false;
-
-            User u = getUser(username, password);
-            if(u!=null){
-                u.setFirstName(firstName);
-
-                fieldChanged=true;
-        }
-        return fieldChanged;
-    }
-    public boolean updateLastName(String username, String password, String lastName) {
-        boolean fieldChanged = false;
-            User u = getUser(username, password);
-            if(u!= null){
-                u.setLastName(lastName);
-
-                fieldChanged=true;
-        }
-        return fieldChanged;
-    }
-
-    public boolean updatePhoneNumber(String username, String password, String phoneNumber) {
-        boolean fieldChanged = false;
-            User u = getUser(username, password);
-
-            boolean phoneValid=isValidPhoneNumber(phoneNumber);
-            if (u!=null && phoneValid) {
-                u.setPhoneNumber(phoneNumber);
-
-                fieldChanged = true;
-        }
-        return fieldChanged;
-    }
-
-    public boolean phoneExists(String phoneNumber){
-        boolean phoneExists = false;
-        for(User u: users){
-            if(u.getPhoneNumber().equals(phoneNumber)){
-                phoneExists = true;
-            }
-        }
-        return phoneExists;
     }
 
 

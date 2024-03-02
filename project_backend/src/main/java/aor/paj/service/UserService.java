@@ -119,7 +119,7 @@ public class UserService {
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getAllUsers(@HeaderParam("Token") String token) {
+    public Response getAllUsers(@HeaderParam("token") String token) {
         List<User> allUsers = userBean.getAllUsers();
 
         if (allUsers != null && !allUsers.isEmpty()) {
@@ -128,6 +128,50 @@ public class UserService {
             return Response.status(Response.Status.NOT_FOUND).entity("No users found").build();
         }
     }
+
+    @GET
+    @Path("/activeUsers")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getActiveUsers(@HeaderParam("token") String token) {
+
+        User userRequest = userBean.getUserByToken(token);
+        if (userRequest != null && (userRequest.getTypeOfUser().equals("product_owner") || userRequest.getTypeOfUser().equals("scrum_master"))) {
+            List<User> activeUsers = userBean.getActiveUsers();
+
+            if (activeUsers != null && !activeUsers.isEmpty()) {
+                return Response.ok(activeUsers).build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).entity("No users found").build();
+            }
+        }else{
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Unauthorized access").build();
+        }
+
+        }
+
+    @GET
+    @Path("/inactiveUsers")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getInactiveUsers(@HeaderParam("token") String token) {
+
+        User userRequest = userBean.getUserByToken(token);
+        if (userRequest != null && (userRequest.getTypeOfUser().equals("product_owner"))) {
+            List<User> activeUsers = userBean.getInactiveUsers();
+
+            if (activeUsers != null && !activeUsers.isEmpty()) {
+                return Response.ok(activeUsers).build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).entity("No users found").build();
+            }
+        }else{
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Unauthorized access").build();
+        }
+
+    }
+
+
 
     @PUT
     @Path("/restoreUser/{username}")
@@ -193,7 +237,7 @@ public class UserService {
             return Response.status(200).entity(jsonResponse).build();
 
         } else {
-            return Response.status(403).entity("{\"error\": \"Wrong Username or Password!\"}").build();
+            return Response.status(403).entity("{\"error\": \"Somethin went wrong\"}").build();
         }
     }
 
@@ -379,6 +423,21 @@ public class UserService {
         return response;
     }
 
+    @POST
+    @Path("/logout")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response logoutValidate(@HeaderParam("token") String token){
+        User userRequest=userBean.getUserByToken(token);
+
+        if (userRequest==null){
+            return Response.status(401).entity("Failed").build();
+        }
+
+        userBean.logoutUser(token);
+
+        return Response.status(200).entity(" Logout successful").build();
+    }
+
 
     /////////////////////REQUESTS ANTIGOS\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -400,15 +459,6 @@ public class UserService {
 
 
 
-    @POST
-    @Path("/logout")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response logoutValidate(@HeaderParam("username") String username, @HeaderParam("password")String pass){
-        User userRequest=userBean.getUser(username,pass);
 
-        if (userRequest==null) return Response.status(401).entity("Failed").build();
-
-        return Response.status(200).entity("Success").build();
-    }
 
 }

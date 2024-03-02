@@ -1415,7 +1415,7 @@ label {
    
 }
 
-.users_table {
+.users_table, .usersInactive_container {
    width: 100%; 
    height: auto;
    overflow: auto; 
@@ -1498,10 +1498,10 @@ label {
 }
 
 
-.users_container {
+.users_container, .usersInactive_container {
    background-color: var(--white);
    border-radius: 12px;
-   width: 60em;
+   width: 65em;
    max-height: 30em;
    transform: translate(-50%, -50%);
    top: 50%;
@@ -1512,12 +1512,30 @@ label {
    flex-direction: column;
    border-collapse: collapse;
 }
-
+#delete_Alltasks_button{
+   border:none !important;
+   font-size: 13px;
+}
 .imagem_user{
    border-radius: 50%;
    width: 2em;
    height: 2em;
 }
+
+.orderButton {
+   font-size: 15px;
+   color: #666;
+   background: none;
+   cursor: pointer;
+   margin-left: 5px;
+   border: none;
+}
+.titleActive{
+   align-items: center;
+}
+
+
+
 /* Página de Categorias */
 
 
@@ -1555,7 +1573,6 @@ label {
    
 }
 td {
-   
    padding: 8px;
    border-radius: 12px;
 }

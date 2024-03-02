@@ -79,6 +79,17 @@ public class UserDao extends AbstractDao<UserEntity> {
 			return false;
 		}
 	}
+
+	public boolean removedToken(UserEntity userEntity){
+		try{
+			userEntity.setToken(null);
+			em.merge(userEntity);
+			return true;
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+	}
 }
 
 

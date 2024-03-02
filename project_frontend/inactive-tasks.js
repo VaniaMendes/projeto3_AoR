@@ -26,12 +26,6 @@ window.onload = function() {
     });
  
  }
- document.querySelector("#logout").addEventListener("click", function () {
-    if (confirm("Are you sure you want to logout?")) {
-       sessionStorage.clear();
-       window.location.href = "login.html";
-    }
- });
 
 
  document.querySelector("#btn_scrumBoard").addEventListener("click", function () {
@@ -122,6 +116,7 @@ async function getUserByToken(token) {
         if (response.ok) {
             const inactiveTasks = await response.json();
             listInactiveTasks(inactiveTasks);
+            return inactiveTasks;
         } else {
             console.error("Failed to fetch inactive tasks");
             return null;
@@ -257,3 +252,123 @@ async function restoreTask(taskId) {
        console.error("Error restoring task:", error);
     }
  }
+
+
+ //Ordenação das tabelas
+ document.getElementById('btnTitle').addEventListener('click', async function(event) {
+   
+    let token = sessionStorage.getItem("token");
+    let inativeTasks = await getAllInactiveTasks(token);
+    let orderedTasks = orderUsersByAttribute(inativeTasks, "title");
+    removeAllRows();
+    listInactiveTasks(orderedTasks);
+});
+
+ document.getElementById('btnDescription').addEventListener('click', async function(event) {
+   
+    let token = sessionStorage.getItem("token");
+    let inativeTasks = await getAllInactiveTasks(token);
+    let orderedTasks = orderUsersByAttribute(inativeTasks, "description");
+    removeAllRows();
+    listInactiveTasks(orderedTasks);
+});
+
+document.getElementById('btnCategory').addEventListener('click', async function(event) {
+    let token = sessionStorage.getItem("token");
+    let inativeTasks = await getAllInactiveTasks(token);
+    let orderedTasks = orderTasksByAttributeCategory(inativeTasks, "category");
+    removeAllRows();
+    listInactiveTasks(orderedTasks);
+});
+
+document.getElementById('btnEndDate').addEventListener('click', async function(event) {
+    let token = sessionStorage.getItem("token");
+    let inativeTasks = await getAllInactiveTasks(token);
+    let orderedTasks = orderUsersByAttribute(inativeTasks, "endDate");
+    removeAllRows();
+    listInactiveTasks(orderedTasks);
+
+});
+document.getElementById('btnInicialDate').addEventListener('click', async function(event) {
+    let token = sessionStorage.getItem("token");
+    let inativeTasks = await getAllInactiveTasks(token);
+    let orderedTasks = orderUsersByAttribute(inativeTasks, "initialDate");
+    removeAllRows();
+    listInactiveTasks(orderedTasks);
+
+});
+
+document.getElementById('btnAuthor').addEventListener('click', async function(event) {
+    let token = sessionStorage.getItem("token");
+    let inativeTasks = await getAllInactiveTasks(token);
+    let orderedTasks = orderTasksByAttributeAuthor(inativeTasks, "author");
+    removeAllRows();
+    listInactiveTasks(orderedTasks);
+});
+
+
+function orderUsersByAttribute(users, attribute) {
+    return users.sort(function(a, b) {
+        if (a[attribute] < b[attribute]) {
+            return -1;
+        }
+        if (a[attribute] > b[attribute]) {
+            return 1;
+        }
+        return 0;
+    });
+}
+
+function removeAllRows() {
+    const table = document.getElementById('category_table');
+    while (table.rows.length > 1) {
+       table.deleteRow(1);
+    }
+ }
+
+ function orderUsersByAttribute(users, attribute) {
+    return users.sort(function(a, b) {
+        if (a[attribute] < b[attribute]) {
+            return -1;
+        }
+        if (a[attribute] > b[attribute]) {
+            return 1;
+        }
+        return 0;
+    });
+}
+
+function orderTasksByAttributeCategory(tasks, attribute) {
+    return tasks.sort(function(a, b) {
+        if (attribute === 'category') {
+            // Comparar os IDs das categorias
+            const categoryA = a[attribute].title;
+            const categoryB = b[attribute].title;
+            if (categoryA < categoryB) {
+                return -1;
+            }
+            if (categoryA > categoryB) {
+                return 1;
+            }
+            return 0;
+        }
+    });
+}
+
+function orderTasksByAttributeAuthor(tasks, attribute) {
+    return tasks.sort(function(a, b) {
+        if (attribute === 'author') {
+            // Comparar os IDs das categorias
+            const categoryA = a[attribute].username;
+            const categoryB = b[attribute].username;
+            if (categoryA < categoryB) {
+                return -1;
+            }
+            if (categoryA > categoryB) {
+                return 1;
+            }
+            return 0;
+        }
+    });
+}
+
