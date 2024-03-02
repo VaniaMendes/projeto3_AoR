@@ -1558,7 +1558,8 @@ label {
 
 /* Category table */
 
-#category_table {
+#category_table,
+#tasks_table {
    width: 100%;
    border-collapse: collapse;
    background-color: var(--white);
@@ -1569,9 +1570,13 @@ label {
    max-height: 252px;
    margin-top: 5px;
    overflow-y: auto;
-   flex-direction: column;
-   
+   flex-direction: column;  
 }
+
+#tasks_table {
+   margin-top: 40px;
+}
+
 td {
    padding: 8px;
    border-radius: 12px;

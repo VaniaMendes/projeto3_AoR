@@ -35,12 +35,13 @@ public class CategoryBean {
     public boolean addCategory(String token, Category category) {
         UserEntity userEntity = userDao.findUserByToken(token);
 
-        if(userEntity != null && userEntity.getTypeOfUser().equals("product_owner")){
-
-            CategoryEntity categoryEntity = convertCategoryToCategoryEntity(category);
-            categoryEntity.setOwner(userEntity);
-            categoryDao.persist(categoryEntity);
-            return true;
+        if(userEntity != null && userEntity.getTypeOfUser().equals("product_owner")) {
+            if (category != null) {
+                CategoryEntity categoryEntity = convertCategoryToCategoryEntity(category);
+                categoryEntity.setOwner(userEntity);
+                categoryDao.persist(categoryEntity);
+                return true;
+            }
         }
         return false;
     }

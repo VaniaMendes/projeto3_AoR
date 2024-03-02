@@ -228,11 +228,13 @@ document.querySelector("#task_save").addEventListener("click", async function ()
                   if (confirmEdit()) {
                      for (let i = 0; i < priority_array.length; i++) {
                         if (priority_array[i].checked) {
-                           console.log("prioridade: " + priority_array[i].value);
+                           
                            priority_checked = priority_array[i].value;
                         }
                      }
-                     //let task_id = sessionStorage.getItem("task_id");
+                     let task_id = sessionStorage.getItem("task_id");
+                     let taskToUpdate = await getTask(token, task_id);
+                     
 
                      await updateTask(
                         title_txt.value,
@@ -240,7 +242,8 @@ document.querySelector("#task_save").addEventListener("click", async function ()
                         initial_date.value,
                         end_date.value,
                         priority_checked,
-                        category_element.value
+                        category_element.value, 
+                        taskToUpdate.state
                      );
 
                      window.location.href = "scrum.html";
@@ -363,7 +366,7 @@ async function addTask(title, description, initialDate, endDate, priority, idCat
    });
 }
 
-async function updateTask(title, description, initialDate, endDate, priority, idCategory) {
+async function updateTask(title, description, initialDate, endDate, priority, idCategory, state) {
 
    const token = sessionStorage.getItem("token");
    const task_id = sessionStorage.getItem("task_id");
@@ -372,7 +375,8 @@ async function updateTask(title, description, initialDate, endDate, priority, id
       description: description,
       initialDate: initialDate,
       endDate: endDate,
-      priority: priority
+      priority: priority, 
+      state: state
    };
    try {
       const response = await fetch("http://localhost:8080/project_backend/rest/tasks/updateTask", {

@@ -92,10 +92,30 @@ async function getUserByToken(token) {
        menu.appendChild(createCategoryButton);
         
        
-    } else if (userType === 'ScrumMaster') {
+    } else if (userType === 'scrum_master') {
+
+      // Adicionar botão para consultar lista de todos os usuários
+      const listButton = document.createElement('button'); listButton.id = "listButton";
+      listButton.classList.add("menu_item"); listButton.innerHTML = ".";
+      listButton.textContent = 'All Users';
+      listButton.addEventListener('click', function() {
+        window.location.href = "productOwner.html";
+          
+      });
+
+
+      const inactiveTasksButton = document.createElement('button'); inactiveTasksButton.id = "inactiveTasksButton";
+     inactiveTasksButton.classList.add("menu_item"); inactiveTasksButton.innerHTML = ".";
+     inactiveTasksButton.textContent = 'Inactive Tasks';
+     inactiveTasksButton.addEventListener('click', function() {
+        window.location.href = "inactive-tasks.html";
+     });
+      menu.appendChild(listButton);
+      menu.appendChild(inactiveTasksButton);
+
      
  
-    } else if (userType === 'Developer') {
+    } else if (userType === 'developer') {
         
     }
  }
@@ -128,7 +148,7 @@ async function getUserByToken(token) {
  }
 
  function listInactiveTasks(inactiveTasks) {
-    const categoryTable = document.getElementById('category_table');
+    const categoryTable = document.getElementById('tasks_table');
 
     inactiveTasks.forEach(inactiveTask => {
        

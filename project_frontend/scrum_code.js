@@ -393,7 +393,7 @@ function taskCreationAddEvents(task_div, tasks) {
       }
 
       // Verifica se o utilizador é um developer e se não for deixa fazer o hover
-      if (activeUser.typeOfUser !== 'developer') {
+      if (task_div.childNodes[3] != undefined) {
          task_div.childNodes[3].style.visibility = "visible";
       }
       
@@ -405,7 +405,7 @@ function taskCreationAddEvents(task_div, tasks) {
       }
 
 
-      if (user.typeOfUser !== 'developer') {
+      if (task_div.childNodes[3] != undefined) {
          task_div.childNodes[3].style.visibility = "hidden";
       
       }
