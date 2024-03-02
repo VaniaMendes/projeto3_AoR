@@ -56,7 +56,7 @@ public class TaskEntity implements Serializable{
 
 	//Owning Side User - Activity
 	@ManyToOne
-	@JoinColumn(name="author", nullable = false, unique = false, updatable = false)
+	@JoinColumn(name="author", nullable = false, unique = false, updatable = true)
 	private UserEntity owner;
 
 	

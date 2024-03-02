@@ -31,7 +31,7 @@
    width: 100%;
 }
 
-h1 {
+#page-logo {
    position: fixed;
    color: var(--black);
    padding-left: 20px;
@@ -246,6 +246,11 @@ img {
    border-color: transparent;
    margin: 6px 18px;
    padding: 5px 0px 2px 0px;
+   height: 50px;
+   display: grid;
+   grid-template-columns: repeat(2, 1fr);
+   gap: 10px;
+   
 }
 
 .task:hover {
@@ -260,11 +265,29 @@ img {
 
 .task_title {
    margin-left: 10px;
-   width: 215px;
    margin-top: 2px;
    overflow-wrap: break-word;
-   max-width: 191px;
+   max-width: 191px; 
+   width: 180px;
+   margin-right: 40px;
+   font-weight: bold;
+   height: 20px;
 }
+
+.task_category  {
+   margin-left: -29px;
+   overflow-wrap: break-word;
+   max-width: 70px;
+   margin-right: 14px;
+   
+   height: 20px;
+}
+
+.text-overflow-task {
+   overflow: hidden;
+   text-overflow: ellipsis;
+   white-space: nowrap;
+ }
 
 .task_day {
    font-size: 14px;
@@ -284,13 +307,13 @@ img {
    font-size: 14px;
    border: none;
    background-color: transparent;
-   margin: 0px 5px 4px 1px;
+   margin: 0px 5px 4px 15px;
    width: 26px;
    height: 26px;
    padding: 4px;
    visibility: hidden;
    position: relative;
-   top: 50%;
+   top: 20%;
    transform: translate(0%, -56%);
 }
 
@@ -305,7 +328,7 @@ img {
    padding: 4px;
    visibility: hidden;
    position: relative;
-   top: 50%;
+   top: 20%;
    transform: translate(0%, -56%);
 }
 
@@ -336,7 +359,8 @@ img {
    margin-top: 5px;
 }
 
-#btn_task {
+#btn_task,
+#btn_create-category {
    width: 300px;
    border: none;
    text-align: left;
@@ -347,6 +371,7 @@ img {
    padding: 3px 0px 8px 5px;
    font-weight: bold;
 }
+
 
 #btn_task:hover {
    background-color: var(--white_hover);
@@ -444,11 +469,26 @@ img {
    border-radius: 8px;
    visibility: hidden;
 }
+
+#modal_dblClick {
+   position: fixed;
+   height: 535px;
+   width: 500px;
+   background-color: var(--white);
+   z-index: 3;
+   top: 45%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   border-radius: 8px;
+   visibility: hidden;
+}
+
 #modal_cancel {
    margin: 5px 12px 0px 470px;
 }
 
-#modal_title {
+#modal_title,
+#modal_category {
    height: 22px;
    margin: 0px 30px 10px 30px;
    padding: 5px 5px 13px 7px;
@@ -475,6 +515,10 @@ img {
 
 .span_date {
    width: 50px;
+}
+
+.span_author {
+   width: 100px;
 }
 #modal_dates {
    margin-top: 20px;
@@ -1523,7 +1567,7 @@ label {
    margin-left: 375px;
    width: 1000px;
    max-height: 252px;
-   margin-top: 80px;
+   margin-top: 5px;
    overflow-y: auto;
    flex-direction: column;
    
@@ -1561,6 +1605,32 @@ th {
 }
 
 /* Category table */
+
+#category-page-title {
+   position: relative;
+  
+  background-color: white;
+  
+}
+
+#title-category {
+   background-color: white;
+   width: 14%;
+   border-radius: 15px;
+   color: var(--black);
+   text-align: center;
+   margin-top: 60px;
+   margin-left: 375px;
+   font-weight: bold;
+   border-block: groove;
+
+}
+
+#btn_create-category {
+   margin-top: 19px;
+   margin-left: 375px;
+   width: 135px;
+}
 
 
 .modal-category {

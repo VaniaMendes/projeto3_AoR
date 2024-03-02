@@ -150,13 +150,19 @@ de delete não é mostrado e o título da forma é Task Creation*/
 if (task_type == "edit") {
    let task_id = sessionStorage.getItem("task_id");
    document.querySelector("#task_creationTitle").textContent = "Task Edit";
-   document.querySelector("#task_delete").style.display = "inline-block";
+   document.querySelector("#task_cancel").style.display = "inline-block";
    getTask(token, task_id).then((result) => {
       title_txt.value = result.title;
       description_txt.value = result.description;
       initial_date.value = result.initialDate;
       category_element.value = result.category.title; //NAO ESTA A FUNCIONAR
-      console.log("category: " + result.category.title);
+      
+      document.getElementById("current-category-label").innerHTML = "Current Category: " + result.category.title;
+      document.getElementById("current-category-label").style.backgroundColor = 'gray';
+      document.getElementById("current-category-label").style.fontSize = '12px';
+      document.getElementById("current-category-label").style.borderRadius = '10px';
+      document.getElementById("current-category-label").style.width = '92%';
+      
       if (result.endDate != "9999-12-31") {
          end_date.value = result.endDate;
       }
@@ -175,7 +181,7 @@ if (task_type == "edit") {
       }
    });
 } else {
-   document.querySelector("#task_delete").style.display = "none";
+   document.querySelector("#task_cancel").style.display = "none";
    document.querySelector("#task_save").style.width = "95%";
    document.querySelector("#task_creationTitle").textContent = "Task Creation";
    priority_color.style.backgroundColor = "#44ca4d";
@@ -274,9 +280,9 @@ for (let i = 0; i < priority_array.length; i++) {
 /*Botão para eliminar a tarefa, usando o método splice, que tem como argumentos de entrada o índice a partir do
 qual queremos eliminar e quantos elementos queremos eliminar, neste caso vamos buscar o índice da tarefa a 
 ser eliminada e como é apenas essa o segundo parâmetro é 1*/
-document.querySelector("#task_delete").addEventListener("click", function () {
-   if (confirmDelete()) {
-      deleteTask(username, pass, sessionStorage.getItem("task_id"));
+document.querySelector("#task_cancel").addEventListener("click", function () {
+   if (confirmExit()) {
+      
       window.location.href = "scrum.html";
    }
 });
@@ -387,34 +393,12 @@ async function updateTask(title, description, initialDate, endDate, priority, id
 
    } else {
       const errorMessage = await response.text(); 
-      console.error("Failed to update: " + errorMessage);
+      alert(errorMessage);
    }
    } catch (error) {
       console.error("Error updating task:", error);
    }
 
-}
-
-async function getUser(username, pass) {
-   let response = await fetch(
-      "http://localhost:8080/project_backend/rest/users",
-
-      {
-         method: "GET",
-         headers: {
-            Accept: "*/*",
-            "Content-Type": "application/json",
-            username: username,
-            pass: pass,
-         },
-      }
-   );
-   try {
-      let user1 = await response.json();
-      return user1;
-   } catch (error) {
-      return null;
-   }
 }
 
 async function getTask(token, id) {
@@ -442,14 +426,3 @@ async function getTask(token, id) {
 
 }
 
-async function deleteTask(username, pass, task_id) {
-   await fetch("http://localhost:8080/project_backend/rest/tasks/" + task_id, {
-      method: "DELETE",
-      headers: {
-         Accept: "*/*",
-         "Content-Type": "application/json",
-         username: username,
-         pass: pass,
-      },
-   });
-}

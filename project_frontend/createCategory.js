@@ -34,6 +34,12 @@ window.onload = function() {
     
  });
 
+ document.querySelector("#btn_create-category").addEventListener("click", function () {
+   document.getElementById('categoryModal').style.display = 'block';
+   document.getElementById('error_creating_category').textContent = '';
+   document.getElementById('overlay-modal-category').style.display = 'block';
+ });
+
 async function getUserByToken(token) {
     try {
         const response = await fetch("http://localhost:8080/project_backend/rest/users", {
@@ -84,15 +90,6 @@ async function getUserByToken(token) {
                
             });
 
-          const createCategory = document.createElement('button'); createCategory.id = "listButton";
-          createCategory.classList.add("menu_item"); createCategory.innerHTML = ".";
-          createCategory.textContent = 'Create Category';
-          createCategory.addEventListener('click', function() {
-            document.getElementById('categoryModal').style.display = 'block';
-            document.getElementById('error_creating_category').textContent = '';
-            document.getElementById('overlay-modal-category').style.display = 'block';
-             
-          });
 
           document.getElementById('cancel').addEventListener('click', function() {
             document.getElementById('categoryModal').style.display = 'none';
