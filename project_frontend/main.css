@@ -31,7 +31,7 @@
    width: 100%;
 }
 
-h1 {
+#page-logo {
    position: fixed;
    color: var(--black);
    padding-left: 20px;
@@ -359,7 +359,8 @@ img {
    margin-top: 5px;
 }
 
-#btn_task {
+#btn_task,
+#btn_create-category {
    width: 300px;
    border: none;
    text-align: left;
@@ -370,6 +371,7 @@ img {
    padding: 3px 0px 8px 5px;
    font-weight: bold;
 }
+
 
 #btn_task:hover {
    background-color: var(--white_hover);
@@ -1547,7 +1549,7 @@ label {
    margin-left: 375px;
    width: 1000px;
    max-height: 252px;
-   margin-top: 80px;
+   margin-top: 5px;
    overflow-y: auto;
    flex-direction: column;
    
@@ -1586,6 +1588,32 @@ th {
 }
 
 /* Category table */
+
+#category-page-title {
+   position: relative;
+  
+  background-color: white;
+  
+}
+
+#title-category {
+   background-color: white;
+   width: 14%;
+   border-radius: 15px;
+   color: var(--black);
+   text-align: center;
+   margin-top: 60px;
+   margin-left: 375px;
+   font-weight: bold;
+   border-block: groove;
+
+}
+
+#btn_create-category {
+   margin-top: 19px;
+   margin-left: 375px;
+   width: 135px;
+}
 
 
 .modal-category {

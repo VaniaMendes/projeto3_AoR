@@ -388,13 +388,13 @@ function taskCreationAddEvents(task_div, tasks) {
 
    task_div.addEventListener("mouseenter", function () {
 
+      //Verifica se o botão de editar foi adicionad e deixa fazer o hover
       if (task_div.childNodes[2] != undefined) {
       task_div.childNodes[2].style.visibility = "visible";
       }
 
-
+      // Verifica se o utilizador é um developer e se não for deixa fazer o hover
       if (activeUser.typeOfUser !== 'developer') {
-      
          task_div.childNodes[3].style.visibility = "visible";
       }
       
