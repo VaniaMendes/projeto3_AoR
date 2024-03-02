@@ -6,10 +6,6 @@ const token = sessionStorage.getItem("token");
 const username = sessionStorage.getItem("username");
 const role = sessionStorage.getItem("userType");
 
-console.log(token);
-
-console.log(username);
-console.log(role);
 
 let user = null;
 
