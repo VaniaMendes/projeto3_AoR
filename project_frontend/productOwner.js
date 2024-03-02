@@ -1,7 +1,15 @@
 const token = sessionStorage.getItem("token");
 let user = null;
 const user_photo = document.getElementById("user_img");
-writeDate();
+let users; // Variável para armazenar o array de usuários
+
+getAllUsers(token).then((result) => {
+       users=result;
+       listUsers(users);
+       listUsersForScrum(users);
+       listInativeUsers(users);
+    });
+
 
 const role = sessionStorage.getItem("userType");
 console.log(role);
@@ -50,14 +58,14 @@ function addButtonsForUserType(role) {
     console.log(role);
  
     if (role === 'product_owner') {
-        listUsers();
+        listUsers(users);
         
         const listButton = document.createElement('button'); listButton.id = "listButton";
         listButton.classList.add("menu_item"); listButton.innerHTML = ".";
         listButton.textContent = 'Active Users';
         listButton.addEventListener('click', function() {
            
-            listUsers();
+            listUsers(users);
         });
         menu.appendChild(listButton);
 
@@ -65,7 +73,7 @@ function addButtonsForUserType(role) {
          listButton1.classList.add("menu_item"); listButton1.innerHTML = ".";
          listButton1.textContent = 'Inactive Users';
          listButton1.addEventListener('click', function() {
-         listInativeUsers();
+         listInativeUsers(users);
          
     
             
@@ -75,7 +83,7 @@ function addButtonsForUserType(role) {
        
        
     } else if (role === 'scrum_master') {
-        listUsersForScrum();
+        listUsersForScrum(users);
         
     }
  }
@@ -215,9 +223,7 @@ async function getAllUsers(token) {
 }
 
 
- async function listUsers() {
-    const users = await getAllUsers(token, role);
-    console.log(users);
+ async function listUsers(users) {
     const tbody = document.querySelector('#users_table tbody');
 
     // Limpa o conteúdo existente da tabela
@@ -286,7 +292,7 @@ async function getAllUsers(token) {
                     
                     if (result) {
                         alert("Successfully removed user");
-                        listUsers();
+                        listUsers(users);
     
                     } else {
                         console.log("Failed to remove user");
@@ -341,11 +347,9 @@ document.getElementById("btn_task").addEventListener('click', function() {
 });
 
 
-async function listUsersForScrum() {
+async function listUsersForScrum(users) {
     try {
-        const users = await getAllUsers(token, role);
-        console.log(users); // Verifica se os dados dos usuários estão sendo recebidos corretamente
-
+        
         const tbody = document.querySelector('#users_table tbody');
         // Limpa o conteúdo existente da tabela
         tbody.innerHTML = '';
@@ -409,9 +413,8 @@ async function listUsersForScrum() {
     }
 }
 
-async function listInativeUsers() {
-    const users = await getAllUsers(token);
-    console.log(users);
+async function listInativeUsers(users) {
+   
     const tbody = document.querySelector('#users_table tbody');
 
     // Limpa o conteúdo existente da tabela
@@ -463,7 +466,7 @@ async function listInativeUsers() {
                     restoreUser(token, userUsername).then(result => {
                         if(result){
                             alert("Successfully restored user");
-                            listInativeUsers();
+                            listInativeUsers(users);
                         }else{
                             alert("Failed to restore user");
                         }
@@ -482,7 +485,7 @@ async function listInativeUsers() {
                         console.log(userUsername);
                         if (result) {
                             alert("Successfully deleted user");
-                            listInativeUsers();
+                            listInativeUsers(users);
                         } else {
                             console.log("Failed to delete user");
                         }
@@ -516,20 +519,62 @@ function getUserRole(role) {
     }
 }
 
+//Funcoes para ordenar as tabelas
+function orderUsersByAtribute(users, atributo) {
+    users.sort(function(a, b) {
+        if (a[atributo] < b[atributo]) {
+            return -1;
+        }
+        if (a[atributo] > b[atributo]) {
+            return 1;
+        }
+        return 0;
+    });
+}
 
-function writeDate() {
-    const d = new Date();
- 
-    // Define o formato a mostrar
-    let dateTimeString = d.toLocaleString("en-GB");
-    dateTimeString = dateTimeString.replace(",", "&nbsp; &nbsp; &nbsp;");
- 
-    // Insere no HTML
-    document.getElementById("date").innerHTML = dateTimeString;
- }
-  
 
- 
+document.querySelector('#btnName').addEventListener('click', function(e) {
+    orderUsersByAtribute(users, 'firstName');
+    listUsersForScrum(users);
+    listInativeUsers(users);
+
+    if (role === 'scrum_master') {
+        listUsersForScrum(users);
+    }
+    
+});
+
+document.getElementById('btnEmail').addEventListener('click', function(e) {
+    orderUsersByAtribute(users, 'email');
+    listUsersForScrum(users);
+    listInativeUsers(users);
+    if (role === 'scrum_master') {
+        listUsersForScrum(users);
+    }
+   
+});
+
+document.getElementById('btnPhone').addEventListener('click', function(e) {
+    orderUsersByAtribute(users, 'phoneNumber');
+    listUsersForScrum(users);
+    listInativeUsers(users);
+    if (role === 'scrum_master') {
+        listUsersForScrum(users);
+    }
+});
+
+document.getElementById('btnRole').addEventListener('click', function(e){
+    orderUsersByAtribute(users, 'typeOfUser');
+    listUsersForScrum(users);
+    listInativeUsers(users);
+    if (role === 'scrum_master') {
+        listUsersForScrum(users);
+    }
+});
+
+
+
+
 
  
 
