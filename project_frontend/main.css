@@ -1371,7 +1371,7 @@ label {
    
 }
 
-.users_table {
+.users_table, .usersInactive_container {
    width: 100%; 
    height: auto;
    overflow: auto; 
@@ -1454,7 +1454,7 @@ label {
 }
 
 
-.users_container {
+.users_container, .usersInactive_container {
    background-color: var(--white);
    border-radius: 12px;
    width: 65em;
@@ -1470,7 +1470,7 @@ label {
 }
 #delete_Alltasks_button{
    border:none !important;
-   font-size: 10px;
+   font-size: 22px;
 }
 .imagem_user{
    border-radius: 50%;

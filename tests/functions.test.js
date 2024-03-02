@@ -123,7 +123,7 @@ test('invalid initial date', async () => {
      json: () => Promise.resolve({ message: 'Token inválido.' }),
    }));
  
-   const response = await tasks.addTask('invalidtoken', 'Título da Tarefa', 'Descrição da Tarefa', '2023-02-12', '2023-02-15', 3, 1);
+   const response = await tasks.addTask('invalid_token', 'Título da Tarefa', 'Descrição da Tarefa', '2023-02-12', '2023-02-15', 3, 1);
  
    expect(response).toBe(403);
    expect(fetch).toHaveBeenCalledTimes(1);
@@ -132,7 +132,7 @@ test('invalid initial date', async () => {
      headers: {
        Accept: '*/*',
        'Content-Type': 'application/json',
-       token: 'invalidtoken',
+       token: 'invalid_token',
        categoryId: 1
      },
      body: JSON.stringify({

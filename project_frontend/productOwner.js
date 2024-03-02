@@ -1,15 +1,6 @@
 const token = sessionStorage.getItem("token");
 let user = null;
 const user_photo = document.getElementById("user_img");
-let users; // Variável para armazenar o array de usuários
-
-getAllUsers(token).then((result) => {
-       users=result;
-       listUsers(users);
-       listUsersForScrum(users);
-       listInativeUsers(users);
-    });
-
 
 const role = sessionStorage.getItem("userType");
 console.log(role);
@@ -48,34 +39,43 @@ getUserByToken(token).then((result) => {
       user_photo.src = user.imgURL;
       document.getElementById("user").textContent = user.firstName;  
       addButtonsForUserType(role);
-       
    }
     
 });
 
-function addButtonsForUserType(role) {
+async function addButtonsForUserType(role) {
     const menu = document.getElementById('menu'); 
     console.log(role);
+    document.getElementById('inativeusers_table').style.display = 'hidden';
+    document.getElementById('inativeusers_table').style.display = 'none';
+
  
     if (role === 'product_owner') {
-        listUsers(users);
-        
-        const listButton = document.createElement('button'); listButton.id = "listButton";
+        let users = await getActiveUsers(token);
+        listActiveUsers(users);
+        const listButton = document.createElement('button'); listButton.id = "activeUsers";
         listButton.classList.add("menu_item"); listButton.innerHTML = ".";
         listButton.textContent = 'Active Users';
         listButton.addEventListener('click', function() {
-           
-            listUsers(users);
+         document.getElementById('users_table').style.display = 'table';
+         document.getElementById('inativeusers_table').style.display = 'none';
+            listActiveUsers(users);
+            document.getElementById('btn_task').style.display = 'visible';
         });
         menu.appendChild(listButton);
 
-         const listButton1 = document.createElement('button'); listButton1.id = "listButton";
+         const listButton1 = document.createElement('button'); listButton1.id = "inactiveUsers";
          listButton1.classList.add("menu_item"); listButton1.innerHTML = ".";
          listButton1.textContent = 'Inactive Users';
-         listButton1.addEventListener('click', function() {
-         listInativeUsers(users);
-         
-    
+         listButton1.addEventListener('click', async function() {
+
+
+        document.getElementById('users_table').style.display = 'hidden';
+        document.getElementById('users_table').style.display = 'none';
+        document.getElementById('inativeusers_table').style.display = 'table';
+        let users = await getInactiveUsers(token);
+        listInativeUsers(users);
+        document.getElementById('btn_task').style.display = 'hidden';
             
         });
        
@@ -83,6 +83,7 @@ function addButtonsForUserType(role) {
        
        
     } else if (role === 'scrum_master') {
+        let users = await getActiveUsers(token);
         listUsersForScrum(users);
         
     }
@@ -91,13 +92,6 @@ function addButtonsForUserType(role) {
 
 document.getElementById("btn_scrumBoard").addEventListener("click", async function () {
     window.location.href = "scrum.html";
-});
-
-document.getElementById("logout").addEventListener("click", function () {
-    if (confirm("Are you sure you want to logout?")) {
-        sessionStorage.clear();
-        window.location.href = "login.html";
-     }
 });
 
 async function getAllUsers(token) {
@@ -125,10 +119,60 @@ async function getAllUsers(token) {
         return null;
     }
  }
+ async function getActiveUsers(token) {
+    try {
+        const response = await fetch("http://localhost:8080/project_backend/rest/users/activeUsers", {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                token:token
+            }
+        });
+ 
+        if (response.ok) {
+            const users = await response.json();
+            return users;
+            
+            
+        } else {
+            console.error("Failed to fetch user data");
+            return null;
+        }
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+        return null;
+    }
+ }
+ async function getInactiveUsers(token) {
+    try {
+        const response = await fetch("http://localhost:8080/project_backend/rest/users/inactiveUsers", {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                token:token
+            }
+        });
+ 
+        if (response.ok) {
+            const users = await response.json();
+            console.log("Inactive Users:", users);
+            return users;
+            
+            
+        } else {
+            console.error("Failed to fetch user data");
+            return null;
+        }
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+        return null;
+    }
+ }
+
 
  async function deleteUser(token, username) {
-
-
     try {
         const response = await fetch("http://localhost:8080/project_backend/rest/users/deleteUser", {
             method: "PUT",
@@ -223,7 +267,7 @@ async function getAllUsers(token) {
 }
 
 
- async function listUsers(users) {
+ async function listActiveUsers(users) {
     const tbody = document.querySelector('#users_table tbody');
 
     // Limpa o conteúdo existente da tabela
@@ -292,7 +336,7 @@ async function getAllUsers(token) {
                     
                     if (result) {
                         alert("Successfully removed user");
-                        listUsers(users);
+                        updateListActiveUsers();
     
                     } else {
                         console.log("Failed to remove user");
@@ -348,6 +392,7 @@ document.getElementById("btn_task").addEventListener('click', function() {
 
 
 async function listUsersForScrum(users) {
+    
     try {
         
         const tbody = document.querySelector('#users_table tbody');
@@ -396,8 +441,7 @@ async function listUsersForScrum(users) {
                 editButton.classList.add("edit_button");
                 editButton.onclick = function(event) {
                     const userUsername = event.currentTarget.closest("[data-username]").dataset.username;
-                    console.log(userUsername);
-                    sessionStorage.setItem("username", userUsername);
+                                        sessionStorage.setItem("username", userUsername);
                     window.location.href = 'edit_Profile_ProductOwner.html';
                 };
                 acoesCell.appendChild(editButton);
@@ -414,8 +458,8 @@ async function listUsersForScrum(users) {
 }
 
 async function listInativeUsers(users) {
-   
-    const tbody = document.querySelector('#users_table tbody');
+      
+    const tbody = document.querySelector('#inativeusers_table tbody');
 
     // Limpa o conteúdo existente da tabela
     tbody.innerHTML = '';
@@ -466,7 +510,7 @@ async function listInativeUsers(users) {
                     restoreUser(token, userUsername).then(result => {
                         if(result){
                             alert("Successfully restored user");
-                            listInativeUsers(users);
+                            updateListInactiveUsers();
                         }else{
                             alert("Failed to restore user");
                         }
@@ -485,7 +529,7 @@ async function listInativeUsers(users) {
                         console.log(userUsername);
                         if (result) {
                             alert("Successfully deleted user");
-                            listInativeUsers(users);
+                            updateListInactiveUsers();
                         } else {
                             console.log("Failed to delete user");
                         }
@@ -519,13 +563,108 @@ function getUserRole(role) {
     }
 }
 
-//Funcoes para ordenar as tabelas
-function orderUsersByAtribute(users, atributo) {
-    users.sort(function(a, b) {
-        if (a[atributo] < b[atributo]) {
+//Acões para os eventos de ordenação
+
+document.getElementById('btnName').addEventListener('click', async function(event) {
+   
+    let token = sessionStorage.getItem("token");
+    let role = sessionStorage.getItem("userType");
+
+    if ( role === "product_owner") {
+        let users = await getActiveUsers(token);
+        let orderedUsers = orderUsersByAttribute(users, "firstName");
+        listActiveUsers(orderedUsers);
+    } else if (role === 'scrum_master') {
+        let users = await getActiveUsers(token);
+        let orderedUsers = orderUsersByAttribute(users, "firstName");
+        listUsersForScrum(orderedUsers);
+    }
+});
+
+document.getElementById('btnEmail').addEventListener('click', async function(event) {
+    let token = sessionStorage.getItem("token");
+    let role = sessionStorage.getItem("userType");
+
+    if ( role === "product_owner") {
+        let users = await getActiveUsers(token);
+        let orderedUsers = orderUsersByAttribute(users, "email");
+        listActiveUsers(orderedUsers);
+    } else if (role === 'scrum_master') {
+        let users = await getActiveUsers(token);
+        let orderedUsers = orderUsersByAttribute(users, "email");
+        listUsersForScrum(orderedUsers);
+    }
+});
+
+document.getElementById('btnPhone').addEventListener('click', async function(event) {
+    let token = sessionStorage.getItem("token");
+    let role = sessionStorage.getItem("userType");
+
+    if ( role === "product_owner") {
+        let users = await getActiveUsers(token);
+        let orderedUsers = orderUsersByAttribute(users, "phoneNumber");
+        listActiveUsers(orderedUsers);
+    } else if (role === 'scrum_master') {
+        let users = await getActiveUsers(token);
+        let orderedUsers = orderUsersByAttribute(users, "phoneNumber");
+        listUsersForScrum(orderedUsers);
+    }
+});
+
+document.getElementById('btnRole').addEventListener('click', async function(event) {
+    let token = sessionStorage.getItem("token");
+    let role = sessionStorage.getItem("userType");
+
+    if ( role === "product_owner") {
+        let users = await getActiveUsers(token);
+        let orderedUsers = orderUsersByAttribute(users, "typeOfUser");
+        listActiveUsers(orderedUsers);
+    } else if (role === 'scrum_master') {
+        let users = await getActiveUsers(token);
+        let orderedUsers = orderUsersByAttribute(users, "typeOfUser");
+        listUsersForScrum(orderedUsers);
+    }
+});
+
+
+//Acoes para os inativos
+document.getElementById('btnName1').addEventListener('click', async function(event) {
+   
+    let token = sessionStorage.getItem("token");
+    let users = await getInactiveUsers(token);
+    let orderedUsers = orderUsersByAttribute(users, "firstName");
+    listInativeUsers(orderedUsers);
+});
+
+document.getElementById('btnEmail1').addEventListener('click', async function(event) {
+    let token = sessionStorage.getItem("token");
+    let users = await getInactiveUsers(token);
+    let orderedUsers = orderUsersByAttribute(users, "email");
+    listInativeUsers(orderedUsers);
+    
+});
+
+document.getElementById('btnPhone1').addEventListener('click', async function(event) {
+    let token = sessionStorage.getItem("token");
+    let users = await getInactiveUsers(token);
+    let orderedUsers = orderUsersByAttribute(users, "phoneNumber");
+    listInativeUsers(orderedUsers);
+});
+
+document.getElementById('btnRole1').addEventListener('click', async function(event) {
+    let token = sessionStorage.getItem("token");
+    let users = await getInactiveUsers(token);
+    let orderedUsers = orderUsersByAttribute(users, "typeOfUser");
+    listInativeUsers(orderedUsers);
+});
+
+//Funções para ordenar as tabelas
+function orderUsersByAttribute(users, attribute) {
+    return users.sort(function(a, b) {
+        if (a[attribute] < b[attribute]) {
             return -1;
         }
-        if (a[atributo] > b[atributo]) {
+        if (a[attribute] > b[attribute]) {
             return 1;
         }
         return 0;
@@ -533,52 +672,40 @@ function orderUsersByAtribute(users, atributo) {
 }
 
 
-document.querySelector('#btnName').addEventListener('click', function(e) {
-    orderUsersByAtribute(users, 'firstName');
-    listUsersForScrum(users);
-    listInativeUsers(users);
 
-    if (role === 'scrum_master') {
-        listUsersForScrum(users);
+
+//Funcoes para ordenar as tabelas
+function orderUsersByAttribute(users, attribute) {
+    return users.sort((a, b) => {
+        const valueA = a[attribute].toUpperCase();
+        const valueB = b[attribute].toUpperCase();
+        if (valueA < valueB) {
+            return -1;
+        }
+        if (valueA > valueB) {
+            return 1;
+        }
+        return 0;
+    });
+}
+
+async function updateListActiveUsers() {
+    try {
+        const token = sessionStorage.getItem("token");
+        const usersUpdated = await getActiveUsers(token);
+        listActiveUsers(usersUpdated);
+    } catch (error) {
+        console.error("Error updating active users list:", error);
     }
-    
-});
+}
 
-document.getElementById('btnEmail').addEventListener('click', function(e) {
-    orderUsersByAtribute(users, 'email');
-    listUsersForScrum(users);
-    listInativeUsers(users);
-    if (role === 'scrum_master') {
-        listUsersForScrum(users);
+async function updateListInactiveUsers() {
+    try {
+        const token = sessionStorage.getItem("token");
+        const usersUpdated = await getInactiveUsers(token);
+        listInativeUsers(usersUpdated);
+    } catch (error) {
+        console.error("Error updating inactive users list:", error);
     }
-   
-});
-
-document.getElementById('btnPhone').addEventListener('click', function(e) {
-    orderUsersByAtribute(users, 'phoneNumber');
-    listUsersForScrum(users);
-    listInativeUsers(users);
-    if (role === 'scrum_master') {
-        listUsersForScrum(users);
-    }
-});
-
-document.getElementById('btnRole').addEventListener('click', function(e){
-    orderUsersByAtribute(users, 'typeOfUser');
-    listUsersForScrum(users);
-    listInativeUsers(users);
-    if (role === 'scrum_master') {
-        listUsersForScrum(users);
-    }
-});
-
-
-
-
-
- 
-
-
-
-
+}
 

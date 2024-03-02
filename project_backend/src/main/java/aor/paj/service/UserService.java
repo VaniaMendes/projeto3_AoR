@@ -119,7 +119,7 @@ public class UserService {
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getAllUsers(@HeaderParam("Token") String token) {
+    public Response getAllUsers(@HeaderParam("token") String token) {
         List<User> allUsers = userBean.getAllUsers();
 
         if (allUsers != null && !allUsers.isEmpty()) {
@@ -128,6 +128,50 @@ public class UserService {
             return Response.status(Response.Status.NOT_FOUND).entity("No users found").build();
         }
     }
+
+    @GET
+    @Path("/activeUsers")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getActiveUsers(@HeaderParam("token") String token) {
+
+        User userRequest = userBean.getUserByToken(token);
+        if (userRequest != null && (userRequest.getTypeOfUser().equals("product_owner") || userRequest.getTypeOfUser().equals("scrum_master"))) {
+            List<User> activeUsers = userBean.getActiveUsers();
+
+            if (activeUsers != null && !activeUsers.isEmpty()) {
+                return Response.ok(activeUsers).build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).entity("No users found").build();
+            }
+        }else{
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Unauthorized access").build();
+        }
+
+        }
+
+    @GET
+    @Path("/inactiveUsers")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getInactiveUsers(@HeaderParam("token") String token) {
+
+        User userRequest = userBean.getUserByToken(token);
+        if (userRequest != null && (userRequest.getTypeOfUser().equals("product_owner"))) {
+            List<User> activeUsers = userBean.getInactiveUsers();
+
+            if (activeUsers != null && !activeUsers.isEmpty()) {
+                return Response.ok(activeUsers).build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).entity("No users found").build();
+            }
+        }else{
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Unauthorized access").build();
+        }
+
+    }
+
+
 
     @PUT
     @Path("/restoreUser/{username}")

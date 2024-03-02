@@ -189,8 +189,8 @@ async function getUserByToken(token) {
   
           if (response.ok) {
                const categories = await response.json();
-              
               listCategories(categories);
+              return categories;
           } else {
 
             const errorMessage = await response.text(); 
@@ -294,3 +294,44 @@ async function getUserByToken(token) {
    }
 
   
+
+   //Ordenação de tabelas
+
+   document.getElementById('btnTitle').addEventListener('click', async function(event) {
+   
+    let token = sessionStorage.getItem("token");
+    let categories = await getAllCategories(token);
+    let orderedUsers = orderUsersByAttribute(categories, "title");
+    removeAllRows();
+    listCategories(orderedUsers);
+});
+
+document.getElementById('btnDescription').addEventListener('click', async function(event) {
+    let token = sessionStorage.getItem("token");
+    let categories = await getAllCategories(token);
+    let orderedUsers = orderUsersByAttribute(categories, "description");
+    removeAllRows();
+    listCategories(orderedUsers);
+    
+});
+
+document.getElementById('btnAtuthor').addEventListener('click', async function(event) {
+    let token = sessionStorage.getItem("token");
+    let categories = await getAllCategories(token);
+    let orderedUsers = orderUsersByAttribute(categories, "author");
+    removeAllRows();
+    listCategories(orderedUsers);
+});
+
+
+function orderUsersByAttribute(users, attribute) {
+    return users.sort(function(a, b) {
+        if (a[attribute] < b[attribute]) {
+            return -1;
+        }
+        if (a[attribute] > b[attribute]) {
+            return 1;
+        }
+        return 0;
+    });
+}

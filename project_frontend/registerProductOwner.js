@@ -40,13 +40,12 @@ getUserByToken(token).then((result) => {
       firstName_txt.textContent = user.firstName;
       const role = user.typeOfUser;
       sessionStorage.setItem('userType', role);
-     
 
       if(user.imgURL){
          user_img.src = user.imgURL;
       }else{user_img.src = 'user.png';
    }
-   addButtonsForUserType(role);
+   
       
    }
 });

@@ -77,6 +77,43 @@ public class UserBean implements Serializable {
             return users;
     }
 
+    public List<User> getActiveUsers(){
+
+        List<User> users = new ArrayList<>();
+        List<UserEntity> userEntities = userDao.findAllUsers();
+
+        if(userEntities != null) {
+            for (UserEntity userEntity : userEntities) {
+                if (userEntity.getIsActive() && !userEntity.getUsername().equals("admin") && !userEntity.getUsername().equals("deletedUser")) {
+                    User user = convertUserEntityToDto(userEntity);
+                    users.add(user);
+                }
+            }
+        }
+
+        return users;
+
+    }
+
+
+    public List<User> getInactiveUsers(){
+
+        List<User> users = new ArrayList<>();
+        List<UserEntity> userEntities = userDao.findAllUsers();
+
+        if(userEntities != null) {
+            for (UserEntity userEntity : userEntities) {
+                if (!userEntity.getIsActive() && !userEntity.getUsername().equals("admin") && !userEntity.getUsername().equals("deletedUser")) {
+                    User user = convertUserEntityToDto(userEntity);
+                    users.add(user);
+                }
+            }
+        }
+
+        return users;
+
+    }
+
     /**
      *
      * @param token

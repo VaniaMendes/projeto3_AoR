@@ -19,7 +19,7 @@ async function addTask(token,title, description, initialDate, endDate, priority,
       body: JSON.stringify(task),
    });
    if (!response.ok) {
-      return response.status; 
+      return response.status;
    }
 
    return 200;
