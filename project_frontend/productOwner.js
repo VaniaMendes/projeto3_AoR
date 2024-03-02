@@ -83,9 +83,10 @@ async function addButtonsForUserType(role) {
        
        
     } else if (role === 'scrum_master') {
+        
         let users = await getActiveUsers(token);
         listUsersForScrum(users);
-        
+        document.getElementById('btn_task').style.display = 'none';
     }
  }
 
