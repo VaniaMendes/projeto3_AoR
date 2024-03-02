@@ -211,7 +211,9 @@ document.querySelector("#background").addEventListener("click", function () {
 /*Função para fazer a impressão inicial das tarefas, quando a página é inicializada. As tarefas vão ser impressas
 nas colunas em que estavam anteriormente a partir do atributo column do objeto task. Também são adicionados todos 
 os eventos dos botões de delete e dos botões de edição das tarefas */
-function printTasks(tasks) {
+async function printTasks(tasks) {
+
+   let user = await getUserByToken(token);
    
    document.querySelector("#toDo").innerHTML = "";
    document.querySelector("#doing").innerHTML = "";
@@ -265,6 +267,10 @@ function printTasks(tasks) {
       task_div.appendChild(task_category);
 
 
+      if (user.typeOfUser === 'product_owner' || user.typeOfUser === 'scrum_master'
+       || tasks[i].author.username === user.username) {
+
+
       const task_btn = document.createElement("button");
       task_btn.innerHTML = "&#9998;"; //botão para editar a task
       task_btn.classList.add("task_btn");
@@ -272,28 +278,24 @@ function printTasks(tasks) {
 
       addEventsBeforeDrag(task_btn, task_div);
       task_div.appendChild(task_btn);
+       }
+
+       
       
+      if (user.typeOfUser === 'product_owner' || user.typeOfUser === 'scrum_master') {
+         
+         const task_btnDelete = document.createElement("button");
+         task_btnDelete.innerHTML = "&#128465;"; //botão para apagar a task
+         task_btnDelete.classList.add("delete_btn");
+         task_btnDelete.style.color = fontColorRGB(task_div.style.backgroundColor);
+         
+
+         addEventsBeforeDrag(task_btnDelete, task_div);
+         task_div.appendChild(task_btnDelete);
+
+      }
 
       
-
-      const task_btnDelete = document.createElement("button");
-      task_btnDelete.innerHTML = "&#128465;"; //botão para apagar a task
-      task_btnDelete.classList.add("delete_btn");
-      task_btnDelete.style.color = fontColorRGB(task_div.style.backgroundColor);
-      
-
-      addEventsBeforeDrag(task_btnDelete, task_div);
-      task_div.appendChild(task_btnDelete);
-
-      
-
-      
-
-      
-      
-      
-      
-
       if (tasks[i].state == "toDo") {
          document.querySelector("#toDo").appendChild(task_div);
       } else if (tasks[i].state == "doing") {
@@ -382,13 +384,32 @@ function taskCreationAddEvents(task_div, tasks) {
 
    /*Os botões de delete e de edit das tasks apenas são mostrados quando o cursor passa por cima da div*/
 
+   let activeUser = getUserByToken(token);
+
    task_div.addEventListener("mouseenter", function () {
+
+      if (task_div.childNodes[2] != undefined) {
       task_div.childNodes[2].style.visibility = "visible";
-      task_div.childNodes[3].style.visibility = "visible";
+      }
+
+
+      if (activeUser.typeOfUser !== 'developer') {
+      
+         task_div.childNodes[3].style.visibility = "visible";
+      }
+      
    });
    task_div.addEventListener("mouseleave", function () {
+
+      if (task_div.childNodes[2] != undefined) {
       task_div.childNodes[2].style.visibility = "hidden";
-      task_div.childNodes[3].style.visibility = "hidden";
+      }
+
+
+      if (user.typeOfUser !== 'developer') {
+         task_div.childNodes[3].style.visibility = "hidden";
+      
+      }
    });
 }
 
@@ -778,8 +799,7 @@ let selectedCategoryId;
 document.addEventListener("DOMContentLoaded", async function() {
    const users = await getAllUsers(token);
    const categories = await getAllCategories(token);
-   console.log(users);
-   console.log(categories);
+   
   
    // Obtém o elemento select de usuários
    const usersSelect = document.getElementById("users");
@@ -834,7 +854,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 document.querySelector(".search_icon").addEventListener("click", function(){
    
    const filterList = getFilteredTasks(token, selectedUsername, selectedCategoryId);
-   console.log(filterList);
+   
    
 });
 
@@ -886,7 +906,7 @@ async function getFilteredTasks(token, selectedUsername, selectedCategoryId) {
        }
 
        const data = await response.json();
-       console.log(data); 
+       
        return data;
        
 
