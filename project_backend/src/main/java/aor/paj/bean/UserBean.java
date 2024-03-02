@@ -1,11 +1,13 @@
 package aor.paj.bean;
 
+import aor.paj.dao.TaskDao;
 import aor.paj.dao.UserDao;
 import aor.paj.dto.LoginDto;
 import aor.paj.dto.Task;
 import aor.paj.dto.User;
 import aor.paj.dto.UserDetails;
 import aor.paj.entity.CategoryEntity;
+import aor.paj.entity.TaskEntity;
 import aor.paj.entity.UserEntity;
 import aor.paj.utils.EncryptHelper;
 import jakarta.ejb.EJB;
@@ -36,6 +38,9 @@ public class UserBean implements Serializable {
 
     @EJB
     UserDao userDao;
+
+    @EJB
+    TaskDao taskDao;
 
     @EJB
     EncryptHelper encryptHelper;
@@ -361,10 +366,20 @@ public class UserBean implements Serializable {
 
     public boolean deletePermanentlyUser(String username){
         UserEntity userEntity = userDao.findUserByUsername(username);
+        ArrayList<TaskEntity> tasks = taskDao.findTasksByUser(userEntity);
+
         boolean wasRemoved=false;
         if (userEntity != null && !userEntity.getUsername().equals("deletedUser") && !userEntity.getUsername().equals("admin")) {
+
+            if (tasks != null) {
+                for (TaskEntity task : tasks) {
+                    task.setOwner(userDao.findUserByUsername("deletedUser"));
+                }
+            }
+
             userEntity.setIsActive(false);
-            wasRemoved =  userDao.removed(userEntity);
+            userDao.remove(userEntity);
+            wasRemoved = true;
         }
         return wasRemoved;
     }
@@ -621,7 +636,7 @@ public class UserBean implements Serializable {
         if (userEntity == null) {
             User admin = new User();
             admin.setUsername("admin");
-            admin.setPassword(encryptHelper.encryptPassword("admin"));
+            admin.setPassword("admin");
             admin.setEmail("admin@admin.com");
             admin.setFirstName("admin");
             admin.setLastName("admin");
@@ -636,7 +651,7 @@ public class UserBean implements Serializable {
         if (userEntity2 == null) {
             User deletedUser = new User();
             deletedUser.setUsername("deletedUser");
-            deletedUser.setPassword(encryptHelper.encryptPassword("123"));
+            deletedUser.setPassword("123");
             deletedUser.setEmail("deleted@user.com");
             deletedUser.setFirstName("Deleted");
             deletedUser.setLastName("User");

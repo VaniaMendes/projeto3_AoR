@@ -14,7 +14,7 @@
       <!--<header><h1>Scrum Board</h1></header> -->
       <main id="scrum_main">
          <header>
-            <h1><img src="scrum_image.png" id="scrum_img" alt="App logo" />&nbsp;AgileUp</h1>
+            <h1 id="page-logo"><img src="scrum_image.png" id="scrum_img" alt="App logo" />&nbsp;AgileUp</h1>
          </header>
          <section id="scrum_section">
             <aside>
@@ -62,12 +62,15 @@
          </section>
       </main>
 
-      <section class="modal" id="modal">
+      <section class="modal" id="modal_dblClick">
          <div>
             <div class="modal_exit" id="modal_cancel">&times;</div>
             <div class="label_modal">Title</div>
             <div id="modal_title"></div>
          </div>
+         <div>
+            <div class="label_modal">Category</div>
+            <div id="modal_category"></div>
          <div>
             <div class="label_modal" id="label_description">Description</div>
             <div id="modal_description"></div>
@@ -77,6 +80,10 @@
             <span class="span_date" id="modal_startDate"></span>
             <span class="label_modal" id="endDate_label">End Date</span>
             <span class="span_date" id="modal_endDate"></span>
+         </div>
+         <div id="modal_dates">
+            <span class="label_modal">Author</span>
+            <span class="span_author" id="modal_author"></span>
          </div>
       </section>
 
