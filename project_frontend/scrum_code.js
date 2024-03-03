@@ -850,14 +850,6 @@ document.addEventListener("DOMContentLoaded", async function() {
 
 
 
-document.querySelector(".search_icon").addEventListener("click", function(){
-   
-   const filterList = getFilteredTasks(token, selectedUsername, selectedCategoryId);
-   
-   
-});
-
-
   async function getAllCategories(token) {
       
    const categoriesRequest = "http://localhost:8080/project_backend/rest/categories/getAllCategories";
@@ -926,8 +918,7 @@ async function getFilteredTasks(token, selectedUsername, selectedCategoryId) {
        });
 
        if (!response.ok) {
-         const errorMessage = await response.text(); 
-         console.error("Failed to fetch categories: " + errorMessage);
+ 
          return null;
        }
 
