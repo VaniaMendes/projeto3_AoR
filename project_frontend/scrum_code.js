@@ -796,7 +796,7 @@ async function getAllUsers(token) {
 let selectedUsername; 
 let selectedCategoryId;
 document.addEventListener("DOMContentLoaded", async function() {
-   const users = await getAllUsers(token);
+   const users = await getActiveUsers(token);
    const categories = await getAllCategories(token);
    
   
@@ -850,14 +850,6 @@ document.addEventListener("DOMContentLoaded", async function() {
 
 
 
-document.querySelector(".search_icon").addEventListener("click", function(){
-   
-   const filterList = getFilteredTasks(token, selectedUsername, selectedCategoryId);
-   
-   
-});
-
-
   async function getAllCategories(token) {
       
    const categoriesRequest = "http://localhost:8080/project_backend/rest/categories/getAllCategories";
@@ -884,6 +876,32 @@ document.querySelector(".search_icon").addEventListener("click", function(){
    }
 }
 
+async function getActiveUsers(token) {
+   try {
+       const response = await fetch("http://localhost:8080/project_backend/rest/users/activeUsers", {
+           method: "GET",
+           headers: {
+               Accept: "application/json",
+               "Content-Type": "application/json",
+               token:token
+           }
+       });
+
+       if (response.ok) {
+           const users = await response.json();
+           return users;
+           
+           
+       } else {
+           console.error("Failed to fetch user data");
+           return null;
+       }
+   } catch (error) {
+       console.error("Error fetching user data:", error);
+       return null;
+   }
+}
+
 
 async function getFilteredTasks(token, selectedUsername, selectedCategoryId) {
  
@@ -900,8 +918,7 @@ async function getFilteredTasks(token, selectedUsername, selectedCategoryId) {
        });
 
        if (!response.ok) {
-         const errorMessage = await response.text(); 
-         console.error("Failed to fetch categories: " + errorMessage);
+ 
          return null;
        }
 
