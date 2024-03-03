@@ -1606,11 +1606,6 @@ th {
 }
 
 
-#category_table tr:hover {
-   background-color: lightblue;
-   border-radius: 15px;
-}
-
 /* Category table */
 
 #category-page-title {
@@ -1726,12 +1721,17 @@ th {
 
 
 /* Painel de pesquisa*/
-.search-icon {
+.search-icon,
+.reset-filter-icon {
    margin-left: auto;
    font-size: 30px;
    margin-top: -20px;
    cursor: pointer;
    
+}
+
+.reset-filter-icon {
+   margin-left: 5px;
 }
 
 .filter {
@@ -1747,7 +1747,7 @@ th {
 #category, #users{
    flex:1;
    margin-right: 10px;
-   width: 165px;
+   width: 150px;
 
 
 }
@@ -1757,7 +1757,8 @@ th {
    justify-content: space-between; 
 }
 
-.search-icon:hover {
+.search-icon:hover, 
+.reset-filter-icon:hover {
    transform: scale(1.5); 
    color: var(--white_active); 
 }
