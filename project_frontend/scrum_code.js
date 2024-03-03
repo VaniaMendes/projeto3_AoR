@@ -916,9 +916,20 @@ async function getActiveUsers(token) {
 
 
 async function getFilteredTasks(token, selectedUsername, selectedCategoryId) {
- 
-
-   const url = `/project_backend/rest/tasks/getFilterTasks?username=${selectedUsername}&category=${selectedCategoryId}`;
+   let url = `/project_backend/rest/tasks/getFilterTasks`;
+   
+   // Adicione parâmetros de consulta à URL conforme necessário
+   if (selectedUsername) {
+      url += `?username=${selectedUsername}`;
+   }
+   
+   if (selectedCategoryId) {
+      if (selectedUsername) {
+         url += `&category=${selectedCategoryId}`;
+      } else {
+         url += `?category=${selectedCategoryId}`;
+      }
+   }
 
    try {
        const response = await fetch(url, {
@@ -930,15 +941,12 @@ async function getFilteredTasks(token, selectedUsername, selectedCategoryId) {
        });
 
        if (!response.ok) {
- 
          return null;
        }
 
        const data = await response.json();
-       
+       console.log(data);
        return data;
-       
-
    } catch (error) {
        console.error('Fetch Error:', error);
        return null;
@@ -956,6 +964,7 @@ function handleFilterTasks(token, taskLists, selectedUsername, selectedCategoryI
     }
 
     let tasks = result;
+
      printTasks(tasks);
      for (let taskList of taskLists) {
        taskList.addEventListener("dragover", function (e) {
@@ -970,7 +979,8 @@ function handleFilterTasks(token, taskLists, selectedUsername, selectedCategoryI
            }
          }
        });
-     }
+     
+   }
    });
  }
 
