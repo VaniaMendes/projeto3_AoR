@@ -1404,7 +1404,7 @@ label {
    
  }
 
- .users_container {
+ .users_container, .category_table {
    position: relative;
    top: 50%;
    left: 50%;
@@ -1558,6 +1558,19 @@ label {
 
 /* Category table */
 
+
+.category_table {
+   position: absolute;
+   transform: translate(-50%, -50%);
+   border-collapse: collapse;
+   background-color: var(--white);
+   border-radius: 12px;
+   margin-left: 110px;
+   width: 1000px;
+   max-height: 500px; 
+   overflow-y: auto;
+}
+
 #category_table,
 #tasks_table {
    width: 100%;
@@ -1565,19 +1578,8 @@ label {
    background-color: var(--white);
    border-radius: 12px;
    
-   margin-left: 375px;
-   width: 1000px;
-   height: 500px;
-   margin-top: 5px;
-   overflow: auto;
-   
-   
-   
 }
 
-#tasks_table {
-   margin-top: 40px;
-}
 
 td {
    padding: 8px;
