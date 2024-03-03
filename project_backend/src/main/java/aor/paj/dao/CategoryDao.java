@@ -2,6 +2,7 @@ package aor.paj.dao;
 
 import aor.paj.entity.CategoryEntity;
 import aor.paj.entity.TaskEntity;
+import aor.paj.entity.UserEntity;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.NoResultException;
 
@@ -39,6 +40,15 @@ public class CategoryDao  extends AbstractDao<CategoryEntity> {
     public ArrayList<CategoryEntity> findAllCategories() {
         try {
             ArrayList<CategoryEntity> categoryEntities = (ArrayList<CategoryEntity>) em.createNamedQuery("Category.findAllCategories").getResultList();
+            return categoryEntities;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public ArrayList<CategoryEntity> findCategoriesByUser(UserEntity userEntity) {
+        try {
+            ArrayList<CategoryEntity> categoryEntities = (ArrayList<CategoryEntity>) em.createNamedQuery("Category.findCategoryByUser").setParameter("owner", userEntity).getResultList();
             return categoryEntities;
         } catch (Exception e) {
             return null;

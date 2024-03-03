@@ -1,5 +1,6 @@
 package aor.paj.bean;
 
+import aor.paj.dao.CategoryDao;
 import aor.paj.dao.TaskDao;
 import aor.paj.dao.UserDao;
 import aor.paj.dto.LoginDto;
@@ -47,6 +48,9 @@ public class UserBean implements Serializable {
 
     @EJB
     TaskDao taskDao;
+
+    @EJB
+    CategoryDao categoryDao;
 
     @EJB
     EncryptHelper encryptHelper;
@@ -397,6 +401,7 @@ public class UserBean implements Serializable {
     public boolean deletePermanentlyUser(String username){
         UserEntity userEntity = userDao.findUserByUsername(username);
         ArrayList<TaskEntity> tasks = taskDao.findTasksByUser(userEntity);
+        ArrayList<CategoryEntity> categories = categoryDao.findCategoriesByUser(userEntity);
 
         boolean wasRemoved=false;
         if (userEntity != null && !userEntity.getUsername().equals("deletedUser") && !userEntity.getUsername().equals("admin")) {
@@ -404,6 +409,12 @@ public class UserBean implements Serializable {
             if (tasks != null) {
                 for (TaskEntity task : tasks) {
                     task.setOwner(userDao.findUserByUsername("deletedUser"));
+                }
+            }
+
+            if (categories != null) {
+                for (CategoryEntity category : categories) {
+                    category.setOwner(userDao.findUserByUsername("deletedUser"));
                 }
             }
 
