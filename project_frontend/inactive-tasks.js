@@ -340,7 +340,7 @@ function orderUsersByAttribute(users, attribute) {
 }
 
 function removeAllRows() {
-    const table = document.getElementById('category_table');
+    const table = document.getElementById('tasks_table');
     while (table.rows.length > 1) {
        table.deleteRow(1);
     }
