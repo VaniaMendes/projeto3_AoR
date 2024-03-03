@@ -1406,7 +1406,7 @@ label {
 
  .users_container, .category_table {
    position: relative;
-   top: 55%;
+   top: 63%;
    left: 50%;
    transform: translate(-50%, -50%);
    width: 80%; 
