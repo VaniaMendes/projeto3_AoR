@@ -849,7 +849,6 @@ document.addEventListener("DOMContentLoaded", async function() {
 
 
 
-
   async function getAllCategories(token) {
       
    const categoriesRequest = "http://localhost:8080/project_backend/rest/categories/getAllCategories";
@@ -937,6 +936,8 @@ function handleFilterTasks(token, taskLists, selectedUsername, selectedCategoryI
      
      if (!result || result.length === 0) {
       alert("There are no tasks available for the selected user or category.");
+    } else if (result.length === 1) {
+      alert("There is only one task available for the selected user or category.");
       return;
     }
 
