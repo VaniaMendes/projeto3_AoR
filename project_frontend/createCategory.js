@@ -109,13 +109,12 @@ async function getUserByToken(token) {
  
        menu.appendChild(listButton);
        menu.appendChild(createCategoryButton);
-       menu.appendChild(createCategory);
         
        
-    } else if (userType === 'ScrumMaster') {
+    } else if (userType === 'scrum_master') {
      
  
-    } else if (userType === 'Developer') {
+    } else if (userType === 'developer') {
         
     }
  }

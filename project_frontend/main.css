@@ -1564,13 +1564,15 @@ label {
    border-collapse: collapse;
    background-color: var(--white);
    border-radius: 12px;
-   padding-top: 12px;
+   
    margin-left: 375px;
    width: 1000px;
-   max-height: 252px;
+   height: 500px;
    margin-top: 5px;
-   overflow-y: auto;
-   flex-direction: column;  
+   overflow: auto;
+   
+   
+   
 }
 
 #tasks_table {
