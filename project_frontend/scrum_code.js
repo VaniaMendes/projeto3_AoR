@@ -844,6 +844,20 @@ document.addEventListener("DOMContentLoaded", async function() {
       handleFilterTasks(token, taskLists, selectedUsername, selectedCategoryId)
       
   });
+
+  document.querySelector(".reset_search_icon").addEventListener("click", function(){
+
+   if (document.getElementById("users").value !== "" && document.getElementById("category").value !== "" ||
+   document.getElementById("users").value === "" && document.getElementById("category").value !== "" ||
+   document.getElementById("users").value !== "" && document.getElementById("category").value === ""){
+
+   document.getElementById("users").value = "";
+   document.getElementById("category").value = "";
+   //reload page
+   location.reload();
+   }
+
+  });
    
 });
 
