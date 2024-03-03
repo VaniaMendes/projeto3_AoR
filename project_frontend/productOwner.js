@@ -57,10 +57,11 @@ async function addButtonsForUserType(role) {
         listButton.classList.add("menu_item"); listButton.innerHTML = ".";
         listButton.textContent = 'Active Users';
         listButton.addEventListener('click', function() {
+            document.getElementById("titleActiveUsers").textContent = "Active Users";
          document.getElementById('users_table').style.display = 'table';
          document.getElementById('inativeusers_table').style.display = 'none';
             listActiveUsers(users);
-            document.getElementById('btn_task').style.display = 'visible';
+            document.getElementById('btn_newUser').style.display = 'visible';
         });
         menu.appendChild(listButton);
 
@@ -68,6 +69,7 @@ async function addButtonsForUserType(role) {
          listButton1.classList.add("menu_item"); listButton1.innerHTML = ".";
          listButton1.textContent = 'Inactive Users';
          listButton1.addEventListener('click', async function() {
+        document.getElementById("titleActiveUsers").textContent = "Inactive Users";
 
 
         document.getElementById('users_table').style.display = 'hidden';
@@ -75,7 +77,7 @@ async function addButtonsForUserType(role) {
         document.getElementById('inativeusers_table').style.display = 'table';
         let users = await getInactiveUsers(token);
         listInativeUsers(users);
-        document.getElementById('btn_task').style.display = 'hidden';
+        document.getElementById('btn_newUser').style.display = 'hidden';
             
         });
        
@@ -86,7 +88,7 @@ async function addButtonsForUserType(role) {
         
         let users = await getActiveUsers(token);
         listUsersForScrum(users);
-        document.getElementById('btn_task').style.display = 'none';
+        document.getElementById('btn_newUser').style.display = 'none';
     }
  }
 
@@ -387,7 +389,7 @@ async function getAllUsers(token) {
 
 }
  
-document.getElementById("btn_task").addEventListener('click', function() {
+document.getElementById("btn_newUser").addEventListener('click', function() {
     window.location.href = 'registerProductOwner.html';
 });
 

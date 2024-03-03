@@ -1504,8 +1504,8 @@ label {
    width: 65em;
    max-height: 30em;
    transform: translate(-50%, -50%);
-   top: 50%;
-   left: 850px;
+   top: 55%;
+   left: 890px;
    position: absolute;
    overflow-y: auto;
    border-collapse: collapse;
@@ -1532,6 +1532,42 @@ label {
 }
 .titleActive{
    align-items: center;
+}
+
+#titleActiveUsers{
+   background-color: white;
+   width: 18%;
+   border-radius: 15px;
+   color: var(--black);
+   text-align: center;
+   margin-top: 60px;
+   margin-left: 110px;
+   font-weight: bold;
+   border-block: groove;
+   font-size: 30px;
+
+
+}
+
+#btn_newUser{
+   width: 10%;
+   text-align: center;
+   font-size: 15px;
+   border-radius: 10px;
+   margin-left: 110px;
+   background-color: var(--white);
+   padding: 3px 0px 8px 5px;
+   font-weight: bold;
+   margin-top: 30px;
+   cursor: pointer;
+
+}
+
+#btn_newUser:hover {
+   background-color: var(--white_hover);
+}
+#btn_newUser:active {
+   background-color: var(--white_active);
 }
 
 
