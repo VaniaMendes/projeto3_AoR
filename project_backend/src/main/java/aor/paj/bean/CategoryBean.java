@@ -30,6 +30,10 @@ public class CategoryBean {
     UserBean userBean;
 
     public CategoryBean(){
+        userDao = new UserDao();
+        taskDao = new TaskDao();
+        categoryDao = new CategoryDao();
+
     }
 
     public boolean addCategory(String token, Category category) {
