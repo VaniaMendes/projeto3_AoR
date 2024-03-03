@@ -11,6 +11,7 @@ import java.util.Set;
 @NamedQuery(name = "Category.findCategoryByTitle", query = "SELECT u FROM CategoryEntity u WHERE u.title = :title")
 @NamedQuery(name = "Category.findCategoryById", query = "SELECT u FROM CategoryEntity u WHERE u.idCategory = :idCategory")
 @NamedQuery(name = "Category.findAllCategories", query = "SELECT u FROM CategoryEntity u")
+@NamedQuery(name = "Category.findCategoryByUser", query = "SELECT u FROM CategoryEntity u WHERE u.owner = :owner")
 
 public class CategoryEntity implements Serializable{
 
@@ -26,7 +27,7 @@ public class CategoryEntity implements Serializable{
     private String description;
 
     @ManyToOne
-    @JoinColumn(name="author", nullable = false, unique = false, updatable = false)
+    @JoinColumn(name="author", nullable = false, unique = false, updatable = true)
     private UserEntity owner;
 
     //default empty constructor

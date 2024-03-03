@@ -806,7 +806,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
    // Adiciona as opções de usuário ao select
    for(const user of users) {
-       if(user.active) {
+       if(user.active && user.username !== "admin") {
            var option = document.createElement("option");
            option.text = user.firstName + "  " + user.lastName;
            option.value = user.username;

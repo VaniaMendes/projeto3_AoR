@@ -1567,7 +1567,7 @@ label {
    
    margin-left: 375px;
    width: 1000px;
-   height: 500px;
+   max-height: 500px;
    margin-top: 5px;
    overflow: auto;
    
@@ -1738,7 +1738,7 @@ th {
    position: absolute; 
    top: 70px; 
    left: 1000px;
-   width: 600px;
+   width: 500px;
    display: inline;
    display: flex;
    align-items: center;
