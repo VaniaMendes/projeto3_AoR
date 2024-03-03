@@ -796,8 +796,8 @@ async function getAllUsers(token) {
 let selectedUsername; 
 let selectedCategoryId;
 document.addEventListener("DOMContentLoaded", async function() {
-   const users = await getActiveUsers(token);
-   const categories = await getAllCategories(token);
+   let users = await getActiveUsers(token);
+   let categories = await getAllCategories(token);
    
   
    // Obtém o elemento select de usuários
@@ -805,7 +805,7 @@ document.addEventListener("DOMContentLoaded", async function() {
    const categoriesSelect = document.getElementById("category");
 
    // Adiciona as opções de usuário ao select
-   for(const user of users) {
+   for(let user of users) {
        if(user.active && user.username !== "admin") {
            var option = document.createElement("option");
            option.text = user.firstName + "  " + user.lastName;
@@ -815,7 +815,7 @@ document.addEventListener("DOMContentLoaded", async function() {
    }
 
    // Adiciona opções de categorias ao select
-   for(const category of categories) {
+   for(let category of categories) {
        var option = document.createElement("option");
        option.text = category.title;
        option.value = category.idCategory;
@@ -893,7 +893,6 @@ async function getActiveUsers(token) {
            
            
        } else {
-           console.error("Failed to fetch user data");
            return null;
        }
    } catch (error) {

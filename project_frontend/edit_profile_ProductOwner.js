@@ -54,7 +54,7 @@ async function getUserByUsername(token, username) {
         method: "GET",
         headers: {
             'Content-Type': 'application/json',
-            'Accept':   'application/json',
+            'Accept':   '*/*',
             "token":token,
             'username': username
         },

@@ -70,7 +70,7 @@ console.log("chegou aqui");
             headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
-                token:token
+                'token':token
             },
             body: JSON.stringify(newUser)
         });

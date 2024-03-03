@@ -296,6 +296,24 @@ public class UserBean implements Serializable {
             return false;
     }
 
+    public boolean registerByPO(String token,User user){
+        UserEntity userEntityPO = userDao.findUserByToken(token);
+
+        if(userEntityPO != null && userEntityPO.getTypeOfUser().equals("product_owner")) {
+
+            UserEntity u = userDao.findUserByUsername(user.getUsername());
+
+            if (u == null) {
+                user.setPassword(encryptHelper.encryptPassword(user.getPassword()));
+                userDao.persist(convertUserDtotoUserEntity(user));
+                return true;
+            } else
+                return false;
+        }else{
+            return false;
+        }
+    }
+
     public boolean isAnyFieldEmpty(User user) {
         boolean status = false;
 

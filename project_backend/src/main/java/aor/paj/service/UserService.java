@@ -104,7 +104,7 @@ public class UserService {
 
             if (user != null) {
                 User userFind = userBean.getUserByUsername(username);
-                return Response.ok(userFind).entity("GetUSer with sucess").build();
+                return Response.ok(userFind).build();
             } else {
             return Response.status(Response.Status.NOT_FOUND).build();
             }
@@ -355,39 +355,45 @@ public class UserService {
     @PUT
     @Path("/addUserByPO")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Transactional
-    public Response addUserByPO(User user) {
-
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateUserByPO(@HeaderParam("token") String token, User user) {
+        User userRequest = userBean.getUserByToken(token);
         Response response;
 
-        boolean isFieldEmpty = userBean.isAnyFieldEmpty(user);
-        boolean isEmailValid = userBean.isEmailValid(user.getEmail());
-        boolean isUsernameAvailable = userBean.isUsernameAvailable(user.getUsername());
-        boolean isImageValid = userBean.isImageUrlValid(user.getImgURL());
-        boolean isPhoneValid = userBean.isPhoneNumberValid(user.getPhoneNumber());
+        if(userRequest!= null && userRequest.getTypeOfUser().equals("product_owner")) {
 
 
-        if (isFieldEmpty) {
-            response = Response.status(422).entity("There's an empty field. ALl fields must be filled in").build();
+            boolean isFieldEmpty = userBean.isAnyFieldEmpty(user);
+            boolean isEmailValid = userBean.isEmailValid(user.getEmail());
+            boolean isUsernameAvailable = userBean.isUsernameAvailable(user.getUsername());
+            boolean isImageValid = userBean.isImageUrlValid(user.getImgURL());
+            boolean isPhoneValid = userBean.isPhoneNumberValid(user.getPhoneNumber());
 
-        } else if (!isEmailValid) {
-            response = Response.status(422).entity("Invalid email").build();
 
-        } else if (!isUsernameAvailable) {
-            response = Response.status(Response.Status.CONFLICT).entity("Username already in use").build(); //status code 409
+            if (isFieldEmpty) {
+                response = Response.status(422).entity("There's an empty field. ALl fields must be filled in").build();
 
-        } else if (!isImageValid) {
-            response = Response.status(422).entity("Image URL invalid").build();
+            } else if (!isEmailValid) {
+                response = Response.status(422).entity("Invalid email").build();
 
-        } else if (!isPhoneValid) {
-            response = Response.status(422).entity("Invalid phone number").build();
+            } else if (!isUsernameAvailable) {
+                response = Response.status(Response.Status.CONFLICT).entity("Username already in use").build(); //status code 409
 
-        } else if (userBean.register(user)) {
-            response = Response.status(Response.Status.CREATED).entity("User registered successfully").build();
+            } else if (!isImageValid) {
+                response = Response.status(422).entity("Image URL invalid").build();
 
-        } else {
-            response = Response.status(Response.Status.BAD_REQUEST).entity("Something went wrong").build();
+            } else if (!isPhoneValid) {
+                response = Response.status(422).entity("Invalid phone number").build();
 
+            } else if (userBean.registerByPO(token,user)) {
+                response = Response.status(Response.Status.CREATED).entity("User registered successfully").build();
+
+            } else {
+                response = Response.status(Response.Status.BAD_REQUEST).entity("Something went wrong").build();
+
+            }
+        }else{
+            response = Response.status(Response.Status.UNAUTHORIZED).entity("You don´t have permission").build();
         }
 
         return response;

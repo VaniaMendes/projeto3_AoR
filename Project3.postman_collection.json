@@ -326,10 +326,16 @@
 					"name": "addUserByPO",
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "token",
+								"value": "AvvALKgJsSC_gxB2rPgONC9-XykcHRZ5",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"vaaania1\",\r\n    \"password\":\"vania\",\r\n    \"email\":\"asdaaaaaazs@dfsd.com\",\r\n    \"firstName\":\"Daaniela\",\r\n    \"lastName\":\"Mendes\",\r\n    \"imgURL\": \"https://thypix.com/wp-content/uploads/2018/05/Sommerlandschaft-Bilder-30.jpg\",\r\n    \"typeOfUser\":\"product_owner\",\r\n    \"phoneNumber\":\"789654123\"\r\n\r\n}",
+							"raw": "{\r\n    \"username\": \"vaaaaania1\",\r\n    \"password\":\"vaaania\",\r\n    \"email\":\"asdaaaaaaaazs@dfsd.com\",\r\n    \"firstName\":\"Daaniela\",\r\n    \"lastName\":\"Mendes\",\r\n    \"imgURL\": \"https://thypix.com/wp-content/uploads/2018/05/Sommerlandschaft-Bilder-30.jpg\",\r\n    \"typeOfUser\":\"product_owner\",\r\n    \"phoneNumber\":\"789654123\"\r\n\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
