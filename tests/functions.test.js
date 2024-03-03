@@ -120,7 +120,7 @@ test('invalid initial date', async () => {
  test('invalid token', async () => {
    global.fetch = jest.fn(() => Promise.resolve({
      status: 403,
-     json: () => Promise.resolve({ message: 'Token inválido.' }),
+     json: () => Promise.resolve({ message: 'Invalid Token.' }),
    }));
  
    const response = await tasks.addTask('invalid_token', 'Título da Tarefa', 'Descrição da Tarefa', '2023-02-12', '2023-02-15', 3, 1);
