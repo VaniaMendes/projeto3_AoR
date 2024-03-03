@@ -962,10 +962,7 @@ function handleFilterTasks(token, taskLists, selectedUsername, selectedCategoryI
      
      if (!result || result.length === 0) {
       alert("There are no tasks available for the selected user or category.");
-    } else if (result.length === 1) {
-      alert("There is only one task available for the selected user or category.");
-      return;
-    }
+    } 
 
     let tasks = result;
 
