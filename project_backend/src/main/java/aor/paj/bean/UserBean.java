@@ -609,7 +609,7 @@ public class UserBean implements Serializable {
             admin.setFirstName("admin");
             admin.setLastName("admin");
             admin.setPhoneNumber("123456789");
-            admin.setImgURL("https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png");
+            admin.setImgURL("https://t4.ftcdn.net/jpg/04/75/00/99/240_F_475009987_zwsk4c77x3cTpcI3W1C1LU4pOSyPKaqi.jpg");
             admin.setTypeOfUser("product_owner");
 
             register(admin);
@@ -624,7 +624,7 @@ public class UserBean implements Serializable {
             deletedUser.setFirstName("Deleted");
             deletedUser.setLastName("User");
             deletedUser.setPhoneNumber("123456789");
-            deletedUser.setImgURL("https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png");
+            deletedUser.setImgURL("https://www.iconpacks.net/icons/1/free-remove-user-icon-303-thumb.png");
             deletedUser.setTypeOfUser("developer");
             deletedUser.setActive(false);
 
