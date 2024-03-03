@@ -1,3 +1,10 @@
+window.onload = function () {
+    if (sessionStorage.getItem("token") == null) {
+        window.location.href = "login.html";
+     }
+    }  
+
+
 const token = sessionStorage.getItem("token");
 let user = null;
 const user_photo = document.getElementById("user_img");

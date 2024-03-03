@@ -18,6 +18,10 @@ const userType = sessionStorage.getItem('role');
 
 window.onload = function () {
 
+   if (sessionStorage.getItem("token") == null) {
+      window.location.href = "login.html";
+   }
+
 }
 
 async function getUserByToken(token) {

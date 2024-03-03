@@ -21,6 +21,10 @@ window.onload = function() {
       }
    });
 
+   if (sessionStorage.getItem("token") == null) {
+      window.location.href = "login.html";
+   }
+
 }
 
 

@@ -1,3 +1,8 @@
+window.onload = function () {
+    if (sessionStorage.getItem("token") == null) {
+        window.location.href = "login.html";
+     }
+}  
 
 const firstName_txt = document.querySelector("#user");
 //const retros = JSON.parse(localStorage.getItem("retros")) || [];
