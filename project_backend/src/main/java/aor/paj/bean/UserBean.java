@@ -270,7 +270,7 @@ public class UserBean implements Serializable {
     }
 
 
-    private UserEntity convertUserDtotoUserEntity(User user){
+    public UserEntity convertUserDtotoUserEntity(User user){
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(user.getUsername());
         userEntity.setPassword(user.getPassword());
@@ -284,6 +284,7 @@ public class UserBean implements Serializable {
         userEntity.setTypeOfUser(user.getTypeOfUser());
         return userEntity;
     }
+
 
     public boolean register(User user){
         UserEntity u= userDao.findUserByUsername(user.getUsername());
