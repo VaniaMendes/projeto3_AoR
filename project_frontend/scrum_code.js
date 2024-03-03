@@ -796,7 +796,7 @@ async function getAllUsers(token) {
 let selectedUsername; 
 let selectedCategoryId;
 document.addEventListener("DOMContentLoaded", async function() {
-   const users = await getAllUsers(token);
+   const users = await getActiveUsers(token);
    const categories = await getAllCategories(token);
    
   
@@ -881,6 +881,32 @@ document.querySelector(".search_icon").addEventListener("click", function(){
        }
    } catch (error) {
        console.error("Error fetching categories:", error);
+   }
+}
+
+async function getActiveUsers(token) {
+   try {
+       const response = await fetch("http://localhost:8080/project_backend/rest/users/activeUsers", {
+           method: "GET",
+           headers: {
+               Accept: "application/json",
+               "Content-Type": "application/json",
+               token:token
+           }
+       });
+
+       if (response.ok) {
+           const users = await response.json();
+           return users;
+           
+           
+       } else {
+           console.error("Failed to fetch user data");
+           return null;
+       }
+   } catch (error) {
+       console.error("Error fetching user data:", error);
+       return null;
    }
 }
 
