@@ -838,10 +838,14 @@ document.addEventListener("DOMContentLoaded", async function() {
    // Adiciona um evento para o botão de pesquisa
    document.querySelector(".search_icon").addEventListener("click", function(){
       
-      console.log("User selecionado: ", selectedUsername);
-      console.log("Categoria selecionada: ", selectedCategoryId);
-      
+     if(selectedUsername==null && selectedCategoryId==null){
+      alert("Please select a category or  a user");
+     }else{
+       
       handleFilterTasks(token, taskLists, selectedUsername, selectedCategoryId)
+
+     }
+     
       
   });
 

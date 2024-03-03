@@ -455,61 +455,7 @@ public class UserBean implements Serializable {
 
 
 
-    ///////////////////////METODOS ANTIGOS\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-/*
-    //Método para adicionar uma task nova a um user
-    public void addTask(User user, Task task){
-        user.getTasks().add(task);
 
-    }
-
-    //Método para eliminar uma task
-    public boolean removeTask(User user,long id) {
-        boolean taskRemoved=false;
-        ArrayList<Task> tasksRequested=user.getTasks();
-        for (int i=0;i<tasksRequested.size() && !taskRemoved;i++) {
-            if (tasksRequested.get(i).getId() == id) {
-                tasksRequested.remove(i);
-                taskRemoved=true;
-            }
-        }
-
-        return taskRemoved;
-    }
-
-    //getter de uma task a partir do seu id
-    public Task getTask(User user, long id){
-        Task taskRequested=null;
-        ArrayList<Task> tasksUser=user.getTasks();
-        System.out.println(user.getUsername());
-        for (int i=0;i<tasksUser.size() && taskRequested==null;i++){
-
-            if (tasksUser.get(i).getId()==id){
-                taskRequested=tasksUser.get(i);
-            }
-        }
-        System.out.println(taskRequested);
-        return taskRequested;
-    }
-
-     */
-
-    //faz o update do estado da task que recebe como input
-    public void updateTaskState(Task task, String state){
-        task.changeState(state);
-
-    }
-
-    //faz o update dos atributos da task que recebe como input
-    public void updateTask(Task task, String title, String description, LocalDate initialDate, LocalDate endDate,
-                           int priority){
-        task.setTitle(title);
-        task.setDescription(description);
-        task.setInitialDate(initialDate);
-        task.setEndDate(endDate);
-        task.setPriority(priority);
-
-    }
 
     //Método em que o output é o objeto UserDetails que tem todos os atributos iguais ao User menos a pass
     public UserDetails getUserDetails(String username) {
@@ -526,7 +472,8 @@ public class UserBean implements Serializable {
     }
     return null;
     }
-    //getter do user a partir do seu username e da sua password
+
+
         //método para validar um user novo e dependendo da verificação em que falhar manda uma resposta diferente
     public int validateUserRegister(String username,String password, String email, String firstName, String lastName, String phoneNumber){
 
