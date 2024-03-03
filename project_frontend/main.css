@@ -1406,12 +1406,13 @@ label {
 
  .users_container, .category_table {
    position: relative;
-   top: 50%;
+   top: 55%;
    left: 50%;
    transform: translate(-50%, -50%);
    width: 80%; 
    height: auto; 
    max-height: 300px;
+   z-index: -1;
    
 }
 
@@ -1749,6 +1750,7 @@ th {
    height: 100vh; 
    background-color: rgba(0, 0, 0, 0.5); 
    display: none; 
+   z-index: -1;
    
 }
 

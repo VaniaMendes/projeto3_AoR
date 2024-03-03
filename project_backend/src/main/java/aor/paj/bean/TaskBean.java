@@ -370,17 +370,21 @@ public class TaskBean {
 
 
         if (username != null || categoryId != 0) {
-           UserEntity userEntity1 = userDao.findUserByUsername(username);
+            UserEntity userEntity1 = userDao.findUserByUsername(username);
             CategoryEntity categoryEntity = categoryDao.findCategoryById(categoryId);
 
             ArrayList<TaskEntity> allTasksEntities = taskDao.findFilterTasks(userEntity1, categoryEntity);
 
             if (allTasksEntities != null) {
                 for (TaskEntity taskEntity : allTasksEntities) {
-                    //Filtro para selecionar os users ativos
-                    if(taskEntity.getOwner().getIsActive()) {
-                        Task task = convertTaskEntityToTask(taskEntity);
-                        allTasks.add(task);
+
+                    //Filtro para selecionar as tasks ativas
+                    if (taskEntity.isActive()) {
+                        // Filtro para selecionar os usuários ativos
+                        if (taskEntity.getOwner().getIsActive()) {
+                            Task task = convertTaskEntityToTask(taskEntity);
+                            allTasks.add(task);
+                        }
                     }
                 }
             }
