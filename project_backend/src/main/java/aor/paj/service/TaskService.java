@@ -77,10 +77,6 @@ public class TaskService {
 
         Response response;
 
-        //TODO TESTAR ESTA MERDA,
-        // VERIFICAR SE O ID ESTÁ CORRETO,
-
-
         if (userBean.getUserByToken(token) == null) {
             response = Response.status(403).entity("Invalid token").build();
 
@@ -109,7 +105,7 @@ public class TaskService {
     }
 
 
-    //INUTIL??????????????????????????
+
     @PUT
     @Path("/{taskId}/updateCategory")
     @Consumes(MediaType.APPLICATION_JSON)

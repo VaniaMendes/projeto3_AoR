@@ -104,7 +104,7 @@ public class UserService {
 
             if (user != null) {
                 User userFind = userBean.getUserByUsername(username);
-                return Response.ok(userFind).build();
+                return Response.ok(userFind).entity("GetUSer with sucess").build();
             } else {
             return Response.status(Response.Status.NOT_FOUND).build();
             }
@@ -158,10 +158,10 @@ public class UserService {
 
         User userRequest = userBean.getUserByToken(token);
         if (userRequest != null && (userRequest.getTypeOfUser().equals("product_owner"))) {
-            List<User> activeUsers = userBean.getInactiveUsers();
+            List<User> inactiveUsers = userBean.getInactiveUsers();
 
-            if (activeUsers != null && !activeUsers.isEmpty()) {
-                return Response.ok(activeUsers).build();
+            if (inactiveUsers != null && !inactiveUsers.isEmpty()) {
+                return Response.ok(inactiveUsers).build();
             } else {
                 return Response.status(Response.Status.NOT_FOUND).entity("No users found").build();
             }
@@ -438,16 +438,6 @@ public class UserService {
         return Response.status(200).entity(" Logout successful").build();
     }
 
-
-    /////////////////////REQUESTS ANTIGOS\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
-    //@GET
-    //@Path("/all")
-    //@Produces(MediaType.APPLICATION_JSON)
-    //public List<User> getUsers() {
-    //    return userBean.getUsers();
-    //}
-
     @GET
     @Path("/{username}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -456,9 +446,5 @@ public class UserService {
         if (userRequested==null) return Response.status(400).entity("Failed").build();
         return Response.status(200).entity(userRequested).build();
     }
-
-
-
-
 
 }

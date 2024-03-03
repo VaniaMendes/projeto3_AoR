@@ -1,0 +1,1093 @@
+{
+	"info": {
+		"_postman_id": "625b3ba4-41ae-4afd-bf5b-fe165bd34848",
+		"name": "Project3",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32787585"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "addUserDB",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"vaania1\",\r\n    \"password\":\"vania\",\r\n    \"email\":\"asdaaaaazs@dfsd.com\",\r\n    \"firstName\":\"Daniela\",\r\n    \"lastName\":\"Mendes\",\r\n    \"imgURL\": \"https://thypix.com/wp-content/uploads/2018/05/Sommerlandschaft-Bilder-30.jpg\",\r\n    \"typeOfUser\":\"product_owner\",\r\n    \"phoneNumber\":\"789654123\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}users/addUserDB",
+							"host": [
+								"{{baseurl}}users"
+							],
+							"path": [
+								"addUserDB"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUser",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "BuEkvvUVgvvFuEXTuzudgO3I4tG7Kkl7",
+								"type": "text"
+							},
+							{
+								"key": "username",
+								"value": "vsgm",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl}}users/user",
+							"host": [
+								"{{baseurl}}users"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "allUsers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/project_backend/rest/users/updateProfile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"project_backend",
+								"rest",
+								"users",
+								"updateProfile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activeUsers",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "zdHWQGbYyCEQIS8TGovXWURewWUuIMDC",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl}}users/activeUsers",
+							"host": [
+								"{{baseurl}}users"
+							],
+							"path": [
+								"activeUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "inactiveUsers",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "G4Gn_Ms0xBOklshcpJQSqfmdpmRCkKGP",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl}}users/inactiveUsers",
+							"host": [
+								"{{baseurl}}users"
+							],
+							"path": [
+								"inactiveUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "restoreUser",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "-NWUi8z06JuW-_owOTlGYURZoC9kmGQL",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl}}users/restoreUser/tiago",
+							"host": [
+								"{{baseurl}}users"
+							],
+							"path": [
+								"restoreUser",
+								"tiago"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "NXxEhoxnEJOYyk_eT94Bhq2m521LC4DZ",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete user",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "-NWUi8z06JuW-_owOTlGYURZoC9kmGQL",
+								"type": "text"
+							},
+							{
+								"key": "username",
+								"value": "filipa",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}users/deleteUser",
+							"host": [
+								"{{baseurl}}users"
+							],
+							"path": [
+								"deleteUser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "removeUserForever",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "token",
+								"value": "G4Gn_Ms0xBOklshcpJQSqfmdpmRCkKGP",
+								"type": "text"
+							},
+							{
+								"key": "username",
+								"value": "ilda",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl}}users/removeUser",
+							"host": [
+								"{{baseurl}}users"
+							],
+							"path": [
+								"removeUser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"vania\",\r\n    \"password\": \"vania\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}users/login",
+							"host": [
+								"{{baseurl}}users"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateProfile",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "-NWUi8z06JuW-_owOTlGYURZoC9kmGQL",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phoneNumber\": \"023201235\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}users/updateProfile",
+							"host": [
+								"{{baseurl}}users"
+							],
+							"path": [
+								"updateProfile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateUSerByPO",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "G4Gn_Ms0xBOklshcpJQSqfmdpmRCkKGP",
+								"type": "text"
+							},
+							{
+								"key": "username",
+								"value": "tiago",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Masdasdasda\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}users/updateProfilePO",
+							"host": [
+								"{{baseurl}}users"
+							],
+							"path": [
+								"updateProfilePO"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addUserByPO",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"vaaania1\",\r\n    \"password\":\"vania\",\r\n    \"email\":\"asdaaaaaazs@dfsd.com\",\r\n    \"firstName\":\"Daaniela\",\r\n    \"lastName\":\"Mendes\",\r\n    \"imgURL\": \"https://thypix.com/wp-content/uploads/2018/05/Sommerlandschaft-Bilder-30.jpg\",\r\n    \"typeOfUser\":\"product_owner\",\r\n    \"phoneNumber\":\"789654123\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}users/addUserByPO",
+							"host": [
+								"{{baseurl}}users"
+							],
+							"path": [
+								"addUserByPO"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateUserRole",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "BuEkvvUVgvvFuEXTuzudgO3I4tG7Kkl7",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"typeOfUser\":\"product_owner\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}users/vsgm/updateUserRole",
+							"host": [
+								"{{baseurl}}users"
+							],
+							"path": [
+								"vsgm",
+								"updateUserRole"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logoutUser",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "BuEkvvUVgvvFuEXTuzudgO3I4tG7Kkl7",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl}}users/logout",
+							"host": [
+								"{{baseurl}}users"
+							],
+							"path": [
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUserByToken",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "-NWUi8z06JuW-_owOTlGYURZoC9kmGQL",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl}}users",
+							"host": [
+								"{{baseurl}}users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updatedUser",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "-NWUi8z06JuW-_owOTlGYURZoC9kmGQL",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\r\n{\r\n    \"firstName\": \"vania13\"\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}users/updateProfile",
+							"host": [
+								"{{baseurl}}users"
+							],
+							"path": [
+								"updateProfile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUserByUsername",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "zdHWQGbYyCEQIS8TGovXWURewWUuIMDC",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/project_backend/rest/users/user?username=vania",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"project_backend",
+								"rest",
+								"users",
+								"user"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "vania"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "registerByPO",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "0JGIWHXkAs6XH_eyOpXvm8LCtQ-97OH9",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"maaria\",\r\n    \"password\":\"maaria\",\r\n    \"email\":\"mariaa1@sd.com\",\r\n    \"firstName\": \"Maria\",\r\n    \"lastName\": \"Santos\",\r\n    \"phoneNumber\": \"550023652\",\r\n    \"imgURL\": \"https://th.bing.com/th/id/R.80434b946137e7b252d6b158d82f24e2?rik=XFPEIZkFxipRRA&pid=ImgRaw&r=0\",\r\n    \"typeOfUser\":\"developer\"\r\n\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/project_backend/rest/users/addUserByPO",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"project_backend",
+								"rest",
+								"users",
+								"addUserByPO"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tasks",
+			"item": [
+				{
+					"name": "Create Task",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "BuEkvvUVgvvFuEXTuzudgO3I4tG7Kkl7",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"task para a\",\r\n    \"description\": \"description\",\r\n    \"initialDate\" : \"2024-02-24\",\r\n    \"endDate\": \"2024-02-25\", \r\n    \"category\": {\"idCategory\":1708897778547}    \r\n    \r\n}\r\n\r\n//quando crio sem certos atributos isto rebenta, meter proteções em caso de cenas\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}tasks/createTask",
+							"host": [
+								"{{baseurl}}tasks"
+							],
+							"path": [
+								"createTask"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update task",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "BuEkvvUVgvvFuEXTuzudgO3I4tG7Kkl7",
+								"type": "text"
+							},
+							{
+								"key": "categoryId",
+								"value": "1709295178428",
+								"type": "text"
+							},
+							{
+								"key": "taskId",
+								"value": "1709295522310",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"novaTaskEditada pelo Celso_owner\",\r\n    \"description\": \"descriptionEditada\",\r\n    \"initialDate\" : \"2024-02-24\",\r\n    \"endDate\": \"2024-02-27\",\r\n    \"priority\": 200,\r\n    \"state\": \"done\"\r\n       \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}tasks/updateTask",
+							"host": [
+								"{{baseurl}}tasks"
+							],
+							"path": [
+								"updateTask"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update task active state (soft delete)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "-NWUi8z06JuW-_owOTlGYURZoC9kmGQL",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl}}tasks/:id/softDelete",
+							"host": [
+								"{{baseurl}}tasks"
+							],
+							"path": [
+								":id",
+								"softDelete"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1709295522310"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "udpateCategory",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "BuEkvvUVgvvFuEXTuzudgO3I4tG7Kkl7",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\r\n{\r\n    \"idCategory\": 1709295172327,\r\n    \"title\": \"design\",\r\n    \"description\": \"dasdas\",\r\n    \"author\": {\r\n        \"username\": \"vsgm\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}tasks/1709431426875/updateCategory",
+							"host": [
+								"{{baseurl}}tasks"
+							],
+							"path": [
+								"1709431426875",
+								"updateCategory"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "taskStatus",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "BuEkvvUVgvvFuEXTuzudgO3I4tG7Kkl7",
+								"type": "text"
+							},
+							{
+								"key": "newState",
+								"value": "doing",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl}}tasks/1709295522310/status",
+							"host": [
+								"{{baseurl}}tasks"
+							],
+							"path": [
+								"1709295522310",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "softDelete",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "BuEkvvUVgvvFuEXTuzudgO3I4tG7Kkl7",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl}}tasks/1709315202484/softDelete",
+							"host": [
+								"{{baseurl}}tasks"
+							],
+							"path": [
+								"1709315202484",
+								"softDelete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all soft deleted tasks",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "BuEkvvUVgvvFuEXTuzudgO3I4tG7Kkl7",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl}}tasks/getAllSoftDeletedTasks",
+							"host": [
+								"{{baseurl}}tasks"
+							],
+							"path": [
+								"getAllSoftDeletedTasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteTasksByUsername",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "token",
+								"value": "BuEkvvUVgvvFuEXTuzudgO3I4tG7Kkl7",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl}}tasks/deleteTasksByUsername/maria",
+							"host": [
+								"{{baseurl}}tasks"
+							],
+							"path": [
+								"deleteTasksByUsername",
+								"maria"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "hardDeleteTask",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "token",
+								"value": "BuEkvvUVgvvFuEXTuzudgO3I4tG7Kkl7",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl}}tasks/1709320932960/hardDeleteTask",
+							"host": [
+								"{{baseurl}}tasks"
+							],
+							"path": [
+								"1709320932960",
+								"hardDeleteTask"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getFilterTasks",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "BuEkvvUVgvvFuEXTuzudgO3I4tG7Kkl7",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl}}tasks/getFilterTasks/?username=vania&&?category=1709295172327",
+							"host": [
+								"{{baseurl}}tasks"
+							],
+							"path": [
+								"getFilterTasks",
+								""
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "vania"
+								},
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "?category",
+									"value": "1709295172327"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllTasks",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "BuEkvvUVgvvFuEXTuzudgO3I4tG7Kkl7",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl}}tasks/getAllTasks",
+							"host": [
+								"{{baseurl}}tasks"
+							],
+							"path": [
+								"getAllTasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateCategory",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "G4Gn_Ms0xBOklshcpJQSqfmdpmRCkKGP",
+								"type": "text"
+							},
+							{
+								"key": "taskId",
+								"value": "1709431426875",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idCategory\" : 1709295172327\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}tasks/1709295522310/updateCategory",
+							"host": [
+								"{{baseurl}}tasks"
+							],
+							"path": [
+								"1709295522310",
+								"updateCategory"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAtiveTasks",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "BuEkvvUVgvvFuEXTuzudgO3I4tG7Kkl7",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl}}tasks/getActiveTasks",
+							"host": [
+								"{{baseurl}}tasks"
+							],
+							"path": [
+								"getActiveTasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTaskById",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "BuEkvvUVgvvFuEXTuzudgO3I4tG7Kkl7",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl}}tasks/getTaskById/1709431426875",
+							"host": [
+								"{{baseurl}}tasks"
+							],
+							"path": [
+								"getTaskById",
+								"1709431426875"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "createCategory",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "BuEkvvUVgvvFuEXTuzudgO3I4tG7Kkl7",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n\"idCategory\":\"1233\",\r\n\"title\": \"nova categoria\",\r\n\"description\": \"sdfsdf\",\r\n\"author\":{\r\n    \"username\": \"vsgm\"\r\n}\r\n}\r\n\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}categories/createCategory",
+							"host": [
+								"{{baseurl}}categories"
+							],
+							"path": [
+								"createCategory"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update category",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "BuEkvvUVgvvFuEXTuzudgO3I4tG7Kkl7",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"Programming12\",\r\n    \"description\": \"Programming tasks editada\"\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}categories/update/1709316267443",
+							"host": [
+								"{{baseurl}}categories"
+							],
+							"path": [
+								"update",
+								"1709316267443"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete category",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "token",
+								"value": "BuEkvvUVgvvFuEXTuzudgO3I4tG7Kkl7",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl}}categories/delete/:id",
+							"host": [
+								"{{baseurl}}categories"
+							],
+							"path": [
+								"delete",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1709467959528"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all categories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "BuEkvvUVgvvFuEXTuzudgO3I4tG7Kkl7",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl}}categories/getAllCategories",
+							"host": [
+								"{{baseurl}}categories"
+							],
+							"path": [
+								"getAllCategories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCategoryById",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "BuEkvvUVgvvFuEXTuzudgO3I4tG7Kkl7",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl}}categories/getCategoryById/1709295172327",
+							"host": [
+								"{{baseurl}}categories"
+							],
+							"path": [
+								"getCategoryById",
+								"1709295172327"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
